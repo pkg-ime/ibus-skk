@@ -1,0 +1,13 @@
+ibus-skk (0.0.4-1) unstable; urgency=low
+
+  * New upstream release.
+  * Fix debian/watch entry to extract the cloud.github.com URL from the
+    download page.
+
+ -- Daiki Ueno <ueno@unixuser.org>  Sun, 24 Jan 2010 10:43:15 +0900
+
+ibus-skk (0.0.2-1) unstable; urgency=low
+
+  * Initial release (Closes: #562137)
+
+ -- Daiki Ueno <ueno@unixuser.org>  Wed, 23 Dec 2009 11:46:22 +0900
