@@ -99,16 +99,21 @@ class CandidateSelector(skk.CandidateSelector):
                     return (output, annotation, False)
         return candidate
 
-    def select_candidate(self, key):
+    def set_index(self, index):
+        super(CandidateSelector, self).set_index(index)
+        if self.index() >= self.pagination_start:
+            self.__lookup_table.set_cursor_pos(self.index() -
+                                               self.pagination_start)
+
+    def key_to_index(self, key):
         if key not in self.__keys:
-            return None
+            raise IndexError('%s is not a valid key' % key)
         pos = self.__keys.index(key)
         if self.__lookup_table.set_cursor_pos_in_current_page(pos):
             index = self.__lookup_table.get_cursor_pos()
-            self.set_index(self.__pagination_start + index)
-            self.__lookup_table.clean()
-            return self.candidate()
-        return None
+            return self.__pagination_start + index
+        else:
+            raise IndexError('invalid key position %d' % pos)
 
 class Engine(ibus.EngineBase):
     config = None
@@ -166,10 +171,17 @@ class Engine(ibus.EngineBase):
                                   ''.join(skk.AUTO_START_HENKAN_KEYWORDS))
         self.__skk.auto_start_henkan_keywords = \
             list(iter(auto_start_henkan_keywords))
+        self.__skk.rom_kana_rule = self.config.get_value('rom_kana_rule',
+                                                         skk.ROM_KANA_NORMAL)
+        self.__skk.translated_strings['dict-edit-prompt'] =\
+            _(u'DictEdit').decode('UTF-8')
+        self.__skk.reset()
+        self.__skk.activate_input_mode(skk.INPUT_MODE_HIRAGANA)
         self.__prop_dict = dict()
         self.__prop_list = self.__init_props()
         self.__input_mode = self.__skk.input_mode
         self.__update_input_mode()
+        self.__suspended_mode = None
 
     def __init_props(self):
         skk_props = ibus.PropList()
@@ -228,33 +240,6 @@ class Engine(ibus.EngineBase):
         if state & modifier.MOD1_MASK:
             return False
 
-        if self.__skk.conv_state in (skk.CONV_STATE_START,
-                                     skk.CONV_STATE_SELECT):
-            if keyval == keysyms.Return or \
-                    (keyval in (keysyms.j, keysyms.J) and \
-                         state & modifier.CONTROL_MASK != 0):
-                output = self.__skk.kakutei()
-                self.commit_text(ibus.Text(output))
-                gobject.idle_add(self.__skk.usrdict.save,
-                                 priority = gobject.PRIORITY_LOW)
-                self.__lookup_table.clean()
-                self.__update()
-                return True
-            elif keyval == keysyms.Escape:
-                self.__skk.kakutei()
-                self.__lookup_table.clean()
-                self.__update()
-                return True
-
-        if keyval == keysyms.BackSpace:
-            handled, output = self.__skk.delete_char()
-            if handled:
-                if output:
-                    self.commit_text(ibus.Text(output))
-                self.__update()
-                return True
-            return False
-                
         if self.__skk.conv_state == skk.CONV_STATE_SELECT:
             if keyval == keysyms.Page_Up or keyval == keysyms.KP_Page_Up:
                 self.page_up()
@@ -263,27 +248,41 @@ class Engine(ibus.EngineBase):
                 self.page_down()
                 return True
             elif keyval == keysyms.Up or keyval == keysyms.Left:
-                self.__candidate_selector.previous_candidate(False)
+                self.__skk.previous_candidate(False)
                 self.__update()
                 return True
             elif keyval == keysyms.Down or keyval == keysyms.Right:
-                self.__candidate_selector.next_candidate(False)
+                self.__skk.next_candidate(False)
                 self.__update()
                 return True
             elif self.__candidate_selector.lookup_table_visible():
-                candidate = self.__candidate_selector.\
-                    select_candidate(unichr(keyval).lower())
-                if candidate:
-                    self.__skk.kakutei()
-                    self.commit_text(ibus.Text(candidate[0]))
-                    self.__update()
-                    return True
+                try:
+                    index = self.__candidate_selector.\
+                        key_to_index(unichr(keyval).lower())
+                    handled, output = self.__skk.select_candidate(index)
+                    if handled:
+                        if output:
+                            self.commit_text(ibus.Text(output))
+                        gobject.idle_add(self.__skk.usrdict.save,
+                                         priority = gobject.PRIORITY_LOW)
+                        self.__lookup_table.clean()
+                        self.__update()
+                        return True
+                except IndexError:
+                    pass
 
-        keychr = unichr(keyval)
         if keyval == keysyms.Tab:
             keychr = u'\t'
-        elif 0x20 > ord(keychr) or ord(keychr) > 0x7E:
-            return False
+        elif keyval == keysyms.Return:
+            keychr = u'return'
+        elif keyval == keysyms.Escape:
+            keychr = u'escape'
+        elif keyval == keysyms.BackSpace:
+            keychr = u'backspace'
+        else:
+            keychr = unichr(keyval)
+            if 0x20 > ord(keychr) or ord(keychr) > 0x7E:
+                return False
         if keychr.isalpha():
             keychr = keychr.lower()
         if state & modifier.SHIFT_MASK:
@@ -294,6 +293,8 @@ class Engine(ibus.EngineBase):
         if handled:
             if output:
                 self.commit_text(ibus.Text(output))
+            gobject.idle_add(self.__skk.usrdict.save,
+                             priority = gobject.PRIORITY_LOW)
             self.__update()
             return True
         return False
@@ -331,7 +332,10 @@ class Engine(ibus.EngineBase):
     def __possibly_update_config(self):
         if self.__skk.usrdict.path != self.config.usrdict_path:
             self.__skk.usrdict = skk.UsrDict(self.config.usrdict_path)
-        self.__skk.kutouten_type = self.config.get_value('period_style', 0)
+        self.__skk.kutouten_type = self.config.get_value('period_style',
+                                                         skk.KUTOUTEN_JP)
+        self.__skk.rom_kana_rule = self.config.get_value('rom_kana_rule',
+                                                         skk.ROM_KANA_NORMAL)
         self.__skk.auto_start_henkan_keywords = \
             list(iter(self.config.get_value('auto_start_henkan_keywords',
                                             ''.join(skk.AUTO_START_HENKAN_KEYWORDS))))
@@ -345,22 +349,29 @@ class Engine(ibus.EngineBase):
     #     }
 
     def __update(self):
-        prefix, midasi, suffix = self.__skk.split_preedit()
-        midasi_start = len(prefix)
-        suffix_start = midasi_start + len(midasi)
+        prompt, prefix, word, suffix = self.__skk.preedit_components()
+        prefix_start = len(prompt)
+        word_start = prefix_start + len(prefix)
+        suffix_start = word_start + len(word)
         suffix_end = suffix_start + len(suffix)
         attrs = ibus.AttrList()
+        # Display "[DictEdit]" way different from other components
+        # (black/lightsalmon).
+        attrs.append(ibus.AttributeForeground(ibus.RGB(0, 0, 0),
+                                              0, prefix_start))
+        attrs.append(ibus.AttributeBackground(ibus.RGB(255, 160, 122),
+                                              0, prefix_start))
         if self.__skk.conv_state == skk.CONV_STATE_SELECT:
             # Use colors from skk-henkan-face-default (black/darkseagreen2).
             attrs.append(ibus.AttributeForeground(ibus.RGB(0, 0, 0),
-                                                  midasi_start, suffix_start))
+                                                  word_start, suffix_start))
             attrs.append(ibus.AttributeBackground(ibus.RGB(180, 238, 180),
-                                                  midasi_start, suffix_start))
+                                                  word_start, suffix_start))
             attrs.append(ibus.AttributeUnderline(ibus.ATTR_UNDERLINE_SINGLE,
                                                  suffix_start, suffix_end))
         else:
             attrs.append(ibus.AttributeUnderline(ibus.ATTR_UNDERLINE_SINGLE,
-                                                 midasi_start, suffix_end))
+                                                 word_start, suffix_end))
         # Color cursor, currently disabled.
         #
         # if self.__skk.abbrev:
@@ -370,9 +381,9 @@ class Engine(ibus.EngineBase):
         #         self.__skk.input_mode)
         # attrs.append(ibus.AttributeBackground(ibus.RGB(*cursor_color),
         #                                       suffix_end, suffix_end + 1))
-        # preedit = ''.join((prefix, midasi, suffix, u' '))
+        # preedit = ''.join((prompt, prefix, word, suffix, u' '))
         #
-        preedit = ''.join((prefix, midasi, suffix))
+        preedit = ''.join((prompt, prefix, word, suffix))
         self.update_preedit_text(ibus.Text(preedit, attrs),
                                  len(preedit), len(preedit) > 0)
         visible = self.__candidate_selector.lookup_table_visible()
@@ -418,13 +429,23 @@ class Engine(ibus.EngineBase):
 
     def focus_in(self):
         self.register_properties(self.__prop_list)
+        # skipped at first focus_in after ibus startup
+        if self.__suspended_mode is not None:
+            self.__skk.activate_input_mode(self.__suspended_mode)
+            self.__suspended_mode = None
         self.__update_input_mode()
 
     def focus_out(self):
+        self.__suspended_mode = self.__skk.input_mode
+        # self.__skk.kakutei()
+        # self.commit_text(ibus.Text(u''))
+        self.__lookup_table.clean()
+        self.__update()
         self.reset()
 
     def reset(self):
         self.__skk.reset()
+        self.__skk.activate_input_mode(skk.INPUT_MODE_HIRAGANA)
 
     def property_activate(self, prop_name, state):
         # print "PropertyActivate(%s, %d)" % (prop_name, state)
