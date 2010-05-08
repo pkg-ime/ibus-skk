@@ -1,8 +1,9 @@
-ibus-skk (0.0.6-2) unstable; urgency=low
+ibus-skk (0.0.7-1) unstable; urgency=low
 
-  * Backport upstream fix for crash in BackSpace handling.
+  * New upstream release.
+  * Bump Standards-Version to 3.8.4.
 
- -- Daiki Ueno <ueno@unixuser.org>  Sat, 08 May 2010 14:10:17 +0900
+ -- Daiki Ueno <ueno@unixuser.org>  Sat, 08 May 2010 14:18:03 +0900
 
 ibus-skk (0.0.6-1) unstable; urgency=low
 

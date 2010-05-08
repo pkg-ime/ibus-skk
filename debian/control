@@ -3,7 +3,7 @@ Section: utils
 Priority: optional
 Maintainer: Daiki Ueno <ueno@unixuser.org>
 Build-Depends: debhelper (>= 7), autotools-dev, pkg-config, python-support, intltool
-Standards-Version: 3.8.3
+Standards-Version: 3.8.4
 Homepage: http://github.com/ueno/ibus-skk
 DM-Upload-Allowed: yes
 
