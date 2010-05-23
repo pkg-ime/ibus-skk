@@ -1,3 +1,10 @@
+ibus-skk (0.0.8-1) unstable; urgency=low
+
+  * New upstream release.
+  * Fix debian/watch entry.
+
+ -- Daiki Ueno <ueno@unixuser.org>  Sun, 23 May 2010 16:57:40 +0900
+
 ibus-skk (0.0.7-1) unstable; urgency=low
 
   * New upstream release.

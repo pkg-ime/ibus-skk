@@ -128,7 +128,8 @@ class Engine(ibus.EngineBase):
         skk.INPUT_MODE_HIRAGANA : u"InputMode.Hiragana",
         skk.INPUT_MODE_KATAKANA : u"InputMode.Katakana",
         skk.INPUT_MODE_LATIN : u"InputMode.Latin",
-        skk.INPUT_MODE_WIDE_LATIN : u"InputMode.WideLatin"
+        skk.INPUT_MODE_WIDE_LATIN : u"InputMode.WideLatin",
+        skk.INPUT_MODE_HANKAKU_KATAKANA : u"InputMode.HankakuKatakana"
         }
 
     __prop_name_input_modes = dict()
@@ -139,7 +140,8 @@ class Engine(ibus.EngineBase):
         skk.INPUT_MODE_HIRAGANA : u"あ",
         skk.INPUT_MODE_KATAKANA : u"ア",
         skk.INPUT_MODE_LATIN : u"_A",
-        skk.INPUT_MODE_WIDE_LATIN : u"Ａ"
+        skk.INPUT_MODE_WIDE_LATIN : u"Ａ",
+        skk.INPUT_MODE_HANKAKU_KATAKANA : u"_ｱ"
         }
 
     def __init__(self, bus, object_path):
@@ -175,6 +177,8 @@ class Engine(ibus.EngineBase):
                                                          skk.ROM_KANA_NORMAL)
         self.__skk.translated_strings['dict-edit-prompt'] =\
             _(u'DictEdit').decode('UTF-8')
+        self.__skk.translated_strings['kuten-prompt'] =\
+            _(u'Kuten([MM]KKTT) ').decode('UTF-8')
         self.__skk.reset()
         self.__skk.activate_input_mode(skk.INPUT_MODE_HIRAGANA)
         self.__prop_dict = dict()
@@ -205,6 +209,9 @@ class Engine(ibus.EngineBase):
         props.append(ibus.Property(key=u"InputMode.WideLatin",
                                    type=ibus.PROP_TYPE_RADIO,
                                    label=_(u"Wide Latin")))
+        props.append(ibus.Property(key=u"InputMode.HankakuKatakana",
+                                   type=ibus.PROP_TYPE_RADIO,
+                                   label=_(u"HankakuKatakana")))
 
         props[self.__skk.input_mode].set_state(ibus.PROP_STATE_CHECKED)
 
@@ -345,7 +352,8 @@ class Engine(ibus.EngineBase):
     #     skk.INPUT_MODE_HIRAGANA: (139, 62, 47),
     #     skk.INPUT_MODE_KATAKANA: (34, 139, 34),
     #     skk.INPUT_MODE_LATIN: (139, 139, 131),
-    #     skk.INPUT_MODE_WIDE_LATIN: (255, 215, 0)
+    #     skk.INPUT_MODE_WIDE_LATIN: (255, 215, 0),
+    #     skk.INPUT_MODE_HANKAKU_KATAKANA: (138, 43, 226)
     #     }
 
     def __update(self):
