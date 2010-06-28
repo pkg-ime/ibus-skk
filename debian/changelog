@@ -1,3 +1,10 @@
+ibus-skk (0.0.9-1) unstable; urgency=low
+
+  * New upstream release (Closes: #583784)
+  * Add debian/source/format.
+
+ -- Daiki Ueno <ueno@unixuser.org>  Tue, 29 Jun 2010 05:58:19 +0900
+
 ibus-skk (0.0.8-1) unstable; urgency=low
 
   * New upstream release.
