@@ -1,3 +1,10 @@
+ibus-skk (0.0.10-1) unstable; urgency=low
+
+  * New upstream release (Closes: #590188, #590191, #591052)
+  * Bump Standards-Version to 3.9.1.
+
+ -- Daiki Ueno <ueno@unixuser.org>  Tue, 03 Aug 2010 06:06:58 +0900
+
 ibus-skk (0.0.9-1) unstable; urgency=low
 
   * New upstream release (Closes: #583784)
