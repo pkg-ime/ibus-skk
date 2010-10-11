@@ -25,6 +25,7 @@ SUBDIRS = \
 	icons \
 	m4 \
 	po \
+	scripts \
 	$(NULL)
 
 ACLOCAL_AMFLAGS = -I m4
@@ -33,6 +34,7 @@ EXTRA_DIST = \
 	autogen.sh \
 	ibus-skk.spec.in \
 	python-config.py \
+	ibus-skk.json.example \
 	$(NULL)
 
 noinst_DIST = \

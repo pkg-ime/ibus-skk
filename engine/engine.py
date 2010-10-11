@@ -61,9 +61,6 @@ class CandidateSelector(skk.CandidateSelector):
             elif not move_over_pages:
                 self.__lookup_table.set_cursor_pos(self.index() -
                                                    self.pagination_start)
-            else:
-                self.__lookup_table.page_down()
-                self.__lookup_table.set_cursor_pos_in_current_page(0)
         return self.candidate()
 
     def previous_candidate(self, move_over_pages=True):
@@ -74,9 +71,6 @@ class CandidateSelector(skk.CandidateSelector):
             elif not move_over_pages:
                 self.__lookup_table.set_cursor_pos(self.index() -
                                                    self.pagination_start)
-            else:
-                self.__lookup_table.page_up()
-                self.__lookup_table.set_cursor_pos_in_current_page(0)
         return self.candidate()
 
     __emacsclient_paths = ('/usr/bin/emacsclient',
@@ -109,6 +103,13 @@ class CandidateSelector(skk.CandidateSelector):
         if key not in self.__keys:
             raise IndexError('%s is not a valid key' % key)
         pos = self.__keys.index(key)
+        if self.__lookup_table.set_cursor_pos_in_current_page(pos):
+            index = self.__lookup_table.get_cursor_pos()
+            return self.__pagination_start + index
+        else:
+            raise IndexError('invalid key position %d' % pos)
+
+    def pos_to_index(self, pos):
         if self.__lookup_table.set_cursor_pos_in_current_page(pos):
             index = self.__lookup_table.get_cursor_pos()
             return self.__pagination_start + index
@@ -175,15 +176,25 @@ class Engine(ibus.EngineBase):
             list(iter(auto_start_henkan_keywords))
         self.__skk.rom_kana_rule = self.config.get_value('rom_kana_rule',
                                                          skk.ROM_KANA_NORMAL)
+        self.__skk.egg_like_newline = self.config.get_value('egg_like_newline',
+                                                            True)
+        self.__skk.direct_input_on_latin = \
+            self.config.get_value('direct_input_on_latin',
+                                  False)
+        self.__initial_input_mode = \
+            self.config.get_value('initial_input_mode',
+                                  skk.INPUT_MODE_HIRAGANA)
         self.__skk.translated_strings['dict-edit-prompt'] =\
             _(u'DictEdit').decode('UTF-8')
         self.__skk.translated_strings['kuten-prompt'] =\
             _(u'Kuten([MM]KKTT) ').decode('UTF-8')
+        self.__skk.custom_rom_kana_rule = \
+            self.config.get_value('custom_rom_kana_rule', dict())
         self.__skk.reset()
-        self.__skk.activate_input_mode(skk.INPUT_MODE_HIRAGANA)
+        self.__skk.activate_input_mode(self.__initial_input_mode)
         self.__prop_dict = dict()
         self.__prop_list = self.__init_props()
-        self.__input_mode = self.__skk.input_mode
+        self.__input_mode = skk.INPUT_MODE_NONE
         self.__update_input_mode()
         self.__suspended_mode = None
 
@@ -222,8 +233,7 @@ class Engine(ibus.EngineBase):
         skk_props.append(input_mode_prop)
 
         skk_props.append(ibus.Property(key=u"setup",
-                                         icon=u"ibus-setup",
-                                         tooltip=_(u"Configure SKK")))
+                                       tooltip=_(u"Configure SKK")))
 
         return skk_props
 
@@ -262,7 +272,8 @@ class Engine(ibus.EngineBase):
                 self.__skk.next_candidate(False)
                 self.__update()
                 return True
-            elif self.__candidate_selector.lookup_table_visible():
+            elif state & modifier.CONTROL_MASK == 0 and \
+                    self.__candidate_selector.lookup_table_visible():
                 try:
                     index = self.__candidate_selector.\
                         key_to_index(unichr(keyval).lower())
@@ -289,22 +300,25 @@ class Engine(ibus.EngineBase):
         else:
             keychr = unichr(keyval)
             if 0x20 > ord(keychr) or ord(keychr) > 0x7E:
-                return False
-        if keychr.isalpha():
-            keychr = keychr.lower()
-        if state & modifier.SHIFT_MASK:
-            keychr = u'shift+' + keychr
+                # If the pre-edit buffer is visible, always handle key events:
+                # http://github.com/ueno/ibus-skk/issues/#issue/5
+                return len(self.__skk.preedit) > 0
         if state & modifier.CONTROL_MASK:
-            keychr = u'ctrl+' + keychr
+            # Some systems return 'J' if ctrl:nocaps xkb option is
+            # enabled and the user press CapsLock + 'j':
+            # http://github.com/ueno/ibus-skk/issues/#issue/22
+            keychr = u'ctrl+' + keychr.lower()
         handled, output = self.__skk.press_key(keychr)
+        if output:
+            self.commit_text(ibus.Text(output))
         if handled:
-            if output:
-                self.commit_text(ibus.Text(output))
             gobject.idle_add(self.__skk.usrdict.save,
                              priority = gobject.PRIORITY_LOW)
             self.__update()
             return True
-        return False
+        # If the pre-edit buffer is visible, always handle key events:
+        # http://github.com/ueno/ibus-skk/issues/#issue/5
+        return len(self.__skk.preedit) > 0
 
     def __invalidate(self):
         if self.__is_invalidate:
@@ -315,27 +329,49 @@ class Engine(ibus.EngineBase):
     def page_up(self):
         if self.__lookup_table.page_up():
             self.page_up_lookup_table()
+            self.__candidate_selector.previous_candidate(True)
+            self.__update()
             return True
         return False
 
     def page_down(self):
         if self.__lookup_table.page_down():
             self.page_down_lookup_table()
+            self.__candidate_selector.next_candidate(True)
+            self.__update()
             return True
         return False
 
     def cursor_up(self):
         if self.__lookup_table.cursor_up():
             self.cursor_up_lookup_table()
+            self.__candidate_selector.previous_candidate(False)
+            self.__update()
             return True
         return False
 
     def cursor_down(self):
         if self.__lookup_table.cursor_down():
             self.cursor_down_lookup_table()
+            self.__candidate_selector.next_candidate(False)
+            self.__update()
             return True
         return False
 
+    def candidate_clicked(self, index, button, state):
+        try:
+            index = self.__candidate_selector.pos_to_index(index)
+            handled, output = self.__skk.select_candidate(index)
+            if handled:
+                if output:
+                    self.commit_text(ibus.Text(output))
+                gobject.idle_add(self.__skk.usrdict.save,
+                                 priority = gobject.PRIORITY_LOW)
+                self.__lookup_table.clean()
+                self.__update()
+        except IndexError:
+            pass
+        
     def __possibly_update_config(self):
         if self.__skk.usrdict.path != self.config.usrdict_path:
             self.__skk.usrdict = skk.UsrDict(self.config.usrdict_path)
@@ -343,6 +379,9 @@ class Engine(ibus.EngineBase):
                                                          skk.KUTOUTEN_JP)
         self.__skk.rom_kana_rule = self.config.get_value('rom_kana_rule',
                                                          skk.ROM_KANA_NORMAL)
+        self.__initial_input_mode = \
+            self.config.get_value('initial_input_mode',
+                                  skk.INPUT_MODE_HIRAGANA)
         self.__skk.auto_start_henkan_keywords = \
             list(iter(self.config.get_value('auto_start_henkan_keywords',
                                             ''.join(skk.AUTO_START_HENKAN_KEYWORDS))))
@@ -453,7 +492,7 @@ class Engine(ibus.EngineBase):
 
     def reset(self):
         self.__skk.reset()
-        self.__skk.activate_input_mode(skk.INPUT_MODE_HIRAGANA)
+        self.__skk.activate_input_mode(self.__initial_input_mode)
 
     def property_activate(self, prop_name, state):
         # print "PropertyActivate(%s, %d)" % (prop_name, state)

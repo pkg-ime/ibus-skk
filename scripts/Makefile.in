@@ -19,8 +19,7 @@
 #
 # ibus-skk - The SKK engine for IBus
 #
-# Copyright (c) 2007-2008 Huang Peng <shawn.p.huang@gmail.com>
-# Copyright (C) 2009-2010 Daiki Ueno <ueno@unixuser.org>
+# Copyright (C) 2010 Daiki Ueno <ueno@unixuser.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -55,10 +54,9 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-subdir = setup
-DIST_COMMON = $(setup_skk_PYTHON) $(srcdir)/Makefile.am \
-	$(srcdir)/Makefile.in $(srcdir)/ibus-setup-skk.in \
-	$(srcdir)/ibus-skk-preferences.ui.in
+subdir = scripts
+DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
+	$(srcdir)/ibus-skk-convert-jisyo.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/intltool.m4 \
 	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
@@ -68,7 +66,7 @@ am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
-CONFIG_CLEAN_FILES = ibus-setup-skk ibus-skk-preferences.ui
+CONFIG_CLEAN_FILES = ibus-skk-convert-jisyo
 CONFIG_CLEAN_VPATH_FILES =
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
 am__vpath_adj = case $$p in \
@@ -91,12 +89,10 @@ am__nobase_list = $(am__nobase_strip_setup); \
 am__base_list = \
   sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
   sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
-am__installdirs = "$(DESTDIR)$(libexecdir)" \
-	"$(DESTDIR)$(setup_skkdir)"
-SCRIPTS = $(libexec_SCRIPTS)
+am__installdirs = "$(DESTDIR)$(bindir)"
+SCRIPTS = $(bin_SCRIPTS)
 SOURCES =
 DIST_SOURCES =
-py_compile = $(top_srcdir)/py-compile
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 ALL_LINGUAS = @ALL_LINGUAS@
@@ -251,23 +247,9 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-setup_skk_PYTHON = \
-	main.py \
-	config.py \
-	ibus-skk-preferences.ui \
-	$(NULL)
-
-setup_skkdir = $(datadir)/ibus-skk/setup
-libexec_SCRIPTS = ibus-setup-skk
-CLEANFILES = \
-	*.pyc \
-	$(NULL)
-
-EXTRA_DIST = \
-	ibus-setup-skk.in \
-	ibus-skk-preferences.ui.in \
-	$(NULL)
-
+bin_SCRIPTS = ibus-skk-convert-jisyo
+CLEANFILES = $(bin_SCRIPTS)
+EXTRA_DIST = ibus-skk-convert-jisyo.in
 all: all-am
 
 .SUFFIXES:
@@ -280,9 +262,9 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__confi
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu setup/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu scripts/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu setup/Makefile
+	  $(AUTOMAKE) --gnu scripts/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -301,14 +283,12 @@ $(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
 $(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(am__aclocal_m4_deps):
-ibus-setup-skk: $(top_builddir)/config.status $(srcdir)/ibus-setup-skk.in
+ibus-skk-convert-jisyo: $(top_builddir)/config.status $(srcdir)/ibus-skk-convert-jisyo.in
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
-ibus-skk-preferences.ui: $(top_builddir)/config.status $(srcdir)/ibus-skk-preferences.ui.in
-	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
-install-libexecSCRIPTS: $(libexec_SCRIPTS)
+install-binSCRIPTS: $(bin_SCRIPTS)
 	@$(NORMAL_INSTALL)
-	test -z "$(libexecdir)" || $(MKDIR_P) "$(DESTDIR)$(libexecdir)"
-	@list='$(libexec_SCRIPTS)'; test -n "$(libexecdir)" || list=; \
+	test -z "$(bindir)" || $(MKDIR_P) "$(DESTDIR)$(bindir)"
+	@list='$(bin_SCRIPTS)'; test -n "$(bindir)" || list=; \
 	for p in $$list; do \
 	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
 	  if test -f "$$d$$p"; then echo "$$d$$p"; echo "$$p"; else :; fi; \
@@ -326,63 +306,25 @@ install-libexecSCRIPTS: $(libexec_SCRIPTS)
 	while read type dir files; do \
 	     if test "$$dir" = .; then dir=; else dir=/$$dir; fi; \
 	     test -z "$$files" || { \
-	       echo " $(INSTALL_SCRIPT) $$files '$(DESTDIR)$(libexecdir)$$dir'"; \
-	       $(INSTALL_SCRIPT) $$files "$(DESTDIR)$(libexecdir)$$dir" || exit $$?; \
+	       echo " $(INSTALL_SCRIPT) $$files '$(DESTDIR)$(bindir)$$dir'"; \
+	       $(INSTALL_SCRIPT) $$files "$(DESTDIR)$(bindir)$$dir" || exit $$?; \
 	     } \
 	; done
 
-uninstall-libexecSCRIPTS:
+uninstall-binSCRIPTS:
 	@$(NORMAL_UNINSTALL)
-	@list='$(libexec_SCRIPTS)'; test -n "$(libexecdir)" || exit 0; \
+	@list='$(bin_SCRIPTS)'; test -n "$(bindir)" || exit 0; \
 	files=`for p in $$list; do echo "$$p"; done | \
 	       sed -e 's,.*/,,;$(transform)'`; \
 	test -n "$$list" || exit 0; \
-	echo " ( cd '$(DESTDIR)$(libexecdir)' && rm -f" $$files ")"; \
-	cd "$(DESTDIR)$(libexecdir)" && rm -f $$files
+	echo " ( cd '$(DESTDIR)$(bindir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(bindir)" && rm -f $$files
 
 mostlyclean-libtool:
 	-rm -f *.lo
 
 clean-libtool:
 	-rm -rf .libs _libs
-install-setup_skkPYTHON: $(setup_skk_PYTHON)
-	@$(NORMAL_INSTALL)
-	test -z "$(setup_skkdir)" || $(MKDIR_P) "$(DESTDIR)$(setup_skkdir)"
-	@list='$(setup_skk_PYTHON)'; dlist=; list2=; test -n "$(setup_skkdir)" || list=; \
-	for p in $$list; do \
-	  if test -f "$$p"; then b=; else b="$(srcdir)/"; fi; \
-	  if test -f $$b$$p; then \
-	    $(am__strip_dir) \
-	    dlist="$$dlist $$f"; \
-	    list2="$$list2 $$b$$p"; \
-	  else :; fi; \
-	done; \
-	for file in $$list2; do echo $$file; done | $(am__base_list) | \
-	while read files; do \
-	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(setup_skkdir)'"; \
-	  $(INSTALL_DATA) $$files "$(DESTDIR)$(setup_skkdir)" || exit $$?; \
-	done || exit $$?; \
-	if test -n "$$dlist"; then \
-	  if test -z "$(DESTDIR)"; then \
-	    PYTHON=$(PYTHON) $(py_compile) --basedir "$(setup_skkdir)" $$dlist; \
-	  else \
-	    PYTHON=$(PYTHON) $(py_compile) --destdir "$(DESTDIR)" --basedir "$(setup_skkdir)" $$dlist; \
-	  fi; \
-	else :; fi
-
-uninstall-setup_skkPYTHON:
-	@$(NORMAL_UNINSTALL)
-	@list='$(setup_skk_PYTHON)'; test -n "$(setup_skkdir)" || list=; \
-	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
-	test -n "$$files" || exit 0; \
-	filesc=`echo "$$files" | sed 's|$$|c|'`; \
-	fileso=`echo "$$files" | sed 's|$$|o|'`; \
-	echo " ( cd '$(DESTDIR)$(setup_skkdir)' && rm -f" $$files ")"; \
-	cd "$(DESTDIR)$(setup_skkdir)" && rm -f $$files || exit $$?; \
-	echo " ( cd '$(DESTDIR)$(setup_skkdir)' && rm -f" $$filesc ")"; \
-	cd "$(DESTDIR)$(setup_skkdir)" && rm -f $$filesc || exit $$?; \
-	echo " ( cd '$(DESTDIR)$(setup_skkdir)' && rm -f" $$fileso ")"; \
-	cd "$(DESTDIR)$(setup_skkdir)" && rm -f $$fileso
 tags: TAGS
 TAGS:
 
@@ -424,7 +366,7 @@ check-am: all-am
 check: check-am
 all-am: Makefile $(SCRIPTS)
 installdirs:
-	for dir in "$(DESTDIR)$(libexecdir)" "$(DESTDIR)$(setup_skkdir)"; do \
+	for dir in "$(DESTDIR)$(bindir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -473,13 +415,13 @@ info: info-am
 
 info-am:
 
-install-data-am: install-setup_skkPYTHON
+install-data-am:
 
 install-dvi: install-dvi-am
 
 install-dvi-am:
 
-install-exec-am: install-libexecSCRIPTS
+install-exec-am: install-binSCRIPTS
 
 install-html: install-html-am
 
@@ -517,30 +459,22 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-libexecSCRIPTS uninstall-setup_skkPYTHON
+uninstall-am: uninstall-binSCRIPTS
 
 .MAKE: install-am install-strip
 
 .PHONY: all all-am check check-am clean clean-generic clean-libtool \
 	distclean distclean-generic distclean-libtool distdir dvi \
 	dvi-am html html-am info info-am install install-am \
-	install-data install-data-am install-dvi install-dvi-am \
-	install-exec install-exec-am install-html install-html-am \
-	install-info install-info-am install-libexecSCRIPTS \
-	install-man install-pdf install-pdf-am install-ps \
-	install-ps-am install-setup_skkPYTHON install-strip \
-	installcheck installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-generic \
-	mostlyclean-libtool pdf pdf-am ps ps-am uninstall uninstall-am \
-	uninstall-libexecSCRIPTS uninstall-setup_skkPYTHON
+	install-binSCRIPTS install-data install-data-am install-dvi \
+	install-dvi-am install-exec install-exec-am install-html \
+	install-html-am install-info install-info-am install-man \
+	install-pdf install-pdf-am install-ps install-ps-am \
+	install-strip installcheck installcheck-am installdirs \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
+	uninstall uninstall-am uninstall-binSCRIPTS
 
-
-test:
-	DBUS_DEBUG=true \
-	LANG=en_US \
-	PYTHONPATH=$(abs_top_srcdir):$(pyexecdir) \
-	IBUS_LOCALEDIR=@localedir@ \
-	$(PYTHON) $(srcdir)/main.py
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

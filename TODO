@@ -1,7 +1,5 @@
 - add more tests
 - rewrite in C
-- allow multiple dictionaries
-- transient error message
+- error message using libnotify
 - NICOLA (thumb shift keyboard)
-- CDB dictionaries
-
+- use lookup table to display completion candidates

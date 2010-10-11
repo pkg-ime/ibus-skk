@@ -61,7 +61,11 @@ class EngineFactory(ibus.EngineFactoryBase):
         sysdict_type = _config.get_value('sysdict_type', 'file')
         try:
             if sysdict_type == 'file':
-                return skk.SysDict(_config.sysdict_path)
+                use_mmap = _config.get_value('use_mmap', True)
+                instances = list()
+                for path in _config.sysdict_paths():
+                    instances.append(skk.SysDict(path, use_mmap=use_mmap))
+                return skk.MultiSysDict(instances)
             else:
                 host = _config.get_value('skkserv_host', 'localhost')
                 port = int(_config.get_value('skkserv_port', '1178'))
@@ -80,7 +84,7 @@ class EngineFactory(ibus.EngineFactoryBase):
     def __config_value_changed_cb(self, bus_config, section, name, value):
         if section == 'engine/SKK':
             engine.Engine.config.set_value(name, value)
-            if name in ('sysdict_type', 'sysdict',
+            if name in ('sysdict_type', 'sysdict_paths', 'use_mmap',
                         'skkserv_host', 'skkserv_port',
                         'skkserv_encoding'):
                 engine.Engine.sysdict = self.__load_sysdict(engine.Engine.config)
