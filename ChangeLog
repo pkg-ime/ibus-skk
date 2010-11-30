@@ -1,3 +1,130 @@
+commit 94c0c8f6129dbb4dbe4cda19f99abfcdd758b5b9
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-11-29 16:24:26 +0900
+
+    Update to 1.3.4.
+
+M	configure.ac
+
+commit 18b67432548a7f60af7ffefbe3dd873c79668769
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-11-29 16:23:21 +0900
+
+    Add description about NICOLA.
+
+M	README
+
+commit db0eefd3fbacc8df36eb4ce08d931156095f31d6
+Merge: 6b6cc33 bd0dfd6
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-11-29 16:21:08 +0900
+
+    Merge branch 'nicola'
+
+commit bd0dfd61779cef968dc5125e66e230b51df63f30
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-11-29 16:20:01 +0900
+
+    Fix inversion of lshift and rshift.
+
+M	engine/skk.py
+
+commit 6b6cc3384e29e73d4dede8cb9feb0f8a92e4e28d
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-11-28 09:34:28 +0900
+
+    Don't touch PYTHONPATH (Debian Bug#605173).
+
+M	engine/ibus-engine-skk.in
+
+commit cd58d9e10492b6be387f6bffdd5baf2f188e6196
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-11-22 11:56:01 +0900
+
+    Treat 'ctrl+j' as handled.
+
+M	engine/skk.py
+
+commit 661e76b724333273ac42437bdaef5814f6a2a28f
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-11-22 10:52:56 +0900
+
+    Don't change input mode with "ctrl+j" when input mode is hiragana or katakana.
+
+M	engine/skk.py
+
+commit bd2c7771e04be508bacc2257a7fe667e806b037b
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-11-08 16:33:53 +0900
+
+    Update to 1.3.3.
+
+M	configure.ac
+
+commit e86b55821231640e3fc21c49a3e092fc91120926
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-11-08 16:29:28 +0900
+
+    Delay config value initialization for ibus-1.4.
+
+M	engine/factory.py
+M	setup/config.py
+M	setup/ibus-skk-preferences.ui.in
+M	setup/main.py
+
+commit 5a0eb37abab15da3866dc252c138f4923af82494
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-11-04 09:44:56 +0900
+
+    Fix engine startup error when use_nicola is False.
+
+M	engine/engine.py
+
+commit 55f475def398bb645d90daaa7a90a15622098257
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-11-03 17:12:26 +0900
+
+    Simplify testnicola().
+
+M	engine/test.py
+
+commit 1e54cacc747e15b0ce579e7ffc1d2ab33a6c9937
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-11-03 17:12:01 +0900
+
+    Replace the latest key event when key repeat.
+
+M	engine/nicola.py
+
+commit 85cd57b759b903852ce9bd13687c71b0db19982b
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-11-02 15:35:39 +0900
+
+    Fix input mode transition with nicola+[dk].
+
+M	engine/skk.py
+
+commit 610aece8152ebcbf6db21c7519adba9718eea82b
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-11-02 14:51:21 +0900
+
+    Integrate NICOLA to the engine.
+
+M	engine/engine.py
+M	engine/nicola.py
+M	engine/skk.py
+M	setup/config.py
+
+commit ebd23ab13b81d87d8a60dc8c7551fc629c28c575
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-11-01 18:53:00 +0900
+
+    Add NICOLA support code.
+
+M	engine/Makefile.am
+A	engine/nicola.py
+M	engine/test.py
+
 commit 5e7c5e8959081f52491d70215e1d76af1f213e81
 Author: Daiki Ueno <ueno@unixuser.org>
 Date:   2010-10-12 20:28:45 +0900
