@@ -284,6 +284,13 @@ ROM_KANA_RULE = {
     # (skk-kakutei-key nil skk-kakutei)
     }
 
+OKURI_RULE = dict()
+for rom in ROM_KANA_RULE:
+    next_pending, next_output = ROM_KANA_RULE[rom]
+    if isinstance(next_output, tuple):
+        katakana, hiragana = next_output
+        OKURI_RULE[hiragana[0]] = rom[0]
+    
 # skk-jisx0208-latin-vector
 WIDE_LATIN_TABLE = (None, None, None, None, None, None, None, None, 
                     None, None, None, None, None, None, None, None, 
@@ -424,11 +431,24 @@ INPUT_MODE_TRANSITION_RULE = {
         INPUT_MODE_HIRAGANA: INPUT_MODE_WIDE_LATIN,
         INPUT_MODE_KATAKANA: INPUT_MODE_WIDE_LATIN
         },
+    u'nicola+Z': {
+        INPUT_MODE_HIRAGANA: INPUT_MODE_WIDE_LATIN,
+        INPUT_MODE_KATAKANA: INPUT_MODE_WIDE_LATIN
+        },
     u'l': {
         INPUT_MODE_HIRAGANA: INPUT_MODE_LATIN,
         INPUT_MODE_KATAKANA: INPUT_MODE_LATIN
         },
+    u'nicola+[LR]': {
+        INPUT_MODE_HIRAGANA: INPUT_MODE_LATIN,
+        INPUT_MODE_KATAKANA: INPUT_MODE_LATIN,
+        INPUT_MODE_LATIN: INPUT_MODE_HIRAGANA
+        },
     u'ctrl+j': {
+        INPUT_MODE_WIDE_LATIN: INPUT_MODE_HIRAGANA,
+        INPUT_MODE_LATIN: INPUT_MODE_HIRAGANA
+        },
+    u'nicola+ctrl+j': {
         INPUT_MODE_WIDE_LATIN: INPUT_MODE_HIRAGANA,
         INPUT_MODE_LATIN: INPUT_MODE_HIRAGANA
         },
@@ -777,6 +797,7 @@ class SkkServ(DictBase):
     HOST='localhost'
     PORT=1178
     BUFSIZ = 4096
+    TIMEOUT = 5.0
 
     def __init__(self, host=HOST, port=PORT, encoding=ENCODING):
         self.__host = host
@@ -800,6 +821,7 @@ class SkkServ(DictBase):
         self.__close()
         try:
             self.__socket = socket.socket()
+            self.__socket.settimeout(self.TIMEOUT)
             self.__socket.connect((self.__host, self.__port))
             # Request server version.
             self.__socket.send('2')
@@ -812,14 +834,28 @@ class SkkServ(DictBase):
             return list()
         try:
             self.__socket.send('1' + midasi.encode(self.__encoding) + ' ')
-            candidates = self.__socket.recv(self.BUFSIZ)
-            if len(candidates) == 0 or candidates[0] != '1':
+            response = str()
+            while '\n' not in response:
+                response += self.__socket.recv(self.BUFSIZ)
+            if len(response) == 0 or response[0] != '1':
                 return list()
-            return self.split_candidates(candidates.decode(self.__encoding)[1:])
+            return self.split_candidates(response.decode(self.__encoding)[1:])
         except socket.error:
             return list()
 
     def completer(self, midasi):
+        if self.__socket is None:
+            return iter(list())
+        try:
+            self.__socket.send('4' + midasi.encode(self.__encoding) + ' ')
+            response = str()
+            while '\n' not in response:
+                response += self.__socket.recv(self.BUFSIZ)
+            if len(response) < 2 or response[0] != '1':
+                return iter(list())
+            return iter(response[2:-1].decode(self.__encoding).split(response[1]))
+        except socket.error:
+            return iter(list())
         return iter(list())
 
 def compile_rom_kana_rule(rule):
@@ -879,6 +915,11 @@ def zenkaku_ascii(ascii):
     def to_zenkaku(letter):
         return HANKAKU_TO_ZENKAKU_ASCII_TABLE.get(letter, letter)
     return u''.join(map(to_zenkaku, ascii))
+    
+def wide_latin(latin):
+    def to_wide(letter):
+        return WIDE_LATIN_TABLE[ord(letter)] or u''
+    return u''.join(map(to_wide, latin))
     
 def num_to_latin(num):
     return num
@@ -1327,15 +1368,23 @@ class Context(object):
                 return (False, u'')
 
             if self.__current_state().input_mode == INPUT_MODE_LATIN:
+                if key.is_nicola():
+                    output = u''.join(nicola.decompose_double(key.letter))
+                else:
+                    output = key.letter
                 if self.dict_edit_level() > 0:
-                    self.__current_state().dict_edit_output += key.letter
+                    self.__current_state().dict_edit_output += output
                     return (True, u'')
                 if self.direct_input_on_latin:
                     return (False, u'')
                 else:
-                    return (True, key.letter)
+                    return (True, output)
             elif self.__current_state().input_mode == INPUT_MODE_WIDE_LATIN:
-                output = WIDE_LATIN_TABLE[ord(key.letter)]
+                if key.is_nicola():
+                    output = u''.join(nicola.decompose_double(key.letter))
+                else:
+                    output = key.letter
+                output = wide_latin(output)
                 if self.dict_edit_level() > 0:
                     self.__current_state().dict_edit_output += output
                     return (True, u'')
@@ -1556,8 +1605,9 @@ class Context(object):
                      self.__rom_kana_rule_tree)
                 return (True, u'')
 
-            if key.letter.isupper() and \
-                    not self.__rom_kana_key_is_acceptable(key):
+            if (key.letter.isupper() and \
+                    not self.__rom_kana_key_is_acceptable(key)) or \
+                    (key.is_nicola() and key.letter == '[fj]'):
                 rom_kana_state = self.__convert_nn(self.__current_state().rom_kana_state)
                 if len(rom_kana_state[1]) == 0 and \
                         not self.__current_state().okuri_rom_kana_state:
@@ -1565,7 +1615,8 @@ class Context(object):
                     self.__current_state().okuri_rom_kana_state = \
                         (u'', u'', self.__rom_kana_rule_tree)
 
-            if self.__current_state().okuri_rom_kana_state:
+            if self.__current_state().okuri_rom_kana_state and \
+                    not (key.is_nicola() and key.letter == '[fj]'):
                 okuri = None
                 # Issue#10: check OUTPUT was produced by 'n'
                 for nn in (u'ん', u'ン', u'ﾝ'):
@@ -1574,18 +1625,27 @@ class Context(object):
                         okuri = u'n'
                         break
                 if not okuri:
-                    okuri = (self.__current_state().okuri_rom_kana_state[1] or \
-                                 key.letter.lower())[0]
-                # Workaround for:
-                # NA -> ▽な, NAN -> ▽な*n, NANA -> [DictEdit] な*んあ
-                # NA -> ▽な, NAN -> ▽な*n, NANa -> [DictEdit] な*な
-                if key.letter.isupper() and \
-                        key.letter.lower() in (u'a', u'i', u'u', u'e', u'o'):
+                    if key.is_nicola():
+                        okuri_rom_kana_state = \
+                            self.__convert_kana(key, (u'', u'', dict()))
+                        okuri = OKURI_RULE[okuri_rom_kana_state[0]]
+                    else:
+                        okuri = (self.__current_state().okuri_rom_kana_state[1] or \
+                                     key.letter.lower())[0]
+                if key.is_nicola():
                     self.__current_state().okuri_rom_kana_state = \
-                        self.__convert_nn(self.__current_state().okuri_rom_kana_state)
-                self.__current_state().okuri_rom_kana_state = \
-                    self.__convert_kana(key,\
-                                            self.__current_state().okuri_rom_kana_state)
+                        (okuri_rom_kana_state[0], u'', dict())
+                else:
+                    # Workaround for:
+                    # NA -> ▽な, NAN -> ▽な*n, NANA -> [DictEdit] な*んあ
+                    # NA -> ▽な, NAN -> ▽な*n, NANa -> [DictEdit] な*な
+                    if key.letter.isupper() and \
+                            key.letter.lower() in (u'a', u'i', u'u', u'e', u'o'):
+                        self.__current_state().okuri_rom_kana_state = \
+                            self.__convert_nn(self.__current_state().okuri_rom_kana_state)
+                    self.__current_state().okuri_rom_kana_state = \
+                        self.__convert_kana(key,\
+                                                self.__current_state().okuri_rom_kana_state)
 
                 # Start okuri-ari conversion.
                 if len(self.__current_state().okuri_rom_kana_state[1]) == 0:
@@ -1690,6 +1750,39 @@ class Context(object):
                 len(self.__current_state().dict_edit_output) > 0:
             self.__current_state().dict_edit_output = \
                 self.__current_state().dict_edit_output[:-1]
+            return (True, u'')
+        return (False, u'')
+
+    def __append_text_to_rom_kana_state(self, state, text):
+        output, pending, tree = state
+        # Don't append text if rom-kana conversion is in progress.
+        if pending:
+            return None
+        return (output + text, pending, tree)
+
+    def append_text(self, text):
+        '''Append text at the end of the buffer.'''
+        if self.__current_state().conv_state == CONV_STATE_SELECT:
+            return (False, u'')
+        if self.__current_state().okuri_rom_kana_state:
+            state = self.__append_text_to_rom_kana_state(\
+                self.__current_state().okuri_rom_kana_state, text)
+            if state:
+                self.__current_state().okuri_rom_kana_state = state
+                return (True, u'')
+            return (False, u'')
+        if self.__current_state().rom_kana_state:
+            state = self.__append_text_to_rom_kana_state(\
+                self.__current_state().rom_kana_state, text)
+            if state:
+                self.__current_state().rom_kana_state = state
+                return (True, u'')
+            return (False, u'')
+        if self.__current_state().kuten is not None:
+            self.__current_state().kuten += text
+            return (True, u'')
+        if self.dict_edit_level() > 0:
+            self.__current_state().dict_edit_output += text
             return (True, u'')
         return (False, u'')
 
