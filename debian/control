@@ -1,7 +1,7 @@
 Source: ibus-skk
 Section: utils
 Priority: optional
-Maintainer: Daiki Ueno <ueno@unixuser.org>
+Maintainer: IME Packaging Team <pkg-ime-devel@lists.alioth.debian.org>
 Build-Depends: debhelper (>= 7), autotools-dev, pkg-config, python-support, intltool
 Standards-Version: 3.9.1
 Homepage: http://github.com/ueno/ibus-skk
