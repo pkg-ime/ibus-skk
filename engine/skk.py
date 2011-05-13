@@ -29,6 +29,7 @@ import re
 import unicodedata
 from kzik import KZIK_RULE
 import struct
+import mmap
 
 # Converted from skk-rom-kana-base-rule in skk-vars.el.
 ROM_KANA_RULE = {
@@ -97,6 +98,7 @@ ROM_KANA_RULE = {
     # u'h': (u'', (u'オ', u'お')),
     u'ha': (None, (u'ハ', u'は')),
     u'he': (None, (u'ヘ', u'へ')),
+    u'hh': (u'h', (u'ッ', u'っ')),
     u'hi': (None, (u'ヒ', u'ひ')),
     u'ho': (None, (u'ホ', u'ほ')),
     u'hu': (None, (u'フ', u'ふ')),
@@ -347,6 +349,33 @@ ZENKAKU_TO_HANKAKU_KATAKANA_TABLE = {
     #u'ヵ': u'ｶ', u'ヶ': u'ｹ'
 }
 
+HANKAKU_TO_ZENKAKU_ASCII_TABLE = {
+    u' ': u'　',
+    u':': u'：', u'\;': u'；', u'?': u'？', u'!': u'！',
+    u'\'': u'´', u'`': u'｀', u'^': u'＾', u'_': u'＿', u'-': u'ー', u'-': u'—',
+    u'-': u'‐',
+    u'/': u'／', u'\\': u'＼', u'~': u'〜', u'|': u'｜', u'`': u'‘',
+    u'\'': u'’', u'\"': u'“', u'\"': u'”',
+    u'(': u'（', u')': u'）', u'[': u'［', u']': u'］', u'{': u'｛', u'}': u'｝', 
+    u'<': u'〈', u'>': u'〉', u'｢': u'「', u'｣': u'」', 
+    u'+': u'＋', u'-': u'−', u'=': u'＝', u'<': u'＜', u'>': u'＞',
+    u'\'': u'′', u'\"': u'″', u'\\': u'￥', u'$': u'＄', u'%': u'％',
+    u'#': u'＃', u'&': u'＆', u'*': u'＊',
+    u'@': u'＠',
+    u'0': u'０', u'1': u'１', u'2': u'２', u'3': u'３', u'4': u'４', 
+    u'5': u'５', u'6': u'６', u'7': u'７', u'8': u'８', u'9': u'９', 
+    u'A': u'Ａ', u'B': u'Ｂ', u'C': u'Ｃ', u'D': u'Ｄ', u'E': u'Ｅ', 
+    u'F': u'Ｆ', u'G': u'Ｇ', u'H': u'Ｈ', u'I': u'Ｉ', u'J': u'Ｊ', 
+    u'K': u'Ｋ', u'L': u'Ｌ', u'M': u'Ｍ', u'N': u'Ｎ', u'O': u'Ｏ', 
+    u'P': u'Ｐ', u'Q': u'Ｑ', u'R': u'Ｒ', u'S': u'Ｓ', u'T': u'Ｔ', 
+    u'U': u'Ｕ', u'V': u'Ｖ', u'W': u'Ｗ', u'X': u'Ｘ', u'Y': u'Ｙ', u'Z': u'Ｚ', 
+    u'a': u'ａ', u'b': u'ｂ', u'c': u'ｃ', u'd': u'ｄ', u'e': u'ｅ', 
+    u'f': u'ｆ', u'g': u'ｇ', u'h': u'ｈ', u'i': u'ｉ', u'j': u'ｊ', 
+    u'k': u'ｋ', u'l': u'ｌ', u'm': u'ｍ', u'n': u'ｎ', u'o': u'ｏ', 
+    u'p': u'ｐ', u'q': u'ｑ', u'r': u'ｒ', u's': u'ｓ', u't': u'ｔ', 
+    u'u': u'ｕ', u'v': u'ｖ', u'w': u'ｗ', u'x': u'ｘ', u'y': u'ｙ', u'z': u'ｚ'
+    }
+
 HANKAKU_TO_ZENKAKU_KATAKANA_TABLE = dict()
 for zenkaku, hankaku in ZENKAKU_TO_HANKAKU_KATAKANA_TABLE.iteritems():
     HANKAKU_TO_ZENKAKU_KATAKANA_TABLE[hankaku] = zenkaku
@@ -385,7 +414,7 @@ INPUT_MODE_TRANSITION_RULE = {
         INPUT_MODE_HIRAGANA: INPUT_MODE_KATAKANA,
         INPUT_MODE_KATAKANA: INPUT_MODE_HIRAGANA
         },
-    u'shift+l': {
+    u'L': {
         INPUT_MODE_HIRAGANA: INPUT_MODE_WIDE_LATIN,
         INPUT_MODE_KATAKANA: INPUT_MODE_WIDE_LATIN
         },
@@ -416,7 +445,7 @@ TRANSLATED_STRINGS = {
 }
 
 class DictBase(object):
-    ENCODING = 'EUC-JP'
+    ENCODING = 'EUC-JIS-2004'
 
     def split_candidates(self, line):
         '''Parse a single candidate line into a list of candidates.'''
@@ -461,59 +490,84 @@ class EmptyDict(DictBase):
         return iter(list())
 
 class SysDict(DictBase):
-    def __init__(self, path, encoding=DictBase.ENCODING):
+    def __init__(self, path, encoding=DictBase.ENCODING, use_mmap=True):
         self.__path = path
         self.__mtime = 0
         self.__encoding = encoding
+        self.__mmap = None
+        self.__file = None
+        self.__use_mmap = use_mmap
         self.reload()
 
     path = property(lambda self: self.__path)
 
+    def __get_fp(self):
+        if not self.__file:
+            self.__file = open(self.__path, 'r')
+        if self.__use_mmap and not self.__mmap:
+            try:
+                self.__mmap = mmap.mmap(self.__file.fileno(), 0,
+                                        prot=mmap.PROT_READ)
+                self.__file.close()
+                self.__file = None
+            except IOError:
+                pass
+        return (self.__mmap or self.__file)
+
+    def __close(self):
+        if self.__file:
+            self.__file.close()
+            self.__file = None
+        if self.__mmap:
+            self.__mmap.close()
+            self.__mmap = None
+        
+    def __del__(self):
+        self.__close()
+
     def reload(self):
         try:
             mtime = os.path.getmtime(self.__path)
-        except OSError:
-            mtime = 0
-        if mtime <= self.__mtime:
-            return
-        try:
-            self.__load()
-        except IOError:
+            if mtime > self.__mtime:
+                self.__okuri_ari = list()
+                self.__okuri_nasi = list()
+                self.__load()
+                self.__mtime = mtime
+        except IOError, OSError:
             pass
-        self.__mtime = mtime
 
     def __load(self):
-        self.__okuri_ari = list()
-        self.__okuri_nasi = list()
-        with open(self.__path, 'r') as fp:
-            # Skip headers.
-            while True:
+        self.__close()
+        fp = self.__get_fp()
+        while True:
+            pos = fp.tell()
+            line = fp.readline()
+            if not line:
+                break
+            if line.startswith(';; okuri-ari entries.'):
+                offsets = self.__okuri_ari
                 pos = fp.tell()
-                line = fp.readline()
-                if not line or not line.startswith(';'):
-                    break
+                break
+        while True:
+            pos = fp.tell()
+            line = fp.readline()
+            if not line:
+                break
+            # A comment line seperating okuri-ari/okuri-nasi entries.
+            if line.startswith(';; okuri-nasi entries.'):
+                offsets = self.__okuri_nasi
+            else:
+                offsets.append(pos)
+        self.__okuri_ari.reverse()
 
-            offsets = self.__okuri_ari
-            offsets.append(pos)
-            while True:
-                pos = fp.tell()
-                line = fp.readline()
-                if not line:
-                    break
-                # A comment line seperating okuri-ari/okuri-nasi entries.
-                if line.startswith(';'):
-                    offsets = self.__okuri_nasi
-                else:
-                    offsets.append(pos)
-            self.__okuri_ari.reverse()
-
-    def __search_pos(self, fp, offsets, _cmp):
+    def __search_pos(self, offsets, _cmp):
+        fp = self.__get_fp()
         fp.seek(0)
         begin, end = 0, len(offsets) - 1
         pos = begin + (end - begin) / 2
         while begin <= end:
             fp.seek(offsets[pos])
-            line = fp.next()
+            line = fp.readline()
             r = _cmp(line)
             if r == 0:
                 return (pos, line)
@@ -525,18 +579,17 @@ class SysDict(DictBase):
         return None
         
     def __lookup(self, midasi, offsets):
-        with open(self.__path, 'r') as fp:
-            midasi = midasi.encode(self.__encoding)
-            def _lookup_cmp(line):
-                _midasi, candidates = line.split(' ', 1)
-                return cmp(midasi, _midasi)
-            r = self.__search_pos(fp, offsets, _lookup_cmp)
-            if not r:
-                return list()
-            pos, line = r
+        midasi = midasi.encode(self.__encoding)
+        def _lookup_cmp(line):
             _midasi, candidates = line.split(' ', 1)
-            candidates = candidates.decode(self.__encoding)
-            return self.split_candidates(candidates)
+            return cmp(midasi, _midasi)
+        r = self.__search_pos(offsets, _lookup_cmp)
+        if not r:
+            return list()
+        pos, line = r
+        _midasi, candidates = line.split(' ', 1)
+        candidates = candidates.decode(self.__encoding)
+        return self.split_candidates(candidates)
 
     def lookup(self, midasi, okuri=False):
         if okuri:
@@ -544,35 +597,35 @@ class SysDict(DictBase):
         else:
             offsets = self.__okuri_nasi
         if len(offsets) == 0:
-            self.reload(self.__path, self.__encoding)
+            self.reload()
         try:
             return self.__lookup(midasi, offsets)
         except IOError:
             return list()
 
     def __completer(self, midasi):
-        with open(self.__path, 'r') as fp:
-            midasi = midasi.encode(self.__encoding)
-            def _completer_cmp(line):
-                if line.startswith(midasi):
-                    return 0
-                return cmp(midasi, line)
-            r = self.__search_pos(fp, self.__okuri_nasi, _completer_cmp)
-            if r:
-                pos, line = r
-                while pos >= 0:
-                    fp.seek(self.__okuri_nasi[pos])
-                    line = fp.next()
-                    if not line.startswith(midasi):
-                        pos += 1
-                        break
-                    pos -= 1
-                while pos < len(self.__okuri_nasi):
-                    fp.seek(self.__okuri_nasi[pos])
-                    line = fp.next()
-                    _midasi, candidates = line.split(' ', 1)
-                    yield _midasi.decode(self.__encoding)
+        midasi = midasi.encode(self.__encoding)
+        def _completer_cmp(line):
+            if line.startswith(midasi):
+                return 0
+            return cmp(midasi, line)
+        r = self.__search_pos(self.__okuri_nasi, _completer_cmp)
+        if r:
+            pos, line = r
+            fp = self.__get_fp()
+            while pos >= 0:
+                fp.seek(self.__okuri_nasi[pos])
+                line = fp.readline()
+                if not line.startswith(midasi):
                     pos += 1
+                    break
+                pos -= 1
+            while pos < len(self.__okuri_nasi):
+                fp.seek(self.__okuri_nasi[pos])
+                line = fp.readline()
+                _midasi, candidates = line.split(' ', 1)
+                yield _midasi.decode(self.__encoding)
+                pos += 1
                 
     def completer(self, midasi):
         try:
@@ -580,6 +633,26 @@ class SysDict(DictBase):
         except IOError:
             return iter(list())
 
+def append_candidates(x, y):
+    return x + [cy for cy in y if cy[0] not in [cx[0] for cx in x]]
+
+class MultiSysDict(DictBase):
+    def __init__(self, instances):
+        self.__instances = instances
+
+    def reload(self):
+        for sysdict in self.__instances:
+            sysdict.reload()
+            
+    def lookup(self, midasi, okuri=False):
+        return reduce(append_candidates,
+                      [sysdict.lookup(midasi, okuri)
+                       for sysdict in self.__instances])
+
+    def completer(self, midasi):
+        return itertools.chain(*[sysdict.completer(midasi)
+                                 for sysdict in self.__instances])
+    
 class UsrDict(DictBase):
     PATH = '~/.skk-ibus-jisyo'
     HISTSIZE = 128
@@ -747,8 +820,13 @@ class SkkServ(DictBase):
 
 def compile_rom_kana_rule(rule):
     def _compile_rom_kana_rule(tree, input_state, arg):
+        if len(input_state) == 0:
+            return
         hd, tl = input_state[0], input_state[1:]
-        if hd not in tree:
+        if hd in tree:
+            if not isinstance(tree[hd], dict):
+                return
+        else:
             if not tl:
                 tree[hd] = arg
                 return
@@ -765,7 +843,7 @@ def hiragana_to_katakana(kana):
         if ord(u'ぁ') <= ord(letter) and ord(letter) <= ord(u'ん'):
             return unichr(ord(letter) + diff)
         return letter
-    return ''.join(map(to_katakana, kana)).replace(u'ウ゛', u'ヴ')
+    return u''.join(map(to_katakana, kana)).replace(u'ウ゛', u'ヴ')
 
 def katakana_to_hiragana(kana):
     diff = ord(u'ア') - ord(u'あ')
@@ -773,7 +851,7 @@ def katakana_to_hiragana(kana):
         if ord(u'ァ') <= ord(letter) and ord(letter) <= ord(u'ン'):
             return unichr(ord(letter) - diff)
         return letter
-    return ''.join(map(to_hiragana, kana.replace(u'ヴ', u'ウ゛')))
+    return u''.join(map(to_hiragana, kana.replace(u'ヴ', u'ウ゛')))
 
 def hankaku_katakana(kana):
     def to_hankaku(letter):
@@ -782,7 +860,7 @@ def hankaku_katakana(kana):
         elif ord(u'ァ') <= ord(letter) and ord(letter) <= ord(u'ン'):
             return ZENKAKU_TO_HANKAKU_KATAKANA_TABLE[letter]
         return letter
-    return ''.join(map(to_hankaku, kana))
+    return u''.join(map(to_hankaku, kana))
 
 def zenkaku_katakana(kana):
     def to_zenkaku(letter):
@@ -791,16 +869,21 @@ def zenkaku_katakana(kana):
         elif ord(u'ｦ') <= ord(letter) and ord(letter) <= ord(u'ﾝ'):
             return HANKAKU_TO_ZENKAKU_KATAKANA_TABLE[letter]
         return letter
-    return unicodedata.normalize('NFC', ''.join(map(to_zenkaku, kana)))
+    return unicodedata.normalize('NFC', u''.join(map(to_zenkaku, kana)))
 
+def zenkaku_ascii(ascii):
+    def to_zenkaku(letter):
+        return HANKAKU_TO_ZENKAKU_ASCII_TABLE.get(letter, letter)
+    return u''.join(map(to_zenkaku, ascii))
+    
 def num_to_latin(num):
     return num
 
 def num_to_jisx0208_latin(num):
-    return ''.join([NUM_WIDE_LATIN_TABLE[c] for c in num])
+    return u''.join([NUM_WIDE_LATIN_TABLE[c] for c in num])
 
 def num_to_type2_kanji(num):
-    return ''.join([NUM_KANJI_TABLE1[c] for c in num])
+    return u''.join([NUM_KANJI_TABLE1[c] for c in num])
 
 def num_to_kanji(num, digit_table, kurai_table):
     ndigits = len(num)
@@ -814,7 +897,7 @@ def num_to_kanji(num, digit_table, kurai_table):
                 result.append(kurai)
             elif index % 4 > 0:
                 result.append(kurai_table[index % 4])
-    return ''.join(result)
+    return u''.join(result)
 
 def num_to_type3_kanji(num):
     return num_to_kanji(num,
@@ -956,25 +1039,20 @@ class State(object):
 class Key(object):
     __letters = {
 #        'return': '\r',
-        'escape': '\e',
-        'backspace': '\h',
-        'tab': '\t'
+        u'escape': u'\e',
+        u'backspace': u'\h',
+        u'tab': u'\t'
         }
 
     def __init__(self, keystr):
         self.__keystr = keystr
-        self.__is_ctrl = keystr.startswith('ctrl+')
+        self.__is_ctrl = keystr.startswith(u'ctrl+')
         if self.__is_ctrl:
             keystr = keystr[5:]
-        self.__is_shift = keystr.startswith('shift+')
-        if self.__is_shift:
-            keystr = keystr[6:]
         self.__keyval = keystr
 
         if Key.__letters.has_key(keystr.lower()):
             self.__letter = Key.__letters[keystr.lower()]
-        elif self.__is_shift:
-            self.__letter = keystr.upper()
         else:
             self.__letter = keystr
 
@@ -987,9 +1065,6 @@ class Key(object):
     def is_ctrl(self):
         return self.__is_ctrl
 
-    def is_shift(self):
-        return self.__is_shift
-
 class Context(object):
     def __init__(self, usrdict, sysdict, candidate_selector):
         '''Create an SKK context.
@@ -999,6 +1074,7 @@ class Context(object):
         self.__usrdict = None
         self.__sysdict = None
         self.__rom_kana_rule = None
+        self.__custom_rom_kana_rule = dict()
         self.__candidate_selector = candidate_selector
         self.__state_stack = list()
         self.__state_stack.append(State())
@@ -1009,7 +1085,10 @@ class Context(object):
         self.rom_kana_rule = ROM_KANA_NORMAL
         self.kutouten_type = KUTOUTEN_JP
         self.auto_start_henkan_keywords = AUTO_START_HENKAN_KEYWORDS
+        self.egg_like_newline = True
+        self.direct_input_on_latin = False
         self.translated_strings = dict(TRANSLATED_STRINGS)
+        self.debug = False
         self.reset()
 
     def __check_dict(self, _dict):
@@ -1029,14 +1108,26 @@ class Context(object):
     usrdict = property(lambda self: self.__usrdict, set_usrdict)
     sysdict = property(lambda self: self.__sysdict, set_sysdict)
 
+    def __update_rom_kana_rule_tree(self):
+        rule = dict(ROM_KANA_RULES[self.__rom_kana_rule])
+        rule.update(self.custom_rom_kana_rule)
+        self.__rom_kana_rule_tree = compile_rom_kana_rule(rule)
+        
     def set_rom_kana_rule(self, rom_kana_rule):
         if self.__rom_kana_rule != rom_kana_rule:
             self.__rom_kana_rule = rom_kana_rule
-            self.__rom_kana_rule_tree = \
-                compile_rom_kana_rule(ROM_KANA_RULES[self.__rom_kana_rule])
+            self.__update_rom_kana_rule_tree()
 
     rom_kana_rule = property(lambda self: self.__rom_kana_rule,
                              set_rom_kana_rule)
+
+    def set_custom_rom_kana_rule(self, custom_rom_kana_rule):
+        if self.__custom_rom_kana_rule != custom_rom_kana_rule:
+            self.__custom_rom_kana_rule = custom_rom_kana_rule
+            self.__update_rom_kana_rule_tree()
+            
+    custom_rom_kana_rule = property(lambda self: self.__custom_rom_kana_rule,
+                                    set_custom_rom_kana_rule)
 
     def __current_state(self):
         return self.__state_stack[-1]
@@ -1135,8 +1226,7 @@ class Context(object):
         self.__current_state().midasi = midasi
         usr_candidates = self.__usrdict.lookup(midasi)
         sys_candidates = self.__sysdict.lookup(midasi, okuri)
-        candidates = self.__merge_candidates(usr_candidates,
-                                             sys_candidates)
+        candidates = append_candidates(usr_candidates, sys_candidates)
         candidates = [(substitute_num(candidate[0], num_list),
                        candidate[1])
                       for candidate in candidates]
@@ -1145,10 +1235,21 @@ class Context(object):
             self.__current_state().conv_state = CONV_STATE_START
             self.__enter_dict_edit()
 
+    def __rom_kana_has_pending(self):
+        if self.__current_state().rom_kana_state is None:
+            return False
+        output, pending, tree = self.__current_state().rom_kana_state
+        return len(pending) > 0 and not pending.endswith(u'n')
+
+    def __rom_kana_key_is_acceptable(self, key):
+        if not self.__rom_kana_has_pending():
+            return False
+        return key.letter.lower() in self.__current_state().rom_kana_state[2]
+
     def press_key(self, keystr):
         '''Process a key press event KEYSTR.
 
-        KEYSTR is in the format of ["ctrl+"]["shift+"]<lower case ASCII letter>.
+        KEYSTR is in the format of ["ctrl+"]<ASCII letter>.
 
         The return value is a tuple (HANDLED, OUTPUT) where HANDLED is
         True if the event was handled internally (otherwise False),
@@ -1180,25 +1281,25 @@ class Context(object):
         if str(key) in ('ctrl+h', 'backspace'):
             return self.delete_char()
 
-        rom_kana_pending = self.__current_state().rom_kana_state and \
-            len(self.__current_state().rom_kana_state[1]) > 0 and \
-            not self.__current_state().rom_kana_state[1].endswith(u'n')
         if self.__current_state().conv_state == CONV_STATE_NONE:
-            input_mode = INPUT_MODE_TRANSITION_RULE.get(str(key), dict()).\
-                get(self.__current_state().input_mode)
-            if input_mode is not None and self.rom_kana_rule != ROM_KANA_KZIK:
-                if not rom_kana_pending and \
-                        self.__current_state().rom_kana_state:
-                    self.__current_state().rom_kana_state = \
-                        self.__convert_nn(self.__current_state().rom_kana_state)
-                    output = self.__current_state().rom_kana_state[0]
-                else:
-                    output = u''
-                self.reset()
-                self.activate_input_mode(input_mode)
-                return (True, output)
+            # If KEY will be consumed in the next rom-kana conversion,
+            # skip input mode transition.
+            if not self.__rom_kana_key_is_acceptable(key):
+                input_mode = INPUT_MODE_TRANSITION_RULE.get(str(key), dict()).\
+                    get(self.__current_state().input_mode)
+                if input_mode is not None:
+                    if not self.__rom_kana_has_pending() and \
+                            self.__current_state().rom_kana_state:
+                        self.__current_state().rom_kana_state = \
+                            self.__convert_nn(self.__current_state().rom_kana_state)
+                        output = self.__current_state().rom_kana_state[0]
+                    else:
+                        output = u''
+                    self.reset()
+                    self.activate_input_mode(input_mode)
+                    return (True, output)
 
-            if self.dict_edit_level() > 0 and str(key) in ('ctrl+j', 'return'):
+            if self.dict_edit_level() > 0 and str(key) in ('ctrl+j', 'ctrl+m', 'return'):
                 return (True, self.__leave_dict_edit())
 
             # Ignore ctrl+key and non-ASCII characters.
@@ -1208,11 +1309,13 @@ class Context(object):
                 return (False, u'')
 
             if self.__current_state().input_mode == INPUT_MODE_LATIN:
-                output = key.letter
                 if self.dict_edit_level() > 0:
-                    self.__current_state().dict_edit_output += output
+                    self.__current_state().dict_edit_output += key.letter
                     return (True, u'')
-                return (True, output)
+                if self.direct_input_on_latin:
+                    return (False, u'')
+                else:
+                    return (True, key.letter)
             elif self.__current_state().input_mode == INPUT_MODE_WIDE_LATIN:
                 output = WIDE_LATIN_TABLE[ord(key.letter)]
                 if self.dict_edit_level() > 0:
@@ -1221,7 +1324,7 @@ class Context(object):
                 return (True, output)
 
             # Start KUTEN input.
-            if str(key) == '\\':
+            if key.letter == '\\':
                 if not self.__kuten_codec:
                     import codecs
                     try:
@@ -1234,23 +1337,23 @@ class Context(object):
                 return (True, u'')
 
             # Start rom-kan mode with abbrev enabled (/).
-            if not rom_kana_pending and key.keyval == '/':
+            if not self.__rom_kana_has_pending() and key.letter == '/':
                 self.__current_state().conv_state = CONV_STATE_START
                 self.__current_state().abbrev = True
                 return (True, u'')
 
-            # Start rom-kan mode (shift+q).
-            if key.is_shift() and key.keyval == 'q':
+            # Start rom-kan mode (Q).
+            if key.letter == 'Q':
                 self.__current_state().conv_state = CONV_STATE_START
                 return (True, u'')
 
             # Start rom-kan mode and insert a character which
             # triggered the transition.
-            if key.is_shift() and key.keyval.isalpha():
+            if key.letter.isupper():
                 self.__current_state().conv_state = CONV_STATE_START
 
             self.__current_state().rom_kana_state = \
-                self.__convert_rom_kana(key.keyval,
+                self.__convert_rom_kana(key.letter.lower(),
                                         self.__current_state().rom_kana_state)
             output = self.__current_state().rom_kana_state[0]
             if self.__current_state().conv_state == CONV_STATE_NONE and \
@@ -1268,7 +1371,7 @@ class Context(object):
         elif self.__current_state().conv_state == CONV_STATE_START:
             input_mode = INPUT_MODE_TRANSITION_RULE.get(str(key), dict()).\
                 get(self.__current_state().input_mode)
-            if rom_kana_pending or self.__current_state().abbrev:
+            if self.__rom_kana_has_pending() or self.__current_state().abbrev:
                 input_mode = None
             if self.__current_state().input_mode == INPUT_MODE_HIRAGANA and \
                     input_mode == INPUT_MODE_KATAKANA:
@@ -1322,7 +1425,16 @@ class Context(object):
                 self.activate_input_mode(input_mode)
                 return (True, output)
 
-            if str(key) in ('ctrl+j', 'return'):
+            # Convert hankaku to zenkaku with ctrl+q in abbrev mode (Issue#17).
+            if self.__current_state().abbrev and str(key) == 'ctrl+q':
+                ascii = zenkaku_ascii(self.__current_state().rom_kana_state[0])
+                self.kakutei()
+                if self.dict_edit_level() > 0:
+                    self.__current_state().dict_edit_output += ascii
+                    return (True, u'')
+                return (True, ascii)
+
+            if str(key) in ('ctrl+j', 'ctrl+m', 'return'):
                 kuten = self.__current_state().kuten
                 if kuten is not None:
                     input_mode = self.__current_state().input_mode
@@ -1346,6 +1458,9 @@ class Context(object):
                 if self.dict_edit_level() > 0:
                     self.__current_state().dict_edit_output += output
                     return (True, u'')
+                if str(key) in ('ctrl+m', 'return') and \
+                        not self.egg_like_newline:
+                    output += u'\n'
                 return (True, output)
 
             if self.__current_state().kuten is not None:
@@ -1359,7 +1474,7 @@ class Context(object):
                 return (True, u'')
 
             # Start TAB(\C-i) completion.
-            if key.keyval == '\t' or (key.is_ctrl() and key.letter == 'i'):
+            if key.letter == '\t' or (key.is_ctrl() and key.letter == 'i'):
                 self.__current_state().rom_kana_state = \
                     self.__convert_nn(self.__current_state().rom_kana_state)
                 if self.__current_state().completer is None:
@@ -1379,16 +1494,28 @@ class Context(object):
             self.__current_state().completer = None
             self.__current_state().completion_seen = None
 
-            # Start okuri-nasi conversion.
+            # Check if KEY triggers auto conversion.
             auto_start_henkan_keyword = None
             if not self.__current_state().abbrev:
                 rom_kana_state = tuple(self.__current_state().rom_kana_state)
-                rom_kana_state = self.__convert_rom_kana(key.keyval, rom_kana_state)
+                rom_kana_state = self.__convert_rom_kana(key.letter.lower(),
+                                                         rom_kana_state)
                 for keyword in AUTO_START_HENKAN_KEYWORDS:
                     if rom_kana_state[0].endswith(keyword):
                         self.__current_state().auto_start_henkan_keyword = keyword
                         break
-            if key.keyval == u' ' or \
+
+            # If midasi is empty, switch back to CONV_STATE_NONE
+            # instead of CONV_STATE_SELECT.
+            if key.letter == u' ' and \
+                    len(self.__current_state().rom_kana_state[0]) == 0:
+                self.__current_state().conv_state = CONV_STATE_NONE
+                return (True, u'')
+
+            # Start okuri-nasi conversion.
+            if key.letter == u' ' or \
+                    (len(self.__current_state().rom_kana_state[0]) > 0 and \
+                         key.letter == u'>') or \
                     self.__current_state().auto_start_henkan_keyword:
                 self.__current_state().conv_state = CONV_STATE_SELECT
                 self.__current_state().rom_kana_state = \
@@ -1396,10 +1523,20 @@ class Context(object):
                 midasi = katakana_to_hiragana(\
                     zenkaku_katakana(\
                         self.__current_state().rom_kana_state[0]))
+                if key.letter == u'>':
+                    midasi += u'>'
                 self.__activate_candidate_selector(midasi)
                 return (True, u'')
 
-            if key.is_shift():
+            # If in abbrev mode, just append the letter to the output.
+            if self.__current_state().abbrev:
+                self.__current_state().rom_kana_state = \
+                    (self.__current_state().rom_kana_state[0] + key.letter,
+                     u'',
+                     self.__rom_kana_rule_tree)
+                return (True, u'')
+
+            if key.letter.isupper():
                 rom_kana_state = self.__convert_nn(self.__current_state().rom_kana_state)
                 if len(rom_kana_state[1]) == 0 and \
                         not self.__current_state().okuri_rom_kana_state:
@@ -1408,10 +1545,19 @@ class Context(object):
                         (u'', u'', self.__rom_kana_rule_tree)
 
             if self.__current_state().okuri_rom_kana_state:
-                okuri = (self.__current_state().okuri_rom_kana_state[1] or \
-                             key.keyval)[0]
+                okuri = None
+                # Issue#10: check OUTPUT was produced by 'n'
+                for nn in (u'ん', u'ン', u'ﾝ'):
+                    if self.__current_state().okuri_rom_kana_state[0].\
+                            startswith(nn):
+                        okuri = u'n'
+                        break
+                if not okuri:
+                    okuri = (self.__current_state().okuri_rom_kana_state[1] or \
+                                 key.letter.lower())[0]
                 self.__current_state().okuri_rom_kana_state = \
-                    self.__convert_rom_kana(key.keyval, self.__current_state().okuri_rom_kana_state)
+                    self.__convert_rom_kana(key.letter.lower(),
+                                            self.__current_state().okuri_rom_kana_state)
 
                 # Start okuri-ari conversion.
                 if len(self.__current_state().okuri_rom_kana_state[1]) == 0:
@@ -1427,15 +1573,9 @@ class Context(object):
                     0x20 > ord(key.letter) or ord(key.letter) > 0x7E:
                 return (False, u'')
 
-            if self.__current_state().abbrev:
-                self.__current_state().rom_kana_state = \
-                    (self.__current_state().rom_kana_state[0] + key.keyval,
-                     u'',
-                     self.__rom_kana_rule_tree)
-            else:
-                self.__current_state().rom_kana_state = \
-                    self.__convert_rom_kana(key.keyval,
-                                            self.__current_state().rom_kana_state)
+            self.__current_state().rom_kana_state = \
+                self.__convert_rom_kana(key.letter.lower(),
+                                        self.__current_state().rom_kana_state)
             return (True, u'')
 
         elif self.__current_state().conv_state == CONV_STATE_SELECT:
@@ -1445,7 +1585,7 @@ class Context(object):
                     self.__candidate_selector.set_index(index)
                     self.__enter_dict_edit()
                 return (True, u'')
-            elif str(key) == 'x':
+            elif key.letter == 'x':
                 if self.previous_candidate() is None:
                     self.__current_state().conv_state = CONV_STATE_START
                 return (True, u'')
@@ -1462,8 +1602,13 @@ class Context(object):
                 if self.dict_edit_level() > 0:
                     self.__current_state().dict_edit_output += output
                     output = u''
-                if str(key) in ('ctrl+j', 'return'):
+                if str(key) in ('ctrl+j', 'ctrl+m', 'return'):
+                    if str(key) in ('ctrl+m', 'return') and \
+                            not self.egg_like_newline:
+                        output += u'\n'
                     return (True, output)
+                if key.letter == '>':
+                    self.__current_state().conv_state = CONV_STATE_START
                 return (True, output + self.press_key(str(key))[1])
 
     def __init_completer(self, compkey):
@@ -1536,11 +1681,6 @@ class Context(object):
             self.__current_state().dict_edit_output += output
             return (True, u'')
         return (True, output)
-
-    def __merge_candidates(self, usr_candidates, sys_candidates):
-        return usr_candidates + \
-            [candidate for candidate in sys_candidates
-             if candidate not in usr_candidates]
 
     def dict_edit_level(self):
         '''Return the recursion level of dict-edit mode.'''
@@ -1629,7 +1769,7 @@ elements will be "[[DictEdit]] かんが*え ", "▽", "かんが", "*え" .'''
                              auto_start_henkan_keyword or u''))
         return (prompt, prefix, u'', u'')
 
-    preedit = property(lambda self: ''.join(self.preedit_components()))
+    preedit = property(lambda self: u''.join(self.preedit_components()))
 
     def __convert_nn(self, state):
         output, pending, tree = state

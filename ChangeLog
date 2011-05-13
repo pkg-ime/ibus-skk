@@ -1,3 +1,700 @@
+commit 4b4a23b2e158555749288561c4322dd77c7a3e54
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-10-11 12:56:13 +0900
+
+    Make sure to use lower-case keysyms if ctrl:nocaps enabled (Issue#22).
+
+M	engine/engine.py
+
+commit 6870ba37c0886e5e43f581865e4cb6f0608d07a1
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-10-11 12:47:52 +0900
+
+    Fix the last commit.
+
+M	po/POTFILES.skip
+
+commit 858e20b5665b9181c8bbf5bf25bfe64ee474670f
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-10-11 12:43:13 +0900
+
+    Prevent intltool from scanning setup/ibus-skk-preferences.ui.
+
+A	po/POTFILES.skip
+
+commit 9f61ab4f3f38d98e2bac7487e13f8eaece16f189
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-10-11 12:33:15 +0900
+
+    Update to 1.3.1.
+
+M	configure.ac
+
+commit cad2dabd0ffc9eb338e1fd389f72f37ea7400e04
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-10-08 12:15:54 +0900
+
+    Make trie creation robuster (Issue#21 comment #1).
+
+M	engine/skk.py
+M	ibus-skk.json.example
+
+commit bca5e91bf192dcd7d55ad19d43a80c5139d43737
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-10-08 10:18:29 +0900
+
+    Update required autoconf/automake version (Issue#23).
+
+M	autogen.sh
+
+commit 97dba46bc9c9a0632dee7ede594f2c5db0623336
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-10-07 19:29:34 +0900
+
+    Rename ibus-skk.conf -> ibus-skk.json.
+
+M	Makefile.am
+M	README
+D	ibus-skk.conf.example
+A	ibus-skk.json.example
+M	setup/config.py
+
+commit ea4763bb0687ae2d866ec3990f4c834fc08ddace
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-10-07 18:32:54 +0900
+
+    Support configuration file (Issue#21).
+
+M	Makefile.am
+M	README
+M	engine/engine.py
+M	engine/skk.py
+A	ibus-skk.conf.example
+M	setup/config.py
+
+commit 234150467f25e1b8bc4b9440559193e1191f988e
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-10-06 17:30:09 +0900
+
+    Generate ibus-skk-preferences.ui to auto-update version string (Issue#14).
+
+M	configure.ac
+M	po/POTFILES.in
+M	po/ja.po
+M	setup/Makefile.am
+D	setup/ibus-skk-preferences.ui
+A	setup/ibus-skk-preferences.ui.in
+
+commit 8f667e04ba97380452909409f4699d88a29242cf
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-10-06 11:41:33 +0900
+
+    Cosmetic fix for the previous commit.
+
+M	engine/skk.py
+
+commit 2a002c058644c10cb8ae60d47f64d8824ee21e88
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-10-06 11:28:44 +0900
+
+    Abolish keystr format "shift+<lower alpha>".
+
+M	engine/engine.py
+M	engine/skk.py
+M	engine/test.py
+
+commit 2e59b5daea2f6c91a4097d9c0b6c06ee8ba99127
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-10-05 19:37:23 +0900
+
+    Implement prefix/suffix conversion (Issue#19).
+
+M	engine/skk.py
+M	engine/test.py
+
+commit baa3239517f7cb0092261faea64d235931494af5
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-10-04 19:20:10 +0900
+
+    Add failing test for Issue#19.
+
+M	engine/test.py
+
+commit 9c7cc7b3594acc857d899594723168c905e18ae2
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-22 08:55:25 +0900
+
+    Fix commit d8f4f07f884df247210f233b2bde99b66adf7232 (Issue#17).
+
+M	engine/skk.py
+M	engine/test.py
+
+commit 9c72a5256f91fb3dcac45d631b7daec6251f3c11
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-22 08:48:07 +0900
+
+    Fix alphabet handling in abbrev mode (Issue#16).
+
+M	engine/skk.py
+M	engine/test.py
+
+commit 41d01ddc21a8844b5bb15c7bbac2dc5daa4b164c
+Merge: d8f4f07 920380f
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-22 07:31:05 +0900
+
+    Merge branch 'master' of github.com:ueno/ibus-skk
+
+commit d8f4f07f884df247210f233b2bde99b66adf7232
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-22 07:30:25 +0900
+
+    Convert hankaku to zenkaku with ctrl+q in abbrev mode (Issue#17).
+
+M	engine/skk.py
+M	engine/test.py
+
+commit 44c3ea326ee3e3129a621e3f79fbdeb590ec1a0e
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-22 06:33:05 +0900
+
+    Ignore "shift+" in abbrev mode (Issue#16).
+
+M	engine/skk.py
+M	engine/test.py
+
+commit 920380f3fd43ce627d9d509cb578328d34be29ea
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-21 10:38:39 +0900
+
+    Fix commit 2b5c4563 (Issue#15).
+
+M	setup/config.py
+
+commit 2b5c45634b20c7dcad0b8a5cee4e10d16eea10bf
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-18 10:45:41 +0900
+
+    Fix return value of Config#sysdict_paths if config doesn't exist (Issue#15).
+
+M	setup/config.py
+
+commit 1629c0fc16aad14e3a65fb2b69d814e1225f2b65
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-16 10:54:12 +0900
+
+    Ignore only Control modifier for candidate select keys (Issue#13).
+
+M	engine/engine.py
+
+commit 3000f9b1a3914dde2f565733f3310a08210acead
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-14 18:05:54 +0900
+
+    1.3.0 released.
+
+M	configure.ac
+
+commit fd1322e6234423822aa4bf1d76f973b0d7cff941
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-10 11:20:45 +0900
+
+    Add "direct_input_on_latin" option (Issue#7).
+
+M	engine/engine.py
+M	engine/skk.py
+M	engine/test.py
+
+commit a82b7e64110502dba5f87ab6fb8f9b815edef8c3
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-07 18:33:16 +0900
+
+    Add credit.
+
+M	THANKS
+
+commit 49026046360bb4d042591ba6eae0d6b0e449b291
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-07 18:24:36 +0900
+
+    Set IBUS_SKK_PKGDATADIR in ibus-setup-skk.in (Issue#12).
+
+M	setup/ibus-setup-skk.in
+
+commit 925e44c93ee5961405cc04544efe7618ed6ec4c1
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-07 18:15:26 +0900
+
+    Use @PYTHON@ instead of "python" in ibus-{engine,setup}-skk.in (Issue#11).
+
+M	engine/ibus-engine-skk.in
+M	setup/ibus-setup-skk.in
+
+commit a1406e4cc771325b5cd395645dc0b6c6830c6a1d
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-07 16:49:00 +0900
+
+    Implement Engine#candidate_clicked().
+
+M	engine/engine.py
+
+commit ffc581b42b9228c5d526ada1c1a00b5af38f5000
+Merge: 7a3aba4 1db737b
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-07 16:21:08 +0900
+
+    Merge branch 'mmap'
+    
+    Conflicts:
+    	TODO
+    	engine/factory.py
+
+commit 7a3aba4f2c7f80c04845e506991ae7ee478650d1
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-07 16:18:00 +0900
+
+    Fix lookup table cursor movement.
+
+M	engine/engine.py
+
+commit 366f82d44e2ec8c4f091686677d9cfc435f7fdb7
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-07 15:53:02 +0900
+
+    Fix C-j behavior if lookup table is visible.
+
+M	engine/engine.py
+
+commit 05223a61aef98ad48995d48cb3ea8df5bf837463
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-07 14:12:35 +0900
+
+    Factor out append_candidates().
+
+M	engine/skk.py
+
+commit cb931988766073740e331014e94ed35ab0a58b7e
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-07 12:29:30 +0900
+
+    Add TODO.
+
+M	TODO
+
+commit 1db737bef51c2576ad8cd886a9a13de67a476d8b
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-07 12:24:10 +0900
+
+    Add config option 'use_mmap'.
+
+M	engine/factory.py
+M	engine/skk.py
+M	setup/ibus-skk-preferences.ui
+M	setup/main.py
+
+commit b84c7133bd30ac57c313d13a16b2a5e2716b673e
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-06 18:15:57 +0900
+
+    Reload sysdict when 'sysdict_paths' config value changed.
+
+M	engine/factory.py
+
+commit cc2d8371b50d341398c49ae46755ee407393f91b
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-06 18:14:13 +0900
+
+    Do munmap() in __del__().
+
+M	engine/skk.py
+
+commit a244d24f1350dcb98eb5a3ec19b2cf7ca0fa16b3
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-06 17:33:02 +0900
+
+    Do munmap on SysDict#__load().
+
+M	engine/skk.py
+
+commit 83419913a38f6a4a191e0ccf81f9dc23fc49f404
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-06 17:20:24 +0900
+
+    Use mmap.
+
+M	TODO
+M	engine/skk.py
+
+commit b37cadc4a1e5c814acc099ab70ef0d10cdeff99a
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-06 15:33:47 +0900
+
+    Change the default encoding of sysdict from EUC-JP to EUC-JIS-2004.
+
+M	engine/skk.py
+
+commit deed023732c49ab1ed4d503e9121f2e0b83fac75
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-06 15:28:43 +0900
+
+    Make SysDict#lookup() robuster.
+
+M	engine/skk.py
+
+commit becfa9c046c44c2ea2229a6217596f76f9eea65b
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-06 14:50:36 +0900
+
+    Use the same versioning scheme as ibus core.
+
+M	configure.ac
+
+commit bfc53f5e74e5f8a7c90411986d46af1f013a1132
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-06 12:43:49 +0900
+
+    Translate strings in setup/main.py.
+
+M	po/POTFILES.in
+M	po/ja.po
+M	setup/main.py
+
+commit 304fcd5fa9fe88bc157ae016e954226985f29ab3
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-05 14:24:27 +0900
+
+    Simplify the last change.
+
+M	engine/skk.py
+
+commit f46e387b994d5652f613b6f816a3189204cf915a
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-05 13:46:47 +0900
+
+    Fix MultiSysDict#lookup().
+
+M	engine/skk.py
+
+commit cb9fe79309f6a0d523c2974203e6f875791e05ba
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-05 09:42:31 +0900
+
+    Doc fix.
+
+M	README
+M	TODO
+
+commit 01c0bf898b9ab785292fc70acdb9780533a81229
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-05 07:42:30 +0900
+
+    Improve okuri-kana detection for 'n' (Issue#10).
+
+M	engine/skk.py
+M	engine/test.py
+
+commit 5fdbac7c667c196d44a424cbb18fc2391e025697
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-03 20:41:29 +0900
+
+    Fix translation.
+
+M	po/ja.po
+
+commit 5311cb567b150e8d1adb321c781846130cb2d7fc
+Merge: 86d6682 622e629
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-03 20:39:03 +0900
+
+    Merge remote branch 'origin/multi-sysdict'
+
+commit 86d66825c3498d4ace843d9d1464c7439918271e
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-03 20:38:39 +0900
+
+    Don't set icon for "setup".
+
+M	engine/engine.py
+
+commit 622e62918d8f09f137bca7137767dc134206d0d9
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-03 18:55:45 +0900
+
+    Update translation.
+
+M	po/ja.po
+M	setup/ibus-skk-preferences.ui
+
+commit a785d8e395e686a3eda1de69ddc43712c2c7e777
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-03 18:47:24 +0900
+
+    Fix the last commit.
+
+M	engine/factory.py
+M	engine/skk.py
+
+commit 01d22e56d1258bebb7236dfc30c045666f90258d
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-03 16:24:23 +0900
+
+    Make egg_like_newline effective in CONV_STATE_START (Issue#9).
+
+M	engine/skk.py
+M	engine/test.py
+
+commit 7675bed12ae4d8cd644952ca6c985b0da8e06f8f
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-03 14:57:09 +0900
+
+    setup: reduce the number of times to save sysdict_paths.
+
+M	setup/main.py
+
+commit 83b9524265083f58c09411da138e65d58277bacf
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-03 14:34:35 +0900
+
+    Don't proceed to CONV_STATE_SELECT if midasi is empty (Issue#8).
+
+M	engine/skk.py
+
+commit 2f1d2807fcaacd306758d37887ee3d4bb5355f87
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-03 14:23:43 +0900
+
+    Fix unicode string concatenation (Issue#8).
+
+M	engine/skk.py
+
+commit cd307b480b0e20137880245ed8ae971c9f024d6d
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-03 14:14:13 +0900
+
+    Support multiple sysdict.
+
+M	engine/factory.py
+M	engine/skk.py
+M	setup/config.py
+M	setup/ibus-skk-preferences.ui
+M	setup/main.py
+
+commit 81a41aabe3ebbfc4130394ef731ea073660eb8bc
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-03 10:01:44 +0900
+
+    Don't handle any ASCII input in latin mode (Issue#7).
+
+M	engine/skk.py
+M	engine/test.py
+
+commit 474897c335e5dc8dbafbf87cea44d2daa4611193
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-03 10:00:00 +0900
+
+    Fix the last commit.
+
+M	engine/skk.py
+
+commit fdf8384cc9f3c50fdd87e08185c6b838d0f450ea
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-02 15:48:22 +0900
+
+    Don't assume sysdict file exists on the first startup (Issue#6).
+
+M	setup/main.py
+
+commit bb5dd79f80f2dca41314ef1247f8f9584d52d3b1
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-02 14:41:52 +0900
+
+    Add credit.
+
+M	THANKS
+
+commit b5c3e25e2f6aa8958301b1321d3ed4681ed851d3
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-02 10:40:27 +0900
+
+    skk.SysDict#lookup(): don't throw an error when the dict is not loaded.
+
+M	engine/skk.py
+
+commit 3f1e9779add3d3646352c44f02dc658dd71f5f25
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-01 16:54:40 +0900
+
+    Add license header to scripts/Makefile.am.
+
+M	scripts/Makefile.am
+
+commit f3b1bf28a42e8c0f438612a18421d9c003cb39b7
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-01 16:29:21 +0900
+
+    Include a script to convert the encoding of user dict.
+
+M	Makefile.am
+M	README
+M	configure.ac
+A	scripts/Makefile.am
+A	scripts/ibus-skk-convert-jisyo.in
+
+commit c43dd32ea5faf159e60740d848929b0b954f951f
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-01 14:31:13 +0900
+
+    Accept 'ctrl+m' as commit trigger.
+
+M	engine/skk.py
+
+commit 492d448da3245c9a9bfdfdb85b9190ae06eb54a6
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-01 14:28:33 +0900
+
+    Fix alignment of labels in setup UI (center -> left).
+
+M	setup/ibus-skk-preferences.ui
+
+commit d176b96cdede12681bd506a56c336f0fcad09058
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-01 12:19:52 +0900
+
+    Fix the last change.
+
+M	engine/skk.py
+M	engine/test.py
+
+commit 11ac3ddd3232c852741c571f04af1afa2b23002b
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-01 12:09:32 +0900
+
+    Add egg_like_newline option.
+
+M	engine/engine.py
+M	engine/skk.py
+M	po/ja.po
+M	setup/ibus-skk-preferences.ui
+M	setup/main.py
+
+commit 62d1ab019f74b8c1ceade6d4cb309436f714dbb5
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-09-01 10:21:43 +0900
+
+    Add comment for Issue#5.
+
+M	engine/engine.py
+
+commit 6b115261d6376c278a6b4c1bef363a574ef8a34d
+Author: IRIE Shinsuke <irieshinsuke@yahoo.co.jp>
+Date:   2010-09-01 06:15:58 +0900
+
+    Make Engine#process_key_event return True for ignored function keys unless the pre-edit buffer is empty.
+
+M	engine/engine.py
+
+commit 4513cb5e58b038e42ba5cd9b3b25308f11aafe54
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-08-31 16:13:07 +0900
+
+    Make Engine#process_key_event return False if the pre-edit buffer is empty.
+
+M	engine/engine.py
+
+commit 1160c6e3999a569e11a85690ea41a1948c33c80b
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-08-31 15:57:54 +0900
+
+    Make Engine#process_key_event always return True (Issue#5).
+
+M	engine/engine.py
+
+commit 6996d73095717f93c98ead046d52f64eca12cee3
+Merge: 0e3e9fa fedab72
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-08-31 14:54:56 +0900
+
+    Merge branch 'master' of github.com:ueno/ibus-skk
+
+commit 0e3e9fa35830bb2a997943a2092579af9e91f8b2
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-08-31 14:53:40 +0900
+
+    Accept 'ctrl+m' as a key to terminate dict-edit (Issue#4)
+
+M	engine/skk.py
+M	engine/test.py
+
+commit fedab720f35932672a48f8f5b7fd67a5dc578dfe
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-08-29 14:19:20 +0900
+
+    Update to 1.0.0.
+
+M	configure.ac
+M	setup/ibus-skk-preferences.ui
+
+commit cc62b7960c62f93cf4d1c32f2fb1b76df995aecf
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-08-29 14:18:59 +0900
+
+    Add links to external resources.
+
+M	README
+
+commit 62483624013ea6d98851ee2de33dda5d61bc2acd
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-08-27 16:17:48 +0900
+
+    Fix zl conversion.
+
+M	engine/skk.py
+
+commit 61cab5dfb6a51652b4c5de1b1573daae67e72b1a
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-08-26 06:41:05 +0900
+
+    Add test for zl.
+
+M	engine/test.py
+
+commit e1a748319e69cdd1496a3ab67978884ca21cceed
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-08-25 16:03:52 +0900
+
+    Add "Initial Input Mode" configuration.
+
+M	engine/engine.py
+M	po/ja.po
+M	setup/ibus-skk-preferences.ui
+M	setup/main.py
+
+commit 3b1db53638d7c91460a87d646c4ce45e959cbb5a
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-08-11 08:23:15 +0900
+
+    Don't set $ENV in Makefile (Issue#3).
+
+M	configure.ac
+M	engine/Makefile.am
+M	setup/Makefile.am
+
+commit 706526bc115857d09544c8bdb55457e5e17946e1
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-08-09 21:52:27 +0900
+
+    Don't use "==" in sh script (Issue#2).
+
+M	configure.ac
+
+commit 882883c863e62960c7638fb66666f037e20a973e
+Author: SAWADA Takeo <sawada.takeo@acsy.info>
+Date:   2010-08-07 16:20:29 +0900
+
+    fix 'hh' not handled correctly
+
+M	engine/skk.py
+
 commit 26f4075de716c191a645bb197fe5c419dec853a2
 Author: Daiki Ueno <ueno@unixuser.org>
 Date:   2010-08-03 05:58:32 +0900

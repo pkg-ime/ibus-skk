@@ -1,9 +1,8 @@
-#!/bin/sh
 # vim:set noet ts=4:
 #
-# ibus-tmpl - The Input Bus template project
+# ibus-skk - The SKK engine for IBus
 #
-# Copyright (c) 2007-2008 Huang Peng <shawn.p.huang@gmail.com>
+# Copyright (C) 2010 Daiki Ueno <ueno@unixuser.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,9 +18,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-prefix=@prefix@
-datarootdir=@datarootdir@
-export IBUS_LOCALEDIR=@localedir@
-export IBUS_SKK_PKGDATADIR=@datarootdir@/@PACKAGE@
-cd @prefix@/share/ibus-skk/setup/
-exec @PYTHON@ @prefix@/share/ibus-skk/setup/main.py $@
+bin_SCRIPTS = ibus-skk-convert-jisyo
+CLEANFILES = $(bin_SCRIPTS)
+EXTRA_DIST = ibus-skk-convert-jisyo.in

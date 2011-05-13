@@ -157,7 +157,6 @@ ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
-ENV = @ENV@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
@@ -287,6 +286,7 @@ SUBDIRS = \
 	icons \
 	m4 \
 	po \
+	scripts \
 	$(NULL)
 
 ACLOCAL_AMFLAGS = -I m4
@@ -294,6 +294,7 @@ EXTRA_DIST = \
 	autogen.sh \
 	ibus-skk.spec.in \
 	python-config.py \
+	ibus-skk.json.example \
 	$(NULL)
 
 noinst_DIST = \
