@@ -1,3 +1,70 @@
+commit 1fa8d87cc6603753b7d0b3c1786226668039f86b
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-05-12 17:54:01 +0900
+
+    Update to 1.3.6.
+
+M	configure.ac
+
+commit 706a67a1914f5f4e500f65f33dd09cbe1bd9e812
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-05-10 10:46:57 +0900
+
+    Get rid of the checkbox "Use mmap" from the setup dialog.
+
+M	po/ja.po
+M	setup/ibus-skk-preferences.ui.in
+M	setup/main.py
+
+commit 9e96a88cfaff4b7f672777d305fc32af522112a7
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-05-09 22:46:54 +0900
+
+    Fix the last commit.
+
+M	setup/config.py
+
+commit feaa3d5816c1d92f9f55d16caf740a2ee2f5d6fa
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-05-09 18:07:38 +0900
+
+    Make sure to save sysdict_paths when set (Issue#31).
+
+M	setup/config.py
+
+commit 00b7c8242fb3bc9efd84ab8190ff9f535b908a54
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-05-08 07:50:57 +0900
+
+    Don't expect LF when skkserv returns error (Issue#30).
+
+M	engine/skk.py
+
+commit bd0fa96793cc396a5d625a07bcf095982a4e4d44
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-03-22 12:20:02 +0900
+
+    Finish "っ" before okuri-ari conversion (Issue#28).
+
+M	engine/skk.py
+
+commit e130250d27626bc345257cae724f3459b844abce
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-03-07 14:07:06 +0900
+
+    Add failing test for "SasS" -> "▽さっ*s" (Issue#28).
+
+M	engine/test.py
+
+commit afb7cc7137be89db1899299351354da07b758197
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-12-21 10:40:46 +0900
+
+    Call locale.bindtextdomain() for non-standard localedir (Issue#27).
+
+M	THANKS
+M	setup/main.py
+
 commit 545e76bc39132922de3e703279e9d1858462c433
 Author: Daiki Ueno <ueno@unixuser.org>
 Date:   2010-12-18 15:57:16 +0900
