@@ -4,6 +4,7 @@
 # ibus-skk - The SKK engine for IBus
 #
 # Copyright (C) 2009-2010 Daiki Ueno <ueno@unixuser.org>
+#   changed: 2010-04-13 tagomoris <tagomoris@intellilink.co.jp>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -25,6 +26,7 @@ import itertools
 import os.path
 import socket
 import re
+from kzik import KZIK_RULE
 
 # Converted from skk-rom-kana-base-rule in skk-vars.el.
 ROM_KANA_RULE = {
@@ -294,6 +296,29 @@ WIDE_LATIN_TABLE = (None, None, None, None, None, None, None, None,
                     u'ｐ', u'ｑ', u'ｒ', u'ｓ', u'ｔ', u'ｕ', u'ｖ', u'ｗ', 
                     u'ｘ', u'ｙ', u'ｚ', u'｛', u'｜', u'｝', u'〜', None)
 
+# skk-num-alist-type1
+NUM_WIDE_LATIN_TABLE = {u'0': u'０', u'1': u'１', u'2': u'２', u'3': u'３',
+                        u'4': u'４', u'5': u'５', u'6': u'６', u'7': u'７',
+                        u'8': u'８', u'9': u'９', u'.': u'．', u' ': u''}
+
+# skk-num-alist-type2
+NUM_KANJI_TABLE1 = {u'0': u'〇', u'1': u'一', u'2': u'二', u'3': u'三',
+                    u'4': u'四', u'5': u'五', u'6': u'六', u'7': u'七',
+                    u'8': u'八', u'9': u'九', u' ': u''}
+
+# skk-num-alist-type5
+NUM_KANJI_TABLE2 = {u'0': u'零', u'1': u'壱', u'2': u'弐', u'3': u'参',
+                    u'4': u'四', u'5': u'伍', u'6': u'六', u'7': u'七',
+                    u'8': u'八', u'9': u'九', u' ': u''}
+
+# skk-num-alist-type3
+NUM_KANJI_KURAIDORI_TABLE1 = {1: u'十', 2: u'百', 3: u'千',
+                              4: u'万', 8: u'億', 12: u'兆', 16: u'京'}
+
+# skk-num-alist-type5
+NUM_KANJI_KURAIDORI_TABLE2 = {1: u'拾', 2: u'百', 3: u'阡',
+                              4: u'萬', 8: u'億', 12: u'兆', 16: u'京'}
+
 KUTOUTEN_JP, \
 KUTOUTEN_EN, \
 KUTOUTEN_JP_EN, \
@@ -310,10 +335,11 @@ CONV_STATE_NONE, \
 CONV_STATE_START, \
 CONV_STATE_SELECT = range(3)
 
+INPUT_MODE_NONE, \
 INPUT_MODE_HIRAGANA, \
 INPUT_MODE_KATAKANA, \
 INPUT_MODE_LATIN, \
-INPUT_MODE_WIDE_LATIN = range(4)
+INPUT_MODE_WIDE_LATIN = range(5)
 
 INPUT_MODE_TRANSITION_RULE = {
     u'q': {
@@ -329,10 +355,21 @@ INPUT_MODE_TRANSITION_RULE = {
         INPUT_MODE_KATAKANA: INPUT_MODE_LATIN
         },
     u'ctrl+j': {
+        INPUT_MODE_HIRAGANA: INPUT_MODE_HIRAGANA,
+        INPUT_MODE_KATAKANA: INPUT_MODE_KATAKANA,
         INPUT_MODE_WIDE_LATIN: INPUT_MODE_HIRAGANA,
         INPUT_MODE_LATIN: INPUT_MODE_HIRAGANA
         }
     }
+
+ROM_KANA_NORMAL, \
+ROM_KANA_KZIK = range(2)
+
+ROM_KANA_RULES = (ROM_KANA_RULE, KZIK_RULE)
+
+TRANSLATED_STRINGS = {
+    u'dict-edit-prompt': u'DictEdit'
+}
 
 class DictBase(object):
     ENCODING = 'EUC-JP'
@@ -716,6 +753,10 @@ class CandidateSelector(object):
         '''Return the current candidate index.'''
         return self.__index
 
+    def candidates(self):
+        '''Return the list of candidates.'''
+        return self.__candidates[:]
+
     def set_index(self, index):
         '''Set the current candidate index.'''
         if 0 <= index and index < len(self.__candidates):
@@ -723,20 +764,62 @@ class CandidateSelector(object):
         else:
             self.__index = -1
 
-class Context:
+class State(object):
+    def __init__(self):
+        self.reset()
+        self.dict_edit_output = u''
+
+    def reset(self):
+        self.conv_state = CONV_STATE_NONE
+        self.input_mode = INPUT_MODE_NONE
+
+        # Current midasi in conversion.
+        self.midasi = None
+
+        # Whether or not we are in the abbrev mode.
+        self.abbrev = False
+
+        self.completer = None
+
+        # Last used keyword which triggered auto-start-henkan.
+        self.auto_start_henkan_keyword = None
+
+        # rom-kana state is either None or a tuple
+        #
+        # (OUTPUT, PENDING, TREE)
+        #
+        # where OUTPUT is a kana string, PENDING is a string in
+        # rom-kana conversion, and TREE is a subtree of
+        # rom_kana_rule_tree.
+        #
+        # See skk.Context#__convert_rom_kana() for the state
+        # transition algorithm.
+        self.rom_kana_state = None
+        self.okuri_rom_kana_state = None
+
+        self.candidates = list()
+        self.candidate_index = -1
+
+class Context(object):
     def __init__(self, usrdict, sysdict, candidate_selector):
         '''Create an SKK context.
 
         USRDICT is a user dictionary and SYSDICT is a system
         dictionary (or a connection to SKKServ).'''
-        self.__usrdict = usrdict
-        self.__sysdict = sysdict
+        self.__usrdict = None
+        self.__sysdict = None
+        self.__rom_kana_rule = None
         self.__candidate_selector = candidate_selector
+        self.__state_stack = list()
+        self.__state_stack.append(State())
 
-        self.__rom_kana_rule_tree = compile_rom_kana_rule(ROM_KANA_RULE)
-        self.reset()
+        self.usrdict = usrdict
+        self.sysdict = sysdict
+        self.rom_kana_rule = ROM_KANA_NORMAL
         self.kutouten_type = KUTOUTEN_JP
         self.auto_start_henkan_keywords = AUTO_START_HENKAN_KEYWORDS
+        self.translated_strings = dict(TRANSLATED_STRINGS)
+        self.reset()
 
     def __check_dict(self, _dict):
         if not isinstance(_dict, DictBase):
@@ -755,39 +838,121 @@ class Context:
     usrdict = property(lambda self: self.__usrdict, set_usrdict)
     sysdict = property(lambda self: self.__sysdict, set_sysdict)
 
+    def set_rom_kana_rule(self, rom_kana_rule):
+        if self.__rom_kana_rule != rom_kana_rule:
+            self.__rom_kana_rule = rom_kana_rule
+            self.__rom_kana_rule_tree = \
+                compile_rom_kana_rule(ROM_KANA_RULES[self.__rom_kana_rule])
+
+    rom_kana_rule = property(lambda self: self.__rom_kana_rule,
+                             set_rom_kana_rule)
+
+    def __current_state(self):
+        return self.__state_stack[-1]
+
+    def __previous_state(self):
+        return self.__state_stack[-2]
+
+    conv_state = property(lambda self: self.__current_state().conv_state)
+    input_mode = property(lambda self: self.__current_state().input_mode)
+    abbrev = property(lambda self: self.__current_state().abbrev)
+
     def reset(self):
-        '''Reset the internal state of the context.  The initial state
-        is INPUT_MODE_HIRAGANA/CONV_STATE_NONE.'''
-        # Current midasi in conversion.
-        self.__midasi = None
+        '''Reset the current state of rom-kana/kana-kan conversion.'''
+        self.__current_state().reset()
+        self.__candidate_selector.set_candidates(self.__current_state().\
+                                                     candidates)
 
-        self.__candidate_selector.set_candidates(list())
+    def __enter_dict_edit(self):
+        self.__current_state().candidates = \
+            self.__candidate_selector.candidates()
+        self.__current_state().candidate_index = \
+            self.__candidate_selector.index()
 
-        # Whether or not we are in the abbrev mode.
-        self.__abbrev = False
+        midasi = self.__current_state().midasi
+        input_mode = self.__current_state().input_mode
+        self.__state_stack.append(State())
+        self.reset()
+        self.__current_state().midasi = midasi
+        self.__current_state().input_mode = input_mode
+        self.activate_input_mode(self.__current_state().input_mode)
 
-        self.__conv_state = CONV_STATE_NONE
+    def __abort_dict_edit(self):
+        assert(self.dict_edit_level() > 0)
+        self.__state_stack.pop()
+        self.__candidate_selector.set_candidates(self.__current_state().\
+                                                     candidates)
+        self.__candidate_selector.set_index(self.__current_state().\
+                                                candidate_index)
 
-        self.__completer = None
+    def __leave_dict_edit(self):
+        dict_edit_output = self.__current_state().dict_edit_output
+        self.__abort_dict_edit()
+        self.__current_state().candidates.insert(0, (dict_edit_output, None))
+        self.__candidate_selector.set_index(0)
+        output = self.kakutei()
+        if self.dict_edit_level() < 1:
+            return output
+        return None
 
-        # Last used keyword which triggered auto-start-henkan.
-        self.__auto_start_henkan_keyword = None
+    def __num_to_latin(self, num):
+        return num
 
-        # rom-kana state is either None or a tuple
-        #
-        # (OUTPUT, PENDING, TREE)
-        #
-        # where OUTPUT is a kana string, PENDING is a string in
-        # rom-kana conversion, and TREE is a subtree of
-        # __rom_kana_rule_tree.
-        #
-        # See __convert_rom_kana() for the state transition algorithm.
-        self.__okuri_rom_kana_state = None
-        self.activate_input_mode(INPUT_MODE_HIRAGANA)
+    def __num_to_jisx0208_latin(self, num):
+        return ''.join([NUM_WIDE_LATIN_TABLE[c] for c in num])
 
-    conv_state = property(lambda self: self.__conv_state)
-    input_mode = property(lambda self: self.__input_mode)
-    abbrev = property(lambda self: self.__abbrev)
+    def __num_to_type2_kanji(self, num):
+        return ''.join([NUM_KANJI_TABLE1[c] for c in num])
+
+    def __num_to_kanji(self, num, digit_table, kurai_table):
+        ndigits = len(num)
+        result = list()
+        for index, digit in enumerate(num):
+            if int(digit) > 0:
+                result.append(digit_table[digit])
+                index = ndigits - index - 1
+                kurai = kurai_table.get(index, None)
+                if kurai:
+                    result.append(kurai)
+                elif index % 4 > 0:
+                    result.append(kurai_table[index % 4])
+        return ''.join(result)
+
+    def __num_to_type3_kanji(self, num):
+        return self.__num_to_kanji(num,
+                                   NUM_KANJI_TABLE1,
+                                   NUM_KANJI_KURAIDORI_TABLE1)
+
+    def __num_to_type5_kanji(self, num):
+        return self.__num_to_kanji(num,
+                                   NUM_KANJI_TABLE2,
+                                   NUM_KANJI_KURAIDORI_TABLE2)
+
+    __num_converters = (__num_to_latin,
+                        __num_to_jisx0208_latin,
+                        __num_to_type2_kanji,
+                        __num_to_type3_kanji,
+                        __num_to_latin,
+                        __num_to_type5_kanji)
+
+    def __replace_num_with_hash(self, midasi):
+        return (re.sub('[0-9]+', '#', midasi),
+                [num.group() for num in re.finditer('[0-9]+', midasi)])
+
+    def __substitute_num(self, candidate, num_list):
+        if len(num_list) == 0:
+            return candidate
+        _num_index = [0]
+        def replace_hash_with_num(match):
+            if len(num_list) == 0:
+                return match.group(0)
+            converter = self.__num_converters[int(match.group(1))]
+            result = converter(self, num_list[_num_index[0]])
+            _num_index[0] += 1
+            return result
+        return re.sub('#([0-%d])' % (len(self.__num_converters) - 1),
+                      replace_hash_with_num,
+                      candidate)
 
     def __hiragana_to_katakana(self, kana):
         diff = ord(u'ア') - ord(u'あ')
@@ -795,7 +960,7 @@ class Context:
             if ord(u'ぁ') <= ord(letter) and ord(letter) <= ord(u'ん'):
                 return unichr(ord(letter) + diff)
             return letter
-        return ''.join(map(to_katakana, kana))
+        return ''.join(map(to_katakana, kana)).replace(u'ウ゛', u'ヴ')
 
     def __katakana_to_hiragana(self, kana):
         diff = ord(u'ア') - ord(u'あ')
@@ -803,37 +968,56 @@ class Context:
             if ord(u'ァ') <= ord(letter) and ord(letter) <= ord(u'ン'):
                 return unichr(ord(letter) - diff)
             return letter
-        return ''.join(map(to_hiragana, kana))
+        return ''.join(map(to_hiragana, kana.replace(u'ヴ', u'ウ゛')))
 
     def activate_input_mode(self, input_mode):
         '''Switch the current input mode to INPUT_MODE.'''
-        self.__input_mode = input_mode
-        if self.__input_mode in (INPUT_MODE_HIRAGANA, INPUT_MODE_KATAKANA):
-            self.__rom_kana_state = (u'', u'', self.__rom_kana_rule_tree)
+        self.__current_state().input_mode = input_mode
+        if self.__current_state().input_mode in (INPUT_MODE_HIRAGANA,
+                                                 INPUT_MODE_KATAKANA):
+            self.__current_state().rom_kana_state = (u'', u'',
+                                                     self.__rom_kana_rule_tree)
         else:
-            self.__rom_kana_state = None
+            self.__current_state().rom_kana_state = None
 
     def kakutei(self):
         '''Fix the current candidate as a commitable string.'''
-        if self.__midasi:
+        if self.__current_state().midasi:
             candidate = self.__candidate_selector.candidate()
             if candidate:
                 output = candidate[0]
-                if self.__okuri_rom_kana_state:
-                    output += self.__okuri_rom_kana_state[0]
+                if self.__current_state().okuri_rom_kana_state:
+                    output += self.__current_state().okuri_rom_kana_state[0]
                 if candidate[2]:
-                    self.__usrdict.select_candidate(self.__midasi,
+                    self.__usrdict.select_candidate(self.__current_state().midasi,
                                                     candidate[:2])
             else:
-                output = self.__rom_kana_state[0]
+                output = self.__current_state().rom_kana_state[0]
         else:
-            output = self.__rom_kana_state[0]
-        if self.__auto_start_henkan_keyword:
-            output += self.__auto_start_henkan_keyword
-        input_mode = self.__input_mode
+            output = self.__current_state().rom_kana_state[0]
+        if self.__current_state().auto_start_henkan_keyword:
+            output += self.__current_state().auto_start_henkan_keyword
+        input_mode = self.__current_state().input_mode
         self.reset()
         self.activate_input_mode(input_mode)
+        if self.dict_edit_level() > 0:
+            self.__current_state().dict_edit_output += output
         return output
+
+    def __activate_candidate_selector(self, midasi, okuri=False):
+        midasi, num_list = self.__replace_num_with_hash(midasi)
+        self.__current_state().midasi = midasi
+        usr_candidates = self.__usrdict.lookup(midasi)
+        sys_candidates = self.__sysdict.lookup(midasi, okuri)
+        candidates = self.__merge_candidates(usr_candidates,
+                                             sys_candidates)
+        candidates = [(self.__substitute_num(candidate[0], num_list),
+                       candidate[1])
+                      for candidate in candidates]
+        self.__candidate_selector.set_candidates(candidates)
+        if self.next_candidate() is None:
+            self.__current_state().conv_state = CONV_STATE_START
+            self.__enter_dict_edit()
 
     def press_key(self, key):
         '''Process a key press event KEY.
@@ -856,162 +1040,201 @@ class Context:
             letter = keyval
 
         if key == 'ctrl+g':
-            if self.__conv_state in (CONV_STATE_NONE, CONV_STATE_START):
-                input_mode = self.__input_mode
+            if self.dict_edit_level() > 0 and \
+                    self.__current_state().conv_state == CONV_STATE_NONE:
+                self.__abort_dict_edit()
+            elif self.__current_state().conv_state in (CONV_STATE_NONE,
+                                                       CONV_STATE_START):
+                input_mode = self.__current_state().input_mode
                 self.reset()
                 self.activate_input_mode(input_mode)
             else:
-                if self.__okuri_rom_kana_state:
-                    self.__rom_kana_state = (self.__rom_kana_state[0] + \
-                                                 self.__okuri_rom_kana_state[0],
-                                             u'', self.__rom_kana_rule_tree)
-                    self.__okuri_rom_kana_state = None
+                if self.__current_state().okuri_rom_kana_state:
+                    self.__current_state().rom_kana_state = \
+                        (self.__current_state().rom_kana_state[0] + \
+                             self.__current_state().okuri_rom_kana_state[0],
+                         u'',
+                         self.__rom_kana_rule_tree)
+                    self.__current_state().okuri_rom_kana_state = None
                 # Stop kana-kan conversion.
-                self.__midasi = None
+                self.__current_state().midasi = None
                 self.__candidate_selector.set_candidates(list())
-                self.__conv_state = CONV_STATE_START
+                self.__current_state().conv_state = CONV_STATE_START
             return (True, u'')
 
-        if self.__conv_state == CONV_STATE_NONE:
+        if key == 'ctrl+h' or key == 'backspace':
+            return self.delete_char()
+
+        if self.__current_state().conv_state == CONV_STATE_NONE:
             input_mode = INPUT_MODE_TRANSITION_RULE.get(key, dict()).\
-                get(self.__input_mode)
+                get(self.__current_state().input_mode)
             if input_mode is not None:
                 self.reset()
                 self.activate_input_mode(input_mode)
                 return (True, u'')
 
+            if self.dict_edit_level() > 0 and \
+                    (key == 'ctrl+j' or key == 'return'):
+                return (True, self.__leave_dict_edit())
+
             # Ignore ctrl+key and non-ASCII characters.
-            if is_ctrl or 0x20 > ord(letter) or ord(letter) > 0x7E:
+            if is_ctrl or key in ('return', 'escape', 'backspace') or \
+                    0x20 > ord(letter) or ord(letter) > 0x7E:
                 return (False, u'')
 
-            if self.__input_mode == INPUT_MODE_LATIN:
+            if self.__current_state().input_mode == INPUT_MODE_LATIN:
                 return (True, letter)
-            elif self.__input_mode == INPUT_MODE_WIDE_LATIN:
+            elif self.__current_state().input_mode == INPUT_MODE_WIDE_LATIN:
                 return (True, WIDE_LATIN_TABLE[ord(letter)])
 
-            # Start rom-kan mode.
+            # Start rom-kan mode with abbrev enabled (/).
             if keyval == '/':
-                self.__conv_state = CONV_STATE_START
-                self.__abbrev = True
+                self.__current_state().conv_state = CONV_STATE_START
+                self.__current_state().abbrev = True
                 return (True, u'')
 
-            if is_shift and keyval.isalpha():
-                self.__conv_state = CONV_STATE_START
+            # Start rom-kan mode (shift+q).
+            if is_shift and keyval == u'q':
+                self.__current_state().conv_state = CONV_STATE_START
+                return (True, u'')
 
-            self.__rom_kana_state = \
-                self.__convert_rom_kana(keyval, self.__rom_kana_state)
-            if self.__conv_state == CONV_STATE_NONE and \
-                    len(self.__rom_kana_state[1]) == 0:
-                return (True, self.kakutei())
+            # Start rom-kan mode and insert a character which
+            # triggered the transition.
+            if is_shift and keyval.isalpha():
+                self.__current_state().conv_state = CONV_STATE_START
+
+            self.__current_state().rom_kana_state = \
+                self.__convert_rom_kana(keyval,
+                                        self.__current_state().rom_kana_state)
+            if self.__current_state().conv_state == CONV_STATE_NONE and \
+                    len(self.__current_state().rom_kana_state[1]) == 0:
+                output = self.kakutei()
+                if self.dict_edit_level() > 0:
+                    return (True, u'')
+                return (True, output)
             return (True, u'')
 
-        elif self.__conv_state == CONV_STATE_START:
+        elif self.__current_state().conv_state == CONV_STATE_START:
             input_mode = INPUT_MODE_TRANSITION_RULE.get(key, dict()).\
-                get(self.__input_mode)
-            if self.__input_mode == INPUT_MODE_HIRAGANA and \
+                get(self.__current_state().input_mode)
+            if self.__current_state().input_mode == INPUT_MODE_HIRAGANA and \
                     input_mode == INPUT_MODE_KATAKANA:
-                kana = self.__hiragana_to_katakana(self.__rom_kana_state[0])
+                kana = self.__hiragana_to_katakana(\
+                    self.__current_state().rom_kana_state[0])
                 self.kakutei()
-                self.activate_input_mode(input_mode)
                 return (True, kana)
-            elif self.__input_mode == INPUT_MODE_KATAKANA and \
+            elif self.__current_state().input_mode == INPUT_MODE_KATAKANA and \
                     input_mode == INPUT_MODE_HIRAGANA:
-                kana = self.__katakana_to_hiragana(self.__rom_kana_state[0])
+                kana = self.__katakana_to_hiragana(\
+                    self.__current_state().rom_kana_state[0])
                 self.kakutei()
-                self.activate_input_mode(input_mode)
                 return (True, kana)
-            elif input_mode is not None and not self.__abbrev:
+            elif input_mode is not None and not self.__current_state().abbrev:
                 output = self.kakutei()
+                if self.dict_edit_level() > 0:
+                    output = u''
                 self.activate_input_mode(input_mode)
                 return (True, output)
 
-            # Start TAB completion.
-            if keyval == u'\t':
-                self.__rom_kana_state = self.__convert_nn(self.__rom_kana_state)
-                if self.__completer is None:
-                    compkey = self.__rom_kana_state[0]
-                    self.__completer = self.__init_completer(compkey)
-                    self.__completion_seen = set((compkey,))
-                for midasi in self.__completer:
-                    if midasi not in self.__completion_seen:
-                        self.__rom_kana_state = (midasi, u'', u'')
-                        self.__completion_seen.add(midasi)
+            if key == 'ctrl+j' or key == 'return':
+                output = self.kakutei()
+                if self.dict_edit_level() > 0:
+                    return (True, u'')
+                return (True, output)
+
+            # Start TAB(\C-i) completion.
+            if keyval == u'\t' or (is_ctrl and letter == 'i'):
+                self.__current_state().rom_kana_state = \
+                    self.__convert_nn(self.__current_state().rom_kana_state)
+                if self.__current_state().completer is None:
+                    compkey = self.__current_state().rom_kana_state[0]
+                    self.__current_state().completer = \
+                        self.__init_completer(compkey)
+                    self.__current_state().completion_seen = set((compkey,))
+                for midasi in self.__current_state().completer:
+                    if midasi not in self.__current_state().completion_seen:
+                        self.__current_state().rom_kana_state = (midasi,
+                                                                 u'',
+                                                                 u'')
+                        self.__current_state().completion_seen.add(midasi)
                         break
                 return (True, u'')
             # Stop TAB completion.
-            self.__completer = None
-            self.__completion_seen = None
+            self.__current_state().completer = None
+            self.__current_state().completion_seen = None
 
             # Start okuri-nasi conversion.
             auto_start_henkan_keyword = None
-            rom_kana_state = tuple(self.__rom_kana_state)
+            rom_kana_state = tuple(self.__current_state().rom_kana_state)
             rom_kana_state = self.__convert_rom_kana(keyval, rom_kana_state)
             for keyword in AUTO_START_HENKAN_KEYWORDS:
                 if rom_kana_state[0].endswith(keyword):
-                    self.__auto_start_henkan_keyword = keyword
+                    self.__current_state().auto_start_henkan_keyword = keyword
                     break
-            if keyval == u' ' or self.__auto_start_henkan_keyword:
-                self.__conv_state = CONV_STATE_SELECT
-                self.__rom_kana_state = self.__convert_nn(self.__rom_kana_state)
-                midasi = self.__katakana_to_hiragana(self.__rom_kana_state[0])
-                self.__midasi = midasi
-                usr_candidates = self.__usrdict.lookup(midasi)
-                sys_candidates = self.__sysdict.lookup(midasi)
-                candidates = self.__merge_candidates(usr_candidates,
-                                                     sys_candidates)
-                self.__candidate_selector.set_candidates(candidates)
-                self.next_candidate()
+            if keyval == u' ' or \
+                    self.__current_state().auto_start_henkan_keyword:
+                self.__current_state().conv_state = CONV_STATE_SELECT
+                self.__current_state().rom_kana_state = \
+                    self.__convert_nn(self.__current_state().rom_kana_state)
+                midasi = self.__katakana_to_hiragana(\
+                    self.__current_state().rom_kana_state[0])
+                self.__activate_candidate_selector(midasi)
                 return (True, u'')
 
             if is_shift and \
-                    len(self.__rom_kana_state[1]) == 0 and \
-                    not self.__okuri_rom_kana_state:
-                self.__okuri_rom_kana_state = (u'', u'',
-                                               self.__rom_kana_rule_tree)
+                    len(self.__current_state().rom_kana_state[1]) == 0 and \
+                    not self.__current_state().okuri_rom_kana_state:
+                self.__current_state().okuri_rom_kana_state = \
+                    (u'', u'', self.__rom_kana_rule_tree)
 
-            if self.__okuri_rom_kana_state:
-                okuri = (self.__okuri_rom_kana_state[1] or keyval)[0]
-                self.__okuri_rom_kana_state = \
-                    self.__convert_rom_kana(keyval, self.__okuri_rom_kana_state)
+            if self.__current_state().okuri_rom_kana_state:
+                okuri = (self.__current_state().okuri_rom_kana_state[1] or \
+                             keyval)[0]
+                self.__current_state().okuri_rom_kana_state = \
+                    self.__convert_rom_kana(keyval, self.__current_state().okuri_rom_kana_state)
 
                 # Start okuri-ari conversion.
-                if len(self.__okuri_rom_kana_state[1]) == 0:
-                    self.__conv_state = CONV_STATE_SELECT
+                if len(self.__current_state().okuri_rom_kana_state[1]) == 0:
+                    self.__current_state().conv_state = CONV_STATE_SELECT
                     midasi = self.__katakana_to_hiragana(\
-                        self.__rom_kana_state[0] + okuri)
-                    self.__midasi = midasi
-                    usr_candidates = self.__usrdict.lookup(midasi)
-                    sys_candidates = self.__sysdict.lookup(midasi, okuri=True)
-                    candidates = self.__merge_candidates(usr_candidates,
-                                                         sys_candidates)
-                    self.__candidate_selector.set_candidates(candidates)
-                    self.next_candidate()
+                        self.__current_state().rom_kana_state[0] + okuri)
+                    self.__activate_candidate_selector(midasi, True)
                 return (True, u'')
 
             # Ignore ctrl+key and non-ASCII characters.
-            if is_ctrl or 0x20 > ord(letter) or ord(letter) > 0x7E:
+            if is_ctrl or key in ('return', 'escape', 'backspace') or \
+                    0x20 > ord(letter) or ord(letter) > 0x7E:
                 return (False, u'')
 
-            if self.__abbrev:
-                self.__rom_kana_state = (self.__rom_kana_state[0] + keyval,
-                                         u'', self.__rom_kana_rule_tree)
+            if self.__current_state().abbrev:
+                self.__current_state().rom_kana_state = \
+                    (self.__current_state().rom_kana_state[0] + keyval,
+                     u'',
+                     self.__rom_kana_rule_tree)
             else:
-                self.__rom_kana_state = \
-                    self.__convert_rom_kana(keyval, self.__rom_kana_state)
+                self.__current_state().rom_kana_state = \
+                    self.__convert_rom_kana(keyval,
+                                            self.__current_state().rom_kana_state)
             return (True, u'')
 
-        elif self.__conv_state == CONV_STATE_SELECT:
+        elif self.__current_state().conv_state == CONV_STATE_SELECT:
             if letter.isspace():
+                index = self.__candidate_selector.index()
                 if self.next_candidate() is None:
-                    self.__conv_state = CONV_STATE_START
+                    self.__candidate_selector.set_index(index)
+                    self.__enter_dict_edit()
                 return (True, u'')
             elif key == 'x':
                 if self.previous_candidate() is None:
-                    self.__conv_state = CONV_STATE_START
+                    self.__current_state().conv_state = CONV_STATE_START
                 return (True, u'')
-            elif key == 'ctrl+j' or key == 'return':
-                return (True, self.kakutei())
-            return (True, self.kakutei() + self.press_key(key)[1])
+            else:
+                output = self.kakutei()
+                if self.dict_edit_level() > 0:
+                    output = u''
+                if key == 'ctrl+j' or key == 'return':
+                    return (True, output)
+                return (True, output + self.press_key(key)[1])
 
     def __init_completer(self, compkey):
         return itertools.chain(self.__usrdict.completer(compkey),
@@ -1030,80 +1253,144 @@ class Context:
 
     def delete_char(self):
         '''Delete a character at the end of the buffer.'''
-        if self.__conv_state == CONV_STATE_SELECT:
-            self.__conv_state = CONV_STATE_NONE
+        if self.__current_state().conv_state == CONV_STATE_SELECT:
+            self.__current_state().conv_state = CONV_STATE_NONE
             output = self.kakutei()
             return (True, output[:-1])
-        if self.__okuri_rom_kana_state:
+        if self.__current_state().okuri_rom_kana_state:
             state = self.__delete_char_from_rom_kana_state(\
-                self.__okuri_rom_kana_state)
+                self.__current_state().okuri_rom_kana_state)
             if state:
-                self.__okuri_rom_kana_state = state
+                self.__current_state().okuri_rom_kana_state = state
                 return (True, u'')
-        if self.__rom_kana_state:
+        if self.__current_state().rom_kana_state:
             state = self.__delete_char_from_rom_kana_state(\
-                self.__rom_kana_state)
+                self.__current_state().rom_kana_state)
             if state:
-                self.__rom_kana_state = state
+                self.__current_state().rom_kana_state = state
                 return (True, u'')
-        if self.__conv_state == CONV_STATE_START:
+        if self.__current_state().conv_state == CONV_STATE_START:
             self.reset()
+            return (True, u'')
+        if self.dict_edit_level() > 0 and \
+                len(self.__current_state().dict_edit_output) > 0:
+            self.__current_state().dict_edit_output = \
+                self.__current_state().dict_edit_output[:-1]
             return (True, u'')
         return (False, u'')
 
-    def next_candidate(self):
+    def next_candidate(self, move_over_pages=True):
         '''Select the next candidate.'''
-        return self.__candidate_selector.next_candidate()
-            
-    def previous_candidate(self):
+        return self.__candidate_selector.next_candidate(move_over_pages)
+
+    def previous_candidate(self, move_over_pages=True):
         '''Select the previous candidate.'''
-        return self.__candidate_selector.previous_candidate()
+        return self.__candidate_selector.previous_candidate(move_over_pages)
+
+    def select_candidate(self, index):
+        '''Select candidate at INDEX.'''
+        self.__candidate_selector.set_index(index)
+        if self.__candidate_selector.index() < 0:
+            return (False, u'')
+        output = self.kakutei()
+        if self.dict_edit_level() > 0:
+            return (True, u'')
+        return (True, output)
 
     def __merge_candidates(self, usr_candidates, sys_candidates):
         return usr_candidates + \
             [candidate for candidate in sys_candidates
              if candidate not in usr_candidates]
 
-    def split_preedit(self):
-        if self.__conv_state == CONV_STATE_NONE:
-            if self.__rom_kana_state:
-                return (u'', self.__rom_kana_state[1], u'')
-            return (u'', u'', u'')
-        elif self.__conv_state == CONV_STATE_START:
-            if self.__okuri_rom_kana_state:
-                return (u'▽', self.__rom_kana_state[0],
-                        u'*' + self.__okuri_rom_kana_state[0] + \
-                            self.__okuri_rom_kana_state[1])
-            else:
-                return (u'▽', self.__rom_kana_state[0] + \
-                            self.__rom_kana_state[1], u'')
-        else:
-            if self.__okuri_rom_kana_state:
-                if self.__midasi:
-                    candidate = self.__candidate_selector.candidate()
-                    if candidate:
-                        return (u'▼', candidate[0],
-                                self.__okuri_rom_kana_state[0])
-                return (u'▼', self.__rom_kana_state[0],
-                        self.__okuri_rom_kana_state[0])
-            else:
-                if self.__midasi:
-                    candidate = self.__candidate_selector.candidate()
-                    if candidate:
-                        return (u'▼', candidate[0],
-                                (self.__auto_start_henkan_keyword or u''))
-                return (u'▼', self.__rom_kana_state[0],
-                        (self.__auto_start_henkan_keyword or u''))
-        return (u'', u'', u'')
+    def dict_edit_level(self):
+        '''Return the recursion level of dict-edit mode.'''
+        return len(self.__state_stack) - 1
 
-    preedit = property(lambda self: ''.join(self.split_preedit()))
+    def __dict_edit_prompt(self):
+        if self.__previous_state().okuri_rom_kana_state:
+            midasi = self.__previous_state().rom_kana_state[0] + \
+                u'*' + \
+                self.__previous_state().okuri_rom_kana_state[0] + \
+                self.__previous_state().okuri_rom_kana_state[1]
+        else:
+            midasi = self.__previous_state().rom_kana_state[0] + \
+                self.__previous_state().rom_kana_state[1]
+        return u'%s%s%s %s ' % (u'[' * self.dict_edit_level(),
+                                self.translated_strings['dict-edit-prompt'],
+                                u']' * self.dict_edit_level(),
+                                midasi)
+
+    def preedit_components(self):
+        '''Return a tuple representing the current preedit text.  The
+format of the tuple is (PROMPT, PREFIX, WORD, SUFFIX).
+
+For example, in okuri-ari conversion (in dict-edit mode level 2) the
+elements will be "[[DictEdit]] かんが*え ", "▽", "かんが", "*え" .'''
+        if self.dict_edit_level() > 0:
+            prompt = self.__dict_edit_prompt()
+            prefix = self.__current_state().dict_edit_output
+        else:
+            prompt = u''
+            prefix = u''
+        if self.__current_state().conv_state == CONV_STATE_NONE:
+            if self.__current_state().rom_kana_state:
+                return (prompt,
+                        prefix,
+                        self.__current_state().rom_kana_state[1],
+                        u'')
+            else:
+                return (prompt, prefix, u'', u'')
+        elif self.__current_state().conv_state == CONV_STATE_START:
+            if self.__current_state().okuri_rom_kana_state:
+                return (prompt,
+                        prefix + u'▽',
+                        self.__current_state().rom_kana_state[0],
+                        u'*' + \
+                            self.__current_state().okuri_rom_kana_state[0] + \
+                            self.__current_state().okuri_rom_kana_state[1])
+            else:
+                return (prompt,
+                        prefix + u'▽',
+                        self.__current_state().rom_kana_state[0] + \
+                            self.__current_state().rom_kana_state[1],
+                        u'')
+        else:
+            if self.__current_state().okuri_rom_kana_state:
+                if self.__current_state().midasi:
+                    candidate = self.__candidate_selector.candidate()
+                    if candidate:
+                        return (prompt,
+                                prefix + u'▼',
+                                candidate[0],
+                                self.__current_state().okuri_rom_kana_state[0])
+                return (prompt,
+                        prefix + u'▼',
+                        self.__current_state().rom_kana_state[0],
+                        self.__current_state().okuri_rom_kana_state[0])
+            else:
+                if self.__current_state().midasi:
+                    candidate = self.__candidate_selector.candidate()
+                    if candidate:
+                        return (prompt,
+                                prefix + u'▼',
+                                candidate[0],
+                                (self.__current_state().\
+                                     auto_start_henkan_keyword or u''))
+                return (prompt,
+                        prefix + u'▼',
+                        self.__current_state().rom_kana_state[0],
+                        (self.__current_state().\
+                             auto_start_henkan_keyword or u''))
+        return (prompt, prefix, u'', u'')
+
+    preedit = property(lambda self: ''.join(self.preedit_components()))
 
     def __convert_nn(self, state):
         output, pending, tree = state
         if pending.endswith(u'n'):
-            if self.__input_mode == INPUT_MODE_HIRAGANA:
+            if self.__current_state().input_mode == INPUT_MODE_HIRAGANA:
                 output += u'ん'
-            elif self.__input_mode == INPUT_MODE_KATAKANA:
+            elif self.__current_state().input_mode == INPUT_MODE_KATAKANA:
                 output += u'ン'
             return (output, pending[:-1], tree)
         return state
@@ -1128,7 +1415,7 @@ class Context:
             output += next_output
         else:
             katakana, hiragana = next_output
-            if self.__input_mode == INPUT_MODE_HIRAGANA:
+            if self.__current_state().input_mode == INPUT_MODE_HIRAGANA:
                 output += hiragana
             else:
                 output += katakana
