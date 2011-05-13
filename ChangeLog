@@ -1,3 +1,118 @@
+commit 545e76bc39132922de3e703279e9d1858462c433
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-12-18 15:57:16 +0900
+
+    Update to 1.3.5.
+
+M	configure.ac
+
+commit 154bfb550a217ad5286f9865bfe6b836705e3e24
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-12-16 18:06:37 +0900
+
+    Simplify the previous commit.
+
+M	engine/skk.py
+
+commit fe1852af452c212f8feec65944221fad3c912be6
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-12-16 17:18:36 +0900
+
+    Implement server completion.
+    
+    Implement server completion and set timeout for socket operations.
+
+M	engine/skk.py
+
+commit c5fa7ec664aafe34c140c13146ba78402e2170c0
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-12-16 17:17:23 +0900
+
+    Fix writing config values when config section does not exist.
+
+M	setup/config.py
+
+commit 9cbf8e9a94645d4be62732a0a6f2705ae1ce24b8
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-12-15 11:19:48 +0900
+
+    Update translation.
+
+M	po/ja.po
+
+commit 212387e8706060253513984f3016490c85721626
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-12-10 10:41:19 +0900
+
+    Try to retrieve text from "CLIPBOARD" selection as well.
+
+M	engine/engine.py
+
+commit cc34ff61bfda86e41f0e4230a9d5317b0c5ad1d4
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-12-09 18:40:45 +0900
+
+    Remove debug print.
+
+M	setup/config.py
+
+commit 36e238f104d4c049250232c57f2428e1a30868f8
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-12-09 17:51:57 +0900
+
+    nicola: add UI to enable NICOLA.
+
+M	README
+M	THANKS
+M	setup/ibus-skk-preferences.ui.in
+M	setup/main.py
+
+commit 4d57d47fbc3524244911da14cbc783ad594436c2
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-12-09 17:27:25 +0900
+
+    Fix the last commit.
+
+M	engine/skk.py
+
+commit 0c33512e18bcc37ddeec5e9bd3448830a96512d6
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-12-09 17:18:07 +0900
+
+    Try to yank text from clipboard when 'ctrl+y' is pressed.
+
+M	engine/engine.py
+M	engine/skk.py
+
+commit e27720192e766817240df9c438995219dfe0b559
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-12-07 12:32:59 +0900
+
+    nicola: fix latin mode (Issue#25 comment#2).
+
+M	engine/nicola.py
+M	engine/skk.py
+M	engine/test.py
+
+commit e7b5974a872544340a522e39be023e2b4486759a
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-12-06 17:31:10 +0900
+
+    nicola: handle input mode transition keys [LR] and Z (Issue#25).
+
+M	engine/nicola.py
+M	engine/skk.py
+M	engine/test.py
+
+commit 5308baee65bf931d017da9682c112eaea4598b66
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-12-01 12:13:32 +0900
+
+    nicola: support okuri-ari conversion (Issue#24).
+
+M	engine/skk.py
+M	engine/test.py
+
 commit 94c0c8f6129dbb4dbe4cda19f99abfcdd758b5b9
 Author: Daiki Ueno <ueno@unixuser.org>
 Date:   2010-11-29 16:24:26 +0900
