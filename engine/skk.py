@@ -684,11 +684,16 @@ class UsrDict(DictBase):
         self.__dict_changed = True
 
 class SkkServ(DictBase):
+    # Workaround for
+    # http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=583784
+    # Some servers read extra dictionaries encoded in EUC-JIS-2004.
+    ENCODING = 'EUC-JIS-2004'
+
     HOST='localhost'
     PORT=1178
     BUFSIZ = 4096
 
-    def __init__(self, host=HOST, port=PORT, encoding=DictBase.ENCODING):
+    def __init__(self, host=HOST, port=PORT, encoding=ENCODING):
         self.__host = host
         self.__port = port
         self.__encoding = encoding
@@ -1171,8 +1176,9 @@ class Context(object):
         if self.__current_state().conv_state == CONV_STATE_NONE:
             input_mode = INPUT_MODE_TRANSITION_RULE.get(str(key), dict()).\
                 get(self.__current_state().input_mode)
-            if not rom_kana_pending and input_mode is not None:
-                if self.__current_state().rom_kana_state:
+            if input_mode is not None and self.rom_kana_rule != ROM_KANA_KZIK:
+                if not rom_kana_pending and \
+                        self.__current_state().rom_kana_state:
                     self.__current_state().rom_kana_state = \
                         self.__convert_nn(self.__current_state().rom_kana_state)
                     output = self.__current_state().rom_kana_state[0]
