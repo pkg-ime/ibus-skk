@@ -132,6 +132,7 @@ class TestSKK(unittest.TestCase):
         handled, output = self.__skk.press_key(u'w')
         self.assertTrue(handled)
         self.assertEqual(output, u'っ')
+        self.assertEqual(self.__skk.preedit, u'w')
         handled, output = self.__skk.press_key(u'l')
         self.assertTrue(handled)
         self.assertEqual(output, u'')
@@ -259,6 +260,15 @@ class TestSKK(unittest.TestCase):
         self.__skk.press_key(u'shift+t')
         self.__skk.press_key(u't')
         self.assertEqual(self.__skk.preedit, u'▽つか*っt')
+
+        # Debian Bug#591052
+        self.__skk.reset()
+        self.__skk.activate_input_mode(skk.INPUT_MODE_HIRAGANA)
+        self.__skk.press_key(u'shift+k')
+        self.__skk.press_key(u'a')
+        self.__skk.press_key(u'n')
+        self.__skk.press_key(u'shift+j')
+        self.assertEqual(self.__skk.preedit, u'▽かん*j')
 
     def testcompletion(self):
         self.__skk.reset()
@@ -458,6 +468,11 @@ class TestSKK(unittest.TestCase):
         self.assertEqual(self.__skk.preedit, u'[DictEdit] かぱ ▽かぱ')
         self.__skk.press_key(u'ctrl+g')
         self.assertEqual(self.__skk.preedit, u'[DictEdit] かぱ ')
+        # Don't register empty string (Debian Bug#590191)
+        self.__skk.press_key(u'return')
+        self.assertEqual(self.__skk.preedit, u'▽かぱ')
+        self.__skk.press_key(u' ')
+        self.assertEqual(self.__skk.preedit, u'[DictEdit] かぱ ')
         self.__skk.press_key(u'shift+k')
         self.__skk.press_key(u'a')
         self.assertEqual(self.__skk.preedit, u'[DictEdit] かぱ ▽か')
@@ -477,7 +492,20 @@ class TestSKK(unittest.TestCase):
         self.__skk.press_key(u'a')
         self.__skk.press_key(u' ')
         self.assertEqual(self.__skk.preedit, u'▼下破')
-        self.__skk.press_key(u'return')
+        # Purge "下破" from the user dictionary (Debian Bug#590188).
+        self.__skk.press_key(u'shift+x')
+        self.assertEqual(self.__skk.preedit, u'')
+        self.__skk.press_key(u'shift+k')
+        self.__skk.press_key(u'a')
+        self.__skk.press_key(u'p')
+        self.__skk.press_key(u'a')
+        self.assertEqual(self.__skk.preedit, u'▽かぱ')
+        self.__skk.press_key(u' ')
+        # Should enter dict-edit since "下破" is purged above.
+        self.assertEqual(self.__skk.preedit, u'[DictEdit] かぱ ')
+        self.__skk.press_key(u'ctrl+g')
+        self.__skk.press_key(u'ctrl+g')
+        self.assertEqual(self.__skk.preedit, u'')
         self.__skk.press_key(u'shift+k')
         self.__skk.press_key(u'a')
         self.__skk.press_key(u'n')
@@ -583,6 +611,14 @@ class TestSKK(unittest.TestCase):
         handled, output = self.__skk.press_key(u'/')
         self.assertTrue(handled)
         self.assertEqual(output, u'・')
+
+        self.__skk.reset();
+        self.__skk.activate_input_mode(skk.INPUT_MODE_HIRAGANA)
+        self.__skk.press_key(u'/')
+        handled, output = self.__skk.press_key(u']')
+        self.assertTrue(handled)
+        self.assertEqual(output, u'')
+        self.assertEqual(self.__skk.preedit, u'▽]')
 
     def testkuten(self):
         self.__skk.reset()

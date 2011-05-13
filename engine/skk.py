@@ -683,6 +683,14 @@ class UsrDict(DictBase):
         elements.insert(0, candidate)
         self.__dict_changed = True
 
+    def purge_candidate(self, midasi, candidate):
+        '''Remove CANDIDATE from the list of candidates for MIDASI.'''
+        candidates = self.__dict[midasi]
+        for _candidate in candidates:
+            if _candidate[0] == candidate:
+                candidates.remove(_candidate)
+                self.__dict_changed = True
+
 class SkkServ(DictBase):
     # Workaround for
     # http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=583784
@@ -1079,6 +1087,8 @@ class Context(object):
     def __leave_dict_edit(self):
         dict_edit_output = self.__current_state().dict_edit_output
         self.__abort_dict_edit()
+        if len(dict_edit_output) == 0:
+            return None
         self.__current_state().candidates.insert(0, (dict_edit_output, None))
         self.__candidate_selector.set_index(0)
         output = self.kakutei()
@@ -1371,12 +1381,13 @@ class Context(object):
 
             # Start okuri-nasi conversion.
             auto_start_henkan_keyword = None
-            rom_kana_state = tuple(self.__current_state().rom_kana_state)
-            rom_kana_state = self.__convert_rom_kana(key.keyval, rom_kana_state)
-            for keyword in AUTO_START_HENKAN_KEYWORDS:
-                if rom_kana_state[0].endswith(keyword):
-                    self.__current_state().auto_start_henkan_keyword = keyword
-                    break
+            if not self.__current_state().abbrev:
+                rom_kana_state = tuple(self.__current_state().rom_kana_state)
+                rom_kana_state = self.__convert_rom_kana(key.keyval, rom_kana_state)
+                for keyword in AUTO_START_HENKAN_KEYWORDS:
+                    if rom_kana_state[0].endswith(keyword):
+                        self.__current_state().auto_start_henkan_keyword = keyword
+                        break
             if key.keyval == u' ' or \
                     self.__current_state().auto_start_henkan_keyword:
                 self.__current_state().conv_state = CONV_STATE_SELECT
@@ -1388,11 +1399,13 @@ class Context(object):
                 self.__activate_candidate_selector(midasi)
                 return (True, u'')
 
-            if key.is_shift() and \
-                    len(self.__current_state().rom_kana_state[1]) == 0 and \
-                    not self.__current_state().okuri_rom_kana_state:
-                self.__current_state().okuri_rom_kana_state = \
-                    (u'', u'', self.__rom_kana_rule_tree)
+            if key.is_shift():
+                rom_kana_state = self.__convert_nn(self.__current_state().rom_kana_state)
+                if len(rom_kana_state[1]) == 0 and \
+                        not self.__current_state().okuri_rom_kana_state:
+                    self.__current_state().rom_kana_state = rom_kana_state
+                    self.__current_state().okuri_rom_kana_state = \
+                        (u'', u'', self.__rom_kana_rule_tree)
 
             if self.__current_state().okuri_rom_kana_state:
                 okuri = (self.__current_state().okuri_rom_kana_state[1] or \
@@ -1435,6 +1448,14 @@ class Context(object):
             elif str(key) == 'x':
                 if self.previous_candidate() is None:
                     self.__current_state().conv_state = CONV_STATE_START
+                return (True, u'')
+            elif key.letter == 'X':
+                self.__usrdict.purge_candidate(self.__current_state().midasi,
+                                               self.__candidate_selector.candidate()[0])
+                input_mode = self.__current_state().input_mode
+                self.reset()
+                self.activate_input_mode(input_mode)
+                self.__current_state().conv_state = CONV_STATE_NONE
                 return (True, u'')
             else:
                 output = self.kakutei()

@@ -1,0 +1,2236 @@
+commit 26f4075de716c191a645bb197fe5c419dec853a2
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-08-03 05:58:32 +0900
+
+    0.0.10 released.
+
+M	configure.ac
+M	setup/ibus-skk-preferences.ui
+
+commit 4d0d4d8037f86f7a3afdf9480b8d5f3ad4a4c685
+Author: YAMASHITA Junji <ysiijj+github@gmail.com>
+Date:   2010-08-01 21:56:17 +0900
+
+    Fix Debian Bug#591052
+
+M	engine/skk.py
+
+commit 21d0f1257e962747f6d124921397fafc7776355b
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-08-01 07:36:33 +0900
+
+    Add a test for Debian Bug#591052.
+
+M	engine/test.py
+
+commit 28988cf4d575ab55447b26b2a5213ad7ea20423a
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-07-27 17:23:21 +0900
+
+    Add TODO.
+
+M	TODO
+
+commit 7a94e150f302bc3ffb238022ab17646996438ae5
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-07-26 17:19:58 +0900
+
+    Implement skk-purge-from-jisyo (Debian Bug#590188).
+
+M	engine/skk.py
+M	engine/test.py
+
+commit c8db12a03b4f7065fa66a6ad3288ca4174d2f605
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-07-26 11:08:25 +0900
+
+    Don't register empty string (Debian Bug#590191)
+
+M	engine/skk.py
+M	engine/test.py
+
+commit 2e694c91dad3c354e51bcada861dd54ec49edbd1
+Author: YAMASHITA Junji <ysiijj+github@gmail.com>
+Date:   2010-07-12 01:44:06 +0900
+
+    fix abbrev; ignore AUTO_START_HENKAN_KEYWORDS
+
+M	engine/skk.py
+M	engine/test.py
+
+commit ece709bec67416dec75f99ccea046a77553053a6
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-06-29 05:31:32 +0900
+
+    0.0.9 released.
+
+M	configure.ac
+M	setup/ibus-skk-preferences.ui
+
+commit dfb2bdb30de2fd7d92c43def4b760350940d268d
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-06-29 05:30:41 +0900
+
+    Fix the last change.
+
+M	engine/skk.py
+
+commit 68a18f9f38beb67797335012f4f4999ecd773c18
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-06-29 04:34:58 +0900
+
+    Add workaround for Debian bug #583784.
+
+M	engine/factory.py
+M	engine/skk.py
+
+commit 48303dfe31c5095c2237729d4d5a2564e2fadbf7
+Author: YAMASHITA Junji <ysjj@triela.localnet>
+Date:   2010-06-28 01:51:28 +0900
+
+    Add special treatment for kzik rule to fix changing input mode
+
+M	engine/skk.py
+M	engine/test.py
+
+commit ccc29e4823a713da47d1dc173d475a3300853a1f
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-23 12:59:48 +0900
+
+    Add special treatment for "n" to fix conversion of "nq".
+
+M	engine/skk.py
+
+commit e6a7f2bbadfc09f0d5cc98b8ef9c04c94a6525a5
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-23 12:31:57 +0900
+
+    Move ww test to testromkana().
+
+M	engine/test.py
+
+commit ddbe01d88c21c222a53d3d2d592d207b702303db
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-20 22:42:16 +0900
+
+    Add a couple of test cases by Yamashita-san.
+
+M	engine/test.py
+
+commit e049a0db6ff6dba608b0765757a5c619d7a93ab9
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-18 20:30:57 +0900
+
+    Fix "uri" property of the link button in about dialog.  Thanks Nishiyama-san.
+
+M	setup/ibus-skk-preferences.ui
+
+commit 545d0661f5f2b6dacaf6991af93f5d8a31c0d51f
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-16 11:56:04 +0900
+
+    Fix latin input in dict-edit mode.
+    
+    http://github.com/ueno/ibus-skk/issues/#issue/1
+
+M	engine/skk.py
+M	engine/test.py
+
+commit 7838c1a8f618cfea5a24daee2e0acc31938de620
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-16 11:50:11 +0900
+
+    Fix indent.
+
+M	engine/skk.py
+
+commit 24afc3f06514ebeee41f0af5bf560e8980b2a95a
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-15 18:55:29 +0900
+
+    Refactor.
+
+M	engine/skk.py
+
+commit e1c2694c074d5537680b82a024114012c3417a83
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-15 17:34:35 +0900
+
+    Fix "Katakanaq" conversion in dict-edit mode.
+
+M	engine/skk.py
+M	engine/test.py
+
+commit fa2b5d829fe30e151b5fb9d1d21de8fc507c5592
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-14 07:33:44 +0900
+
+    Don't switch to KUTEN input from latin input modes.
+
+M	engine/skk.py
+M	engine/test.py
+
+commit fdaa51937e8afa5edce0884ae62816bfe56837ce
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-13 20:55:47 +0900
+
+    Fix "z/" conversion.
+
+M	engine/skk.py
+M	engine/test.py
+
+commit 98967a82e6e60742514b936ce2c05d55258a409f
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-13 15:13:48 +0900
+
+    Make hiragana/{hankaku,}katakana conversion methods as utility functions.
+
+M	engine/skk.py
+
+commit 598b2e440843c9462eb7cb2e1b272f8a198334ac
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-13 15:03:38 +0900
+
+    Make numeric conversion methods as utility functions.
+
+M	engine/skk.py
+
+commit 7908b9632a8c8e301f384a9ca2c77165c0ca122d
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-12 18:35:21 +0900
+
+    abort_dict_edit: stop rom-kana conversion for okuri-kana if it is active.
+
+M	engine/skk.py
+
+commit 6afcbd57da60a407bce63f0922ecfe769de8692a
+Author: OHASHI Hideya <ohachige@gmail.com>
+Date:   2010-05-12 17:26:30 +0900
+
+    dictedit bug test
+
+M	engine/test.py
+
+commit 62de90ef6d3d50a1c9bc4f537a4c8fbcd3a66fef
+Author: OHASHI Hideya <ohachige@gmail.com>
+Date:   2010-05-12 12:45:03 +0900
+
+    Add strange dictedit test
+
+M	engine/test.py
+
+commit 5ea4d3bec0079fbf0c2efdfdc82149577b80f9de
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-11 18:16:16 +0900
+
+    Fix backspace handling in KUTEN input.
+
+M	engine/skk.py
+M	engine/test.py
+
+commit f813fd53c31f7e5f34d241c880ee8142c2833473
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-11 18:06:28 +0900
+
+    Fix translation.
+
+M	po/ja.po
+
+commit 6d874c725dcc76d8926c369eaece9c04b6f3b0ae
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-11 17:57:50 +0900
+
+    Translate.
+
+M	engine/engine.py
+M	engine/skk.py
+M	engine/test.py
+M	po/ja.po
+
+commit 81250477b96ea6b2e1a11bd7d459dc9508d9b5cd
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-11 17:53:17 +0900
+
+    Implement KUTEN input (experimental).
+
+M	TODO
+M	engine/skk.py
+M	engine/test.py
+
+commit 4f3181ebb1781bc597254c9ac3bdd302a49c524c
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-11 09:55:11 +0900
+
+    Add TODO.
+
+M	TODO
+
+commit 0474e9d85e72db1e31acebe269f9b402a3dea044
+Author: OHASHI Hideya <ohachige@gmail.com>
+Date:   2010-05-10 19:12:53 +0900
+
+    Add "/request" test
+
+M	engine/test.py
+
+commit efd2f9bced55e1e83990ed10c6aacb918eff8dd3
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-10 18:51:59 +0900
+
+    Fix "/request" in abbrev.
+
+M	engine/skk.py
+M	engine/test.py
+
+commit 72d252d24dd48d182a2e354ff893fc0a601ce355
+Author: OHASHI Hideya <ohachige@gmail.com>
+Date:   2010-05-10 18:26:03 +0900
+
+    KZIK: add tests (sq and dl)
+
+M	engine/test.py
+
+commit 1447f5d08990c1463f36fdb97b6d291a1485d8c8
+Author: OHASHI Hideya <ohachige@gmail.com>
+Date:   2010-05-10 15:44:22 +0900
+
+    KZIK: gq, gl are now working
+
+M	engine/kzik.py
+
+commit 47968e10ba719494e79b4788da4469d3c4d72fec
+Author: OHASHI Hideya <ohachige@gmail.com>
+Date:   2010-05-10 13:37:48 +0900
+
+    fix idling checker
+
+M	engine/skk.py
+
+commit 9d44865dad9ace038d33cb168efb1ad623287c0a
+Author: OHASHI Hideya <ohachige@gmail.com>
+Date:   2010-05-07 22:41:22 +0900
+
+    handle q and l in AZIK(KZIK) sequence
+
+M	engine/skk.py
+
+commit 4335a753b70a221487b8c4672e7b2354b572dad8
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-10 18:40:45 +0900
+
+    Remove redundant ",".
+
+M	engine/engine.py
+
+commit 9b1ed21a9ebde3d5dc7ba486a3bb17c790c682a5
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-10 10:34:56 +0900
+
+    Fix the last change.
+
+M	engine/engine.py
+
+commit a94fbaeaa498e22510a113f9ec8d542c3e41d84c
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-10 10:32:41 +0900
+
+    Add panel properties for hankaku katakana.
+
+M	engine/engine.py
+
+commit a0e06a77d22c9fdcfad5cbb8e9beabe215669181
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-10 10:28:02 +0900
+
+    Add check to make sure we are in the proper input mode.
+
+M	engine/skk.py
+
+commit 8802d2122fecf24f0037ab04cc586e82318a1f45
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-10 10:25:46 +0900
+
+    Remove entry.
+
+M	TODO
+
+commit 749ebdb9dceca620e90752d761cf1a0001e28883
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-10 10:25:20 +0900
+
+    Refactor.
+
+M	engine/skk.py
+
+commit 25345cfa513f0394ffc9c4aff06428318c25771e
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-10 10:13:53 +0900
+
+    Support hankaku katakana.
+
+M	engine/skk.py
+M	engine/test.py
+
+commit fb7099100f94d592a636895a5fda9e748995b1e1
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-10 10:13:35 +0900
+
+    Bump.
+
+M	configure.ac
+M	setup/ibus-skk-preferences.ui
+
+commit 2a70b248e7fe4ed83e0fa490ad3be4a7dd45b88a
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-08 13:42:31 +0900
+
+    Remember input_mode on delete_char().
+
+M	engine/skk.py
+
+commit 5af49bc8f4e567dbaf04bdb08041f01921317efe
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-08 13:41:49 +0900
+
+    Bump.
+
+M	configure.ac
+M	setup/ibus-skk-preferences.ui
+
+commit aa7a10a0ad7c4cb5a6efdd272c1cabb5f3cc9425
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-08 07:53:27 +0900
+
+    Fix wget command line.
+
+M	engine/test.py
+
+commit f7b3c40091ba8f276056dc090b9a171dbe65e7cc
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-08 07:52:29 +0900
+
+    Fix regexp.
+
+M	README
+
+commit 25bb27c7cc93ab2669170ac1621be89f7fc10359
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-08 07:45:33 +0900
+
+    Add tips.
+
+M	README
+
+commit 6ade97affba884e8d13483870aa98ddedafddf7a
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-08 07:21:08 +0900
+
+    Add credit.
+
+M	THANKS
+
+commit a28c1bf699682000f9aadf9f5d9c791b55befdf1
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-08 07:14:23 +0900
+
+    Schedule usrdict#save() after every commit.
+
+M	engine/engine.py
+
+commit 4f449bb091759fa0f3eb6658c1ed85dbaabe54e0
+Author: OHASHI Hideya <ohachige@gmail.com>
+Date:   2010-05-07 18:22:47 +0900
+
+    KZIK: fixed to swap Katakana and Hiragana
+
+M	engine/kzik.py
+
+commit 4ba751301dc42a9dcce750eb75c3a33093d14f70
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-08 06:56:23 +0900
+
+    Display "[DictEdit]" way different from other components.
+
+M	engine/engine.py
+M	engine/skk.py
+
+commit adc1879a9fe434449f13a6c20d1bde7f2f39e76a
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-07 19:51:59 +0900
+
+    Update TODO.
+
+M	TODO
+
+commit 962f45d96b2d7a137ea3ac71c438fb52f201522f
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-07 16:20:30 +0900
+
+    Override CandidateSelector#set_index() to restore the last cursor pos.
+
+M	engine/engine.py
+
+commit cb894f292541b7d3b03a20522e2c2cf873196677
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-07 14:58:02 +0900
+
+    Check return/escape/backspace in skk.Context#press_key().
+
+M	engine/skk.py
+
+commit ba92804fc9f458ab151f62bb98ea87979481dbba
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-07 14:29:00 +0900
+
+    Fix midasi display of okuri-ari conversion in dict-edit mode.
+
+M	engine/skk.py
+M	engine/test.py
+
+commit 83f49a905feabd2208283a06c172b1978e51c266
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-07 13:26:34 +0900
+
+    Remember candidate index.
+
+M	engine/skk.py
+M	engine/test.py
+
+commit d96ccfca2bb217b0229749f44df987c2d8af3a42
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-07 12:56:04 +0900
+
+    Use assert().
+
+M	engine/skk.py
+
+commit 1639e934ab694d279c4c125dbe92207f12fc8636
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-07 12:49:00 +0900
+
+    Fix a wrong conditional.
+
+M	engine/skk.py
+
+commit ef715c11d20cce1ab467c689876190133cc7b3e6
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-07 12:35:55 +0900
+
+    Fix the behavior on kakutei() in dict-edit mode.
+
+M	engine/skk.py
+M	engine/test.py
+
+commit 49adca128287f8001d51724f96edf17258b91d9c
+Merge: 7d73b03 7366804
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-07 12:23:45 +0900
+
+    Merge branch 'master' into dict-edit
+    
+    Conflicts:
+    	engine/skk.py
+
+commit 7366804d3b0b85eb93f37943af3cee9695dd1f2e
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-07 12:18:41 +0900
+
+    split_preedit() -> preedit_components().
+
+M	engine/engine.py
+M	engine/skk.py
+
+commit 7d73b03c3ec7e4057ccf5e9a94c39075a37426cd
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-07 12:17:26 +0900
+
+    Abolish private properties.
+
+M	engine/skk.py
+
+commit a36c9f81df032719569fa8479945e0cbda388da3
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-07 11:18:54 +0900
+
+    Don't output kana when C-j is typed in CONV_STATE_NONE and dict-edit mode.
+
+M	engine/skk.py
+M	engine/test.py
+
+commit 95279f3f379f56b4898502b5ad9754b44f5fa862
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-07 11:05:36 +0900
+
+    Adjust dict-edit behavior to DDSKK.
+
+M	engine/engine.py
+M	engine/skk.py
+M	engine/test.py
+M	po/ja.po
+
+commit 7667f2911054631cb5de49e42897f83753beaa0d
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-07 10:31:50 +0900
+
+    Don't call skk.Context#kakutei() directly from engine.
+
+M	engine/engine.py
+M	engine/skk.py
+M	engine/test.py
+
+commit 0d14138305cc1e3280c24c3f50c9b784e26f4f85
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-07 07:29:29 +0900
+
+    Call kakutei() in leave_dict_edit().
+
+M	engine/skk.py
+M	engine/test.py
+
+commit c88387c8d5677cd03295b85f346e0d6b9b534df1
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-07 06:42:32 +0900
+
+    "RegDict" -> "DictEdit".
+
+M	engine/engine.py
+M	engine/skk.py
+M	engine/test.py
+M	po/ja.po
+
+commit f674fa10341e3294c0145d7ea3170326fac78fc6
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-07 06:35:37 +0900
+
+    Refactor.
+
+M	engine/skk.py
+
+commit 3a15b9c76c2ef6a8dae2a201209188dc15b71be7
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-07 06:26:14 +0900
+
+    Prepend dict-edit prompt to preedit text.
+
+M	engine/skk.py
+M	engine/test.py
+
+commit b55b83909d4701ae7cb0eee9499debb17c6ba286
+Merge: a6f0c1c 17bde64
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-06 18:08:09 +0900
+
+    Merge branch 'master' into dict-edit
+
+commit 17bde64b081da705a313825f2605308ff5323536
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-06 18:05:16 +0900
+
+    Don't use the patch command for test.
+
+D	engine/SKK-JISYO.S-numeric.patch
+M	engine/test.py
+
+commit a6f0c1ca336571541a19db513dd40e81f972135d
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-06 17:46:19 +0900
+
+    Factor-out internal state to a seperate class.
+
+M	engine/skk.py
+
+commit 82d20ddd5f83777416b9bfb038ae0bdb1d3396a3
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-06 15:58:36 +0900
+
+    Decompose ヴ when converting to hiragana (and the reverse).
+
+M	engine/skk.py
+M	engine/test.py
+
+commit c6e02dd8a19aed29690ebe9417012599880d1db0
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-06 15:03:04 +0900
+
+    New property skk.Context#translated_strings for message translation.
+
+M	engine/engine.py
+M	engine/skk.py
+
+commit 9e5e07488786e5cd20a41dda584351d610a40e27
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-06 13:01:08 +0900
+
+    Implement register-to-dictionary feature (experimental).
+
+M	engine/engine.py
+M	engine/skk.py
+M	engine/test.py
+M	po/ja.po
+
+commit 22b47d780996fd89a25ad1b4fc3d75db3b599d3a
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-06 10:12:04 +0900
+
+    Don't change input mode in skk.reset().
+
+M	engine/engine.py
+M	engine/skk.py
+M	engine/test.py
+
+commit 6dbb9e9197cdc55e9f5d791f5fd1592730f92f48
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-02 13:40:54 +0900
+
+    Bump.
+
+M	configure.ac
+M	setup/ibus-skk-preferences.ui
+
+commit 1e4898191a245d6f63b81048dbec8e030dc68238
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-02 12:30:57 +0900
+
+    Add credits.
+
+M	AUTHORS
+
+commit ced49571adcb8354a3fd721d86dd5216fa32fe3f
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-02 12:27:57 +0900
+
+    Implement setting UI for rom_kana_rule.
+
+M	engine/Makefile.am
+M	engine/engine.py
+M	engine/skk.py
+M	engine/test.py
+M	po/ja.po
+M	setup/ibus-skk-preferences.ui
+M	setup/main.py
+
+commit 95d60a2426623abb1faf7e35c45fcc32e3fcc5e1
+Author: OHASHI Hideya <ohachige@gmail.com>
+Date:   2010-05-02 00:48:55 +0900
+
+    use KZIK table instead
+
+A	engine/kzik.py
+M	engine/skk.py
+
+commit ceebfffe2f35b6b7823523c859b0c3762b4bbcbd
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-05-01 09:05:54 +0900
+
+    Fix for the case when converting #/#.
+
+M	engine/SKK-JISYO.S-numeric.patch
+M	engine/skk.py
+M	engine/test.py
+
+commit 384e5c203fdabadf3451a4b768e800c86be30150
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-04-30 18:15:29 +0900
+
+    Implement numeric conversion.
+
+A	engine/SKK-JISYO.S-numeric.patch
+M	engine/skk.py
+M	engine/test.py
+
+commit cc27b616cae12c4858352a12edbdf7441b3ecd29
+Author: TAGOMORI Satoshi <sigh@shirts.st>
+Date:   2010-04-13 04:08:41 -0700
+
+    fix to remain input_mode over focus_out -> focus_in
+
+M	engine/engine.py
+
+commit caf9f9441d1636b8febd59a02bb4f3a1b6045ee6
+Author: TAGOMORI Satoshi <sigh@shirts.st>
+Date:   2010-04-13 01:51:48 -0700
+
+    change to catch ctrl-j in any mode (even if ibus-skk has none to kakutei/mode-change)
+
+M	engine/skk.py
+
+commit a8ffece4a17f598f9290fd520ab7efa896cfca34
+Author: TAGOMORI Satoshi <sigh@shirts.st>
+Date:   2010-04-13 01:48:23 -0700
+
+    add test for mode-transitions(, and catch ctrl-j in any state)
+
+M	engine/test.py
+
+commit 85090c7479c994ae6e9df75d6ada66c86ef8de84
+Author: tagomoris <sigh@shirts.st>
+Date:   2010-04-13 00:24:42 -0700
+
+    add ctrl-i/h and change behavior of 'q' in CONV_STATE_START
+
+M	engine/skk.py
+
+commit 8719d114df2cffcba1a5b7a2d76fa130ac2b3f73
+Author: tagomoris <sigh@shirts.st>
+Date:   2010-04-13 00:17:46 -0700
+
+    以下の操作に対するテストを追加: ctrl-i / ctrl-h
+    かなカナ間モード遷移は変換モードからの確定操作時には抑制するようテストを変更
+
+M	engine/test.py
+
+commit 63a63806bcfc0f4840ef5d72cbff190ea37dc80e
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-01-17 01:45:30 +0900
+
+    Reformat %changelog and add BuildArch.
+
+M	ibus-skk.spec.in
+
+commit 77cc22628e20cc603929758fc5e536c086c90ec0
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-01-15 23:41:26 +0900
+
+    Add gettext-devel and pkgconfig to BuildRequres in ibus-skk.spec.in.
+
+M	ibus-skk.spec.in
+
+commit 1e25cf7881f397f5d0ddb4a11ee74d9eb1889a37
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-01-15 23:33:20 +0900
+
+    Fix typo.
+
+M	ibus-skk.spec.in
+
+commit d496a58f535913e17067762c9b2dff5c4f80e470
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-01-11 12:58:34 +0900
+
+    Bump.
+
+M	configure.ac
+M	setup/ibus-skk-preferences.ui
+
+commit 8dcd9940160410e7691af25bd93c4ab2b96e00ee
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-01-11 12:50:58 +0900
+
+    Add.
+
+M	NEWS
+
+commit f54d98cecd74804fd05f499aac158f4ee9462ba2
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-01-11 12:42:11 +0900
+
+    Update copyright.
+
+M	Makefile.am
+M	configure.ac
+M	engine/engine.py
+M	engine/skk.py
+M	ibus-skk.spec.in
+M	icons/Makefile.am
+M	po/ja.po
+M	setup/Makefile.am
+
+commit b217c0a7b2d5799948bebc22d38ef18655372002
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-01-11 12:38:50 +0900
+
+    Bind Left/Right to moving previous/next candidate.
+
+M	engine/engine.py
+
+commit 573b7c1c1b51ff6b2583645e628773443ef0ee85
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-01-09 09:30:01 +0900
+
+    Use SVG icon.
+
+M	AUTHORS
+M	engine/factory.py
+M	engine/skk.xml.in.in
+M	icons/Makefile.am
+D	icons/ibus-skk.png
+A	icons/ibus-skk.svg
+
+commit 727d97c14ae4e99f1fd78d428e8a9122162dd94d
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-01-06 18:17:51 +0900
+
+    Refine the previous change.
+
+M	engine/engine.py
+
+commit 0b7f9cda4b119d70ed027e7f078a15a700d0214d
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-01-06 17:35:53 +0900
+
+    Don't cache input_mode in Engine.__input_mode_activate().
+
+M	engine/engine.py
+
+commit ca6003a683cecd8c0137815e40cdaa9810b3094c
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-01-06 16:51:43 +0900
+
+    Check LookupTable.set_orientation() is defined.
+
+M	engine/engine.py
+
+commit de38c074960174c9ead946ebeebb643554e095ae
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-01-06 16:45:47 +0900
+
+    Define ibus.ORIENTATION_HORIZONTAL for older IBus releases.
+
+M	engine/engine.py
+
+commit 15922c5577b3887377ae0861c6ed6d62b4fce7cc
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-01-01 18:09:07 +0900
+
+    Use ibus.ORIENTATION_*.
+
+M	engine/engine.py
+
+commit 7ede64311e9bf609006ad832326665d7e934dd09
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2010-01-01 17:28:12 +0900
+
+    Don't handle Left/Right.
+
+M	engine/engine.py
+
+commit 3d4284007ea187f7e99fa24b27c58d332645e40b
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-31 13:32:28 +0900
+
+    Bump.
+
+M	configure.ac
+M	setup/ibus-skk-preferences.ui
+
+commit 3864c52ed2918be157454e3e48327bf77e49922e
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-31 13:07:37 +0900
+
+    Disable color cursor.
+
+M	engine/engine.py
+
+commit a32a5c717a6b1f5653400b3e191f6acf0c4befb8
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-31 12:20:05 +0900
+
+    Fix.
+
+M	NEWS
+
+commit de7f04a09d514d99c72fa12b89ea7091fa76b63a
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-31 12:14:04 +0900
+
+    Use ibus.ATTR_UNDERLINE_SINGLE instead of pango.UNDERLINE_SINGLE.
+
+M	engine/engine.py
+
+commit 9bffc7543dc4db4eaff61fe45c6a0864cca70316
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-31 09:09:30 +0900
+
+    Pass orientation as the argument of LookupTable().
+
+M	engine/engine.py
+
+commit ce99905d941e9caa648ae15bfae49bcfd300b864
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-31 09:03:02 +0900
+
+    Fix the last commit.
+
+M	engine/engine.py
+
+commit 156d80a6011733ce5a729d8d59f185fcc6afc433
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-31 09:01:36 +0900
+
+    Fix orientation setting.
+
+M	engine/engine.py
+
+commit f021fe6ab688eaa90208b2663c749ff274119e97
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-31 08:29:23 +0900
+
+    Make sure the initial state is INPUT_MODE_HIRAGANA/CONV_STATE_NONE.
+
+M	engine/engine.py
+M	engine/skk.py
+M	engine/test.py
+
+commit 0d56173ac50d419783d0fc01e1ea6e5b155ba4a6
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-31 07:56:21 +0900
+
+    Add detail.
+
+M	NEWS
+
+commit 217c4db674fae2bda04e7fcfa7670306fdbf5282
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-30 16:44:15 +0900
+
+    Add.
+
+M	NEWS
+
+commit 21f630ade11465ad10bfe2852461d6930ac214ff
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-30 15:35:21 +0900
+
+    Fix testusrdict().
+
+M	engine/skk.py
+M	engine/test.py
+
+commit 870976b5dd556a33e8f8df011f8351a4e7d4e27a
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-30 15:32:41 +0900
+
+    Add coding cookie at the beginning of the user dictionary.
+
+M	engine/skk.py
+
+commit f9949c499eb238cab70957ec88b73ac66ecb4654
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-30 02:48:58 +0900
+
+    Add test for the case opening a corrupted user dictionary.
+
+M	engine/test.py
+
+commit 0bf9b952d7e146df4dd5573ab2aadae343872d23
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-30 02:19:55 +0900
+
+    Add.
+
+M	NEWS
+
+commit 3b12315f34994b2ec3871a0b1c7fc43ca0fa3fdc
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-30 01:32:04 +0900
+
+    Mark the user dictionary as read-only, if reload() fails.
+
+M	engine/skk.py
+
+commit 748893abf2dc5cccaafb87766bef5e0b47b93924
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-29 18:03:49 +0900
+
+    Move the logic of candidate selection by keys to CandidateSelector from Engine.
+
+M	engine/engine.py
+M	engine/skk.py
+
+commit afac6944781dc5491ca0145fe43d693f7e991a1d
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-29 16:59:42 +0900
+
+    Add doc.
+
+M	engine/skk.py
+
+commit 3ee4d00f9f290cbaeddc92648cdf231cc5bfa9eb
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-29 16:23:10 +0900
+
+    Fix testcompletion() failure.
+
+M	engine/test.py
+
+commit 0450bae5dbac534189c7b89bc5cf62607f9c4393
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-29 16:04:14 +0900
+
+    Fix wording.
+
+M	engine/engine.py
+M	engine/skk.py
+M	setup/main.py
+
+commit 6ae512110d846a6d101a743a72176cbe26fb59c3
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-29 15:24:59 +0900
+
+    Request the default orientation of the lookup table.
+
+M	engine/engine.py
+
+commit d4fa90dbbbb8affd4b53b0df715439a40f3a985e
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-29 11:00:14 +0900
+
+    Align candidates to the page_size if pagination is active.
+
+M	engine/engine.py
+M	engine/skk.py
+
+commit e747925d2482394ff8a549e4277bc634a0b4a898
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-29 09:07:34 +0900
+
+    Improve completion behavior.
+
+M	engine/skk.py
+
+commit d2f741450ba0b7128720206cac4cf0653893f3aa
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-29 03:00:47 +0900
+
+    Done.
+
+M	TODO
+
+commit 7fe7b63f893c2e683580428c4f9aaa1f61740184
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-29 01:41:10 +0900
+
+    Translate.
+
+M	po/ja.po
+
+commit a64fa2435dce32b56eb9ba9d951513f22de0c2cc
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-29 01:12:26 +0900
+
+    Don't save generated candidates into ~/.skk-ibus-jisyo.
+
+M	engine/engine.py
+M	engine/skk.py
+
+commit 1c5388f8b65b9afee06c9a01324fc2b5aab31c91
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-29 00:52:49 +0900
+
+    Call emacsclient if the candidate string is "(...)".
+
+M	engine/engine.py
+M	engine/skk.py
+
+commit 2a98f78bf7c709747b8d739eea947f2dd6b62904
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-28 18:03:05 +0900
+
+    Add ':' after each label character.
+
+M	engine/engine.py
+
+commit af11ec65e6e220d24dd6f1bf0a1db690cbd17da3
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-28 17:59:15 +0900
+
+    Follow the behavior of DDSKK's candidate selection.
+
+M	engine/engine.py
+M	engine/skk.py
+M	engine/test.py
+M	setup/ibus-skk-preferences.ui
+M	setup/main.py
+
+commit 6824e9c6a40ab2b6fc28572108ffd1966444dd10
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-28 03:06:57 +0900
+
+    Fix CandidateSelector behavior.
+
+M	engine/engine.py
+M	engine/skk.py
+
+commit 876f34bd24ed7b49c13660cfbc5d6abab536f70e
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-27 17:23:24 +0900
+
+    Allow select candidate by keys.
+
+M	engine/engine.py
+
+commit f0ebaaac8cc03459c5cf74761dcbde62bb08e23c
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-27 17:00:55 +0900
+
+    Move acceptable keys check from engine.py to skk.py.
+
+M	engine/engine.py
+M	engine/factory.py
+M	engine/skk.py
+M	engine/test.py
+
+commit eb13b6ead82bb3db04b82e29a39e7b05844108d6
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-27 14:51:36 +0900
+
+    Others -> Behavior.
+
+M	po/ja.po
+M	setup/ibus-skk-preferences.ui
+
+commit 2572a5edac33e65a8aace358606210e5eee61aa0
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-27 14:25:26 +0900
+
+    Color midasi-go when converting.
+
+M	engine/.gitignore
+M	engine/engine.py
+M	engine/skk.py
+
+commit 91bed1c69da5bfc06a04fcb3a45af04a57d31c6c
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-27 14:25:15 +0900
+
+    Remove engine/skk.xml.in.
+
+D	engine/skk.xml.in
+
+commit 7d64d9c8dedeec762e53605e8e51a846ff7c05a9
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-27 13:24:56 +0900
+
+    Don't underline annotations.
+
+M	engine/engine.py
+
+commit b05f06b989ba3890a8ce08278cdf35617ebdf79f
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-27 13:23:17 +0900
+
+    Add.
+
+M	NEWS
+
+commit 197b6517d66e8af59206fd1ec161fd8e2c3af151
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-27 13:04:02 +0900
+
+    Add.
+
+M	NEWS
+
+commit caeaa8e87284482504975239b0dc54966da96403
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-27 12:54:06 +0900
+
+    New file.
+
+A	THANKS
+
+commit e1e5a129cb78ea21c1919fb516f5959e5f6d02c1
+Merge: ca33bf5 1db26eb
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-27 12:44:30 +0900
+
+    Merge branch 'master' of github.com:/ueno/ibus-skk
+
+commit ca33bf5157cbadaac5f4f2f52d912240d0381716
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-27 12:42:24 +0900
+
+    Lower the preference rank from 99 to 70 so that IBus-Anthy is default.
+    
+    Thanks Takao Fujiwara for the suggestion.
+
+M	engine/skk.xml.in.in
+
+commit 77e9d0d1fe645ec995018bf79da13b23f23d283b
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-27 11:17:34 +0900
+
+    Show annotations as auxilary text.
+
+M	engine/engine.py
+A	engine/skk.xml.in
+
+commit 1db26ebed91d77ceb125dafe273fa8892b243c3e
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-27 11:17:34 +0900
+
+    Show annotations as auxilary text.
+
+M	engine/engine.py
+
+commit 59199c745af65a21b3162391aeb3766d1e429d4d
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-27 10:38:16 +0900
+
+    Add mnemonics to widgets in the setup UI.
+
+M	po/ja.po
+M	setup/ibus-skk-preferences.ui
+
+commit 295e31c5cd01a016d51752a879833e4a4d2e32c7
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-26 15:08:05 +0900
+
+    Refine the setup UI.
+
+M	setup/ibus-skk-preferences.ui
+
+commit 9a9e30e4ae792f58e096866c0c7048f6375ef454
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-26 14:52:22 +0900
+
+    Refine the setup UI.
+
+M	po/ja.po
+M	setup/ibus-skk-preferences.ui
+
+commit 9b6519b7e9d505f0341d483a51abc145b4bb265e
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-26 14:11:18 +0900
+
+    Use constants defined in skk.py instead of magic numbers.
+
+M	engine/engine.py
+M	setup/main.py
+
+commit 3ca166b358e26dd2cb58dc74aa83d5fb7310f522
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-26 12:35:40 +0900
+
+    Follow DDSKK's behavior of auto conversion.
+
+M	engine/engine.py
+M	engine/skk.py
+M	engine/test.py
+M	po/ja.po
+M	setup/ibus-skk-preferences.ui
+M	setup/main.py
+
+commit 55a781178dfcdd0cb70d92584fd86e9cb6b06ac2
+Author: iws <iws1011@gmail.com>
+Date:   2009-12-25 21:04:54 +0900
+
+    Initialize autoconversion_type appropriately and add test
+
+M	engine/skk.py
+M	engine/test.py
+
+commit 6f28e7492540319912271c50c3a8212fe438c0e2
+Author: iws <iws1011@gmail.com>
+Date:   2009-12-24 22:30:20 +0900
+
+    Add autoconversion.
+
+M	engine/engine.py
+M	engine/skk.py
+M	po/ja.po
+M	setup/ibus-skk-preferences.ui
+M	setup/main.py
+
+commit 09c280ba1bce8c77d88f657631e99d38ff89eb0f
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-24 17:14:48 +0900
+
+    Include ibus-skk.spec.in for Fedora.
+    
+    Thanks Jens Petersen <petersen@redhat.com> for initial packaging.
+    See https://bugzilla.redhat.com/show_bug.cgi?id=547974
+
+M	.gitignore
+M	Makefile.am
+M	configure.ac
+A	ibus-skk.spec.in
+
+commit ce1efe5db915b721a4fead6fb5228175564a321c
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-24 11:53:34 +0900
+
+    Fix.
+
+M	engine/skk.py
+
+commit dd623611364997fab859da17d8f3bb40e1509094
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-24 10:49:54 +0900
+
+    Move the complete-by-history logic to UsrDict.
+
+M	engine/skk.py
+
+commit 0649c24bc9951012ae58affcc129a5e657d33da9
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-23 21:41:04 +0900
+
+    Add test.py to EXTRA_DIST.
+
+M	engine/Makefile.am
+
+commit 3774bbdd9bd7439b3f3caab42d86f6a9395da0d1
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-23 12:44:53 +0900
+
+    Bump.
+
+M	configure.ac
+
+commit 2e0a8238c35dfbd6cbcb8d3825db17d75de86136
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-23 07:43:06 +0900
+
+    Add more assersions to testdelete().
+
+M	engine/test.py
+
+commit 740b960ece30e9b674f2a1c857bd8bc124131e27
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-23 07:42:46 +0900
+
+    Make delete_char() return whether the event was handled internally.
+
+M	engine/engine.py
+M	engine/skk.py
+
+commit 1a414fadf87c69fa443869d74ebcb9b1ac54efac
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-22 23:55:55 +0900
+
+    Follow the behavior of DDSKK where skk-delete-implies-kakutei is on.
+    Thanks Kazuhiro NISHIYAMA for the testcase.
+
+M	engine/engine.py
+M	engine/skk.py
+M	engine/test.py
+
+commit f591689be996d40016a04424b0eaff3931dd48e5
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-22 20:12:15 +0900
+
+    Share a single system dictionary among multiple Engine objects.
+
+M	TODO
+M	engine/engine.py
+M	engine/factory.py
+M	engine/skk.py
+M	engine/test.py
+
+commit 72df919d9579d87b39a5a25aff8c31177eea9ced
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-22 17:40:27 +0900
+
+    Add.
+
+M	TODO
+
+commit 60aa3825ebdb08d1ba848d8c6716ba6d6e61161f
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-20 19:37:28 +0900
+
+    Done.
+
+M	TODO
+
+commit 1efde0e333cd057cae556bea5ca90d94eca40646
+Merge: 6364581 8cb6c8c
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-20 19:36:43 +0900
+
+    Merge branch 'master' of github.com:ueno/ibus-skk
+
+commit 63645818b608fca19c5a15dc258e3344f589e606
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-20 19:35:55 +0900
+
+    Implement TAB completion by history.
+
+M	engine/skk.py
+M	engine/test.py
+
+commit 8cb6c8c87053c47f6c2b08c49615ad9ff0679aab
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-20 19:02:09 +0900
+
+    Add.
+
+M	TODO
+
+commit 1b344eafd8642d8abe2a61a1fe373e5d0118726f
+Merge: 9c76905 af8d29e
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-18 14:46:37 +0900
+
+    Merge branch 'master' of github.com:ueno/ibus-skk
+
+commit 9c769050c2efe7c76073a8c4c443e980aceea803
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-18 14:45:35 +0900
+
+    Catch StopIteration if there is no completion.
+
+M	engine/skk.py
+
+commit d78979379c63bb28f55b5b44f03d6e40b2362977
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-18 14:45:06 +0900
+
+    Use C-i instead of TAB.
+
+M	engine/engine.py
+
+commit af8d29ee2c6418a81f54d1752d9eb6405f995220
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-18 03:57:52 +0900
+
+    Simplify.
+
+M	engine/skk.py
+
+commit 1404b3fe0e2f21ff3023e847475c9b50cacccb41
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-18 03:19:36 +0900
+
+    Handle TAB key.
+
+M	engine/engine.py
+
+commit 88aad3b558fe9175fe158580d5b876646f56e082
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-18 03:13:10 +0900
+
+    TAB completion implemented.
+
+M	TODO
+
+commit 4c7c113d5747c804205a177eb5a3ff646a0849d2
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-18 03:12:35 +0900
+
+    Add a test for TAB completion.
+
+M	engine/test.py
+
+commit 19a5f12300ce001cce1d4de7ac38f379fb87d3c9
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-18 03:12:16 +0900
+
+    Implement TAB completion.
+
+M	engine/skk.py
+
+commit 652b288147e4eb296e8b1c7b21bc9bbc4d9c2134
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-15 03:58:05 +0900
+
+    Fix.
+
+M	TODO
+
+commit 8fda91575a54643224b15b0b7aef03683bddca93
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-15 03:43:29 +0900
+
+    Fix.
+
+M	TODO
+
+commit 2e3807b19a64248208c6615b8c10883ebb016914
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-15 03:43:10 +0900
+
+    Add.
+
+M	TODO
+
+commit a254503d1831ce8d15cae4ecb13791e66f3726ce
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-15 03:36:49 +0900
+
+    Remove.
+
+D	engine/SKK-JISYO.S
+
+commit cd20bdd27d2d96dab674acdca4a4c5edc60712d5
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-15 03:36:16 +0900
+
+    Point to the SKK-JISYO.S URL.
+
+M	engine/test.py
+
+commit 82968d3de6460c78d00b39b3b9d4d32fd4599389
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-09 10:15:12 +0900
+
+    Remove redundant backslashes.
+
+M	engine/skk.py
+
+commit 190b0d955710775903d6d52d4a48ff7d837d19e0
+Merge: 28e2647 e924723
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-09 04:00:59 +0900
+
+    Merge branch 'master' of github.com:ueno/ibus-skk
+
+commit 28e26476587d0d347ca0983e92564414ceb3e3c1
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-09 04:00:25 +0900
+
+    Reset the SKK context on focus out.
+
+M	engine/engine.py
+
+commit e92472380f24f1b88e8951f53d6410c4ca7668cb
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-04 19:54:01 +0900
+
+    Update.
+
+M	README
+
+commit 10641cb0f5b8aa0615a2eecbca139b36d9ebcdea
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-04 15:42:11 +0900
+
+    Bump.
+
+M	configure.ac
+
+commit 3f4633d6cb8286dc75b61c409f2269616c868497
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-04 15:41:20 +0900
+
+    Fix bug of Context.previous_candidate().
+
+M	engine/skk.py
+
+commit 81c1230149ac10d748a3541f853aa1b2531fef70
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-04 14:25:17 +0900
+
+    Show the URL of the SKK Project if SKK-JISYO.S is not found.
+
+M	engine/test.py
+
+commit d29767c5ab63d24f09a3fd1c2fd4fae0e48291dd
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-04 09:26:54 +0900
+
+    Update.
+
+M	TODO
+
+commit 77d4389c88b5cd08cff304fd8bbae740c86cfe08
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-04 09:23:08 +0900
+
+    Use SKK-JISYO.S for test.
+
+A	engine/SKK-JISYO.S
+M	engine/test.py
+
+commit 547338da436f0a4bc7c1c5d337af209c32544b4a
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-12-04 09:01:48 +0900
+
+    Update after Up.
+
+M	engine/engine.py
+
+commit f4e58c9a5fe7feebbd5b855a01b10a946bc5331f
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-10 18:10:59 +0900
+
+    Use our own version number instead of ibus'.
+
+M	configure.ac
+
+commit 3dae437937927c9eb22f084fa43a5f0662c79c81
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-10 18:10:28 +0900
+
+    Remove as-version.m4 from EXTRA_DIST.
+
+M	m4/Makefile.am
+
+commit 4f36b2239985a1a7d8a01bf04977cd5c43125340
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-10 12:46:25 +0900
+
+    Close skkserv socket on finalize.
+
+M	engine/skk.py
+
+commit 3bf7ae0af0fdd0ebadb82906d9449f3b3a7390a1
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-10 12:39:21 +0900
+
+    Reduce the number of __update() calls.
+
+M	engine/engine.py
+
+commit 2927c98494e9ebf77aa4834f153eae23b3e7f321
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-10 08:41:25 +0900
+
+    Pass keysyms._0..._9 to press_key().
+    Ignore alt & ctrl events except ctrl+g and ctrl+j.
+
+M	engine/engine.py
+
+commit b709d423e90441f124999777a33421f10f968dc2
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-09 20:57:13 +0900
+
+    Fix doc comment.
+
+M	engine/skk.py
+
+commit b970a324a227f526598b6bb1444e040ebfe10994
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-09 20:57:04 +0900
+
+    Add.
+
+A	TODO
+
+commit a15809c7fc3efad594fcb8b2522e30886aff312f
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-09 18:28:52 +0900
+
+    Rearrange.
+
+M	engine/skk.py
+
+commit d3481f442609ef5a1f6a47d3cfcb999d80be5c26
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-09 18:28:42 +0900
+
+    Translate.
+
+M	po/ja.po
+
+commit 24e29decd2d89b182b2776b0748edb824f27e303
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-09 18:10:21 +0900
+
+    Remove debug-print.
+
+M	engine/skk.py
+
+commit 9437006a96decda846076ba3e30f0b2e977267f6
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-09 18:02:26 +0900
+
+    Fix setting widget sensitivity.
+
+M	setup/main.py
+
+commit 553245226d7c8190b09ab7f0f50b69fd96a2326e
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-09 17:53:19 +0900
+
+    Support skkserv.
+
+M	engine/engine.py
+M	engine/skk.py
+M	setup/ibus-skk-preferences.ui
+M	setup/main.py
+
+commit 52048b7292d995e06edf524205c54f240ef8262a
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-09 16:14:52 +0900
+
+    Fix SkkServ support.
+
+M	engine/skk.py
+
+commit 930c1a13ffabb98214fc10323a56ca092cb3f245
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-09 15:59:21 +0900
+
+    Fix comment.
+
+M	engine/skk.py
+
+commit 26332b1ab40abd0eee6c415fc5c16d6feb8f79c0
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-09 15:54:50 +0900
+
+    Support SysDict/SkkServ types for sysdict.
+
+M	engine/skk.py
+
+commit afef3cf89d1a8d88b4719c2a43221be5a9cc8065
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-09 15:51:27 +0900
+
+    Fix.
+
+M	engine/skk.py
+
+commit 11fcf491f95f256555565420c5b182aaaa3f4e59
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-09 15:50:50 +0900
+
+    Add SkkServ support.
+
+M	engine/skk.py
+
+commit e1ae07520fa985b041cbfad445a23ecfff6cbbe9
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-09 15:31:24 +0900
+
+    Add doc comments.
+
+M	engine/skk.py
+
+commit 89caabe912644384ac85221077c63db7627f7724
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-09 15:12:07 +0900
+
+    Rename skk.Context.append() -> press_key().
+
+M	engine/engine.py
+M	engine/skk.py
+M	engine/test.py
+
+commit 54edc82a9d1af572d91712175ef1b38f568ef269
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-09 13:37:59 +0900
+
+    Take dict path/address instead of dict object.
+
+M	engine/engine.py
+M	engine/skk.py
+
+commit 395e924af6e99e4845db8b0cccb0253aa6d23b8c
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-09 12:19:38 +0900
+
+    Don't throw an error if sysdict cannot be opened.
+
+M	engine/skk.py
+
+commit ed50aa508e824d723f0e696290420553c3c15294
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-09 10:36:41 +0900
+
+    Fix.
+
+M	engine/engine.py
+M	engine/skk.py
+
+commit eb2a6bdbfff79c47fdeb640cdaaf8bccc6bb3109
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-09 10:25:11 +0900
+
+    Fix.
+
+M	setup/config.py
+
+commit f17054935843d07a3dc3bb95ae59e5a5a3a7c213
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-09 10:14:21 +0900
+
+    Follow the method renaming.
+
+M	setup/config.py
+
+commit c10e5e31a3c6ddf123f638cc15925552bbd0376f
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-09 10:11:17 +0900
+
+    Refactor load() of Dict.
+
+M	engine/skk.py
+
+commit 5a8194fbae00a1bdf9177a3cfaa30858bbc21e43
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-09 07:29:20 +0900
+
+    Fix last commit.
+
+M	engine/skk.py
+
+commit 25af5ba1248fdb47e375c76c7ab7676a96d2d51e
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-09 07:17:52 +0900
+
+    Let config changes be applied immediately.
+
+M	engine/engine.py
+M	engine/skk.py
+
+commit 14c0a2abda54b9c36e4a7914b3addfc68f1582fa
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-09 04:25:12 +0900
+
+    Don't display copyright on About tab.
+
+M	setup/ibus-skk-preferences.ui
+
+commit f64082190d82f5afe5771d86bcae7d9cc74c20ad
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-09 04:18:40 +0900
+
+    Support setup.
+
+M	engine/engine.py
+M	setup/Makefile.am
+A	setup/config.py
+M	setup/ibus-skk-preferences.ui
+M	setup/main.py
+
+commit a09d0e095d4983cca13af1c13a3ce70f5fa9aa39
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-09 03:39:10 +0900
+
+    Add credit from ibus-pinyin.
+
+M	AUTHORS
+
+commit ef5e4301467a8b29dcf6eb1bdffd04497df6061b
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-09 03:18:40 +0900
+
+    Add setup.
+
+M	Makefile.am
+M	engine/engine.py
+M	engine/factory.py
+M	engine/skk.py
+M	po/POTFILES.in
+M	po/ja.po
+
+commit f4a9032dc742d48dfe44d6182e152ca8be9fbd9d
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-09 03:18:17 +0900
+
+    Add setup.
+
+A	setup/.gitignore
+A	setup/Makefile.am
+A	setup/ibus-setup-skk.in
+A	setup/ibus-skk-preferences.ui
+A	setup/main.py
+
+commit f58a27d246fb3794144cdc46d1b0e63ac7f3b8d2
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-09 03:15:46 +0900
+
+    Ignore intltools files.
+
+M	.gitignore
+
+commit 68bf8623776ab1c707a1c8b07bc7ce050c68f40a
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-09 03:15:33 +0900
+
+    Use gnome-autogen.sh.
+
+M	autogen.sh
+M	configure.ac
+
+commit a372e1b00bd2ed2591da303cb8b65fca83ae3b9d
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-08 10:45:36 +0900
+
+    Refactor using the with statement.
+
+M	engine/skk.py
+
+commit f0a77e6226a02aeac2373322b430e8079ed755b7
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-08 08:21:08 +0900
+
+    Re-add PO stuff.
+
+M	Makefile.am
+M	autogen.sh
+M	configure.ac
+M	engine/engine.py
+
+commit f0de0edcfb17f623bd8a74d2390eee3879cc7d01
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-08 08:20:54 +0900
+
+    Re-add PO stuff.
+
+A	po/.gitignore
+A	po/LINGUAS
+A	po/Makevars
+A	po/POTFILES.in
+A	po/ja.po
+
+commit 8ac8efed281ac03bf2ef53052b7dad39dfb0c6a9
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-08 07:31:50 +0900
+
+    Support abbrev mode.
+
+M	engine/skk.py
+
+commit 36a346cdf3d5be51e337dfefcaa4a6b9e8691476
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-07 18:02:14 +0900
+
+    Check __rom_kana_state is set when delete_char.
+
+M	engine/skk.py
+
+commit c4a5b644c59e7a0c5533c279aa5dd851491cb0f1
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-07 17:57:12 +0900
+
+    Add isalpha() check before conv_state transition.
+
+M	engine/skk.py
+
+commit 2d6d3a28b2d22d474c119546916c4288673c71c4
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-07 17:48:18 +0900
+
+    Fix C-g handling.
+
+M	engine/skk.py
+
+commit 0e2d550430b9790c93857a8c0fb336b6d222404b
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-07 17:39:18 +0900
+
+    Fix C-g handling.
+
+M	engine/skk.py
+
+commit 7f7f5c47785556c820633705c57f48b6d7079172
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-07 17:24:17 +0900
+
+    Doc fix.
+
+M	README
+
+commit e61e45c10575d938b53db3f48603f0ddf44bb328
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-07 17:23:44 +0900
+
+    Fix user dict support.
+
+M	engine/engine.py
+M	engine/skk.py
+
+commit 9e37c29ec56ca7ec94c2b019c819b3066eb3b7d0
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-07 13:20:37 +0900
+
+    Doc fix.
+
+M	README
+
+commit 36a43bb10bcf662b604f1ce89c066f949ef5359e
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-07 13:12:58 +0900
+
+    Sort lines of user dictionary.
+
+M	engine/skk.py
+
+commit f0411fe7542b16de324ccf6d4d8d5dd4e0b9e9d1
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-07 13:05:27 +0900
+
+    Format line-wrap.
+
+M	engine/skk.py
+
+commit c29d27216d53c20373fbe5ce54b338d62c6b7cfb
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-07 13:03:52 +0900
+
+    Make input_mode read-only.
+
+M	engine/skk.py
+
+commit 7cbb730f88dd513be5db25f922d34da75946aead
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-07 12:27:57 +0900
+
+    Convert midasi to hiragana before kana-kan conversion.
+
+M	engine/skk.py
+
+commit c3338f6725066d3e2090d5deddaa412c2216c575
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-07 11:57:32 +0900
+
+    Make conv_state read-only.
+
+M	engine/engine.py
+M	engine/skk.py
+
+commit 883d3f495aed64a42ebf8bbe7f2cf0e00e910f8b
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-07 11:31:27 +0900
+
+    Place constant defs at the beginning of the file.
+
+M	engine/skk.py
+
+commit 7b205dd4ee7ad60eabf09affed9e76732ce3e5da
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-07 11:29:21 +0900
+
+    Support user dictionary.
+
+M	engine/skk.py
+
+commit d823c2dfb9e6d921278e7f36962dd1f07b7a0c50
+Merge: 175a22d d38fcb0
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-07 09:23:23 +0900
+
+    Merge branch 'master' of github.com:/ueno/ibus-skk
+
+commit 175a22d10c3ae39ecf7e7b5a3231003464b355d0
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-07 09:21:24 +0900
+
+    Implement hiragana <-> katakana.
+
+M	engine/skk.py
+M	engine/test.py
+
+commit d38fcb09a4ef6bef7d1539bd26ab4f22d0d78499
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-07 09:21:24 +0900
+
+    Implemente hiragana <-> katakana.
+
+M	engine/skk.py
+M	engine/test.py
+
+commit b44fd1ae59461c4a00e86b8bd40737abecbb93ef
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-07 08:54:24 +0900
+
+    Handle kutouten change.
+
+M	engine/skk.py
+M	engine/test.py
+
+commit e48f137df1fd83fd5a2f13475d8cd7399f1f179d
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-07 07:58:49 +0900
+
+    Remove debug print.
+
+M	engine/engine.py
+
+commit bfd8a9228bf1ee416697f5af437466275ab22834
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-07 07:58:23 +0900
+
+    skk.Context.reset() doesn't switch to INPUT_MODE_HIRAGANA.
+
+M	engine/test.py
+
+commit 5f8882414b41345b5c21675da29dc1551e08b691
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-07 07:57:10 +0900
+
+    Remember midasi during kana-kan conversion.
+
+M	engine/skk.py
+
+commit a26e1db308e23b91cd2befac7376bcd5424c0c8e
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-06 16:42:54 +0900
+
+    Doc fix.
+
+M	README
+
+commit 9c63bd5be1a01bf39ba07ae98165d280124dd1ae
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-06 16:41:51 +0900
+
+    Move credits to AUTHORS.
+
+M	AUTHORS
+M	README
+
+commit 20761f269506ef0f033d51763d37480901507a48
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-06 15:59:29 +0900
+
+    Handle C-g.
+
+M	engine/skk.py
+
+commit ad3d7cb138dc0b2226013e2a5057e560650429e2
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-06 15:42:02 +0900
+
+    Doc fix.
+
+M	README
+
+commit 80c36e2197cd1aba9064bef30dbe7686d43c2aae
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-06 15:35:44 +0900
+
+    Factor out nn conversion.
+
+M	engine/skk.py
+
+commit 5dc7ae714741ce38bd02034c1d3a22dac6f9735f
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-06 15:16:32 +0900
+
+    Remove PO stuff.
+
+M	configure.ac
+
+commit 9bc838cd28a259e98a571c83392e941d45eee776
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-06 15:13:11 +0900
+
+    Remove PO stuff.
+
+M	autogen.sh
+M	configure.ac
+
+commit fd2d2fcda7448a77876742f837db7473337d005c
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2009-11-06 15:08:21 +0900
+
+    Initial commit.
+
+A	.gitignore
+A	AUTHORS
+A	COPYING
+A	ChangeLog
+A	Makefile.am
+A	NEWS
+A	README
+A	autogen.sh
+A	configure.ac
+A	engine/.gitignore
+A	engine/Makefile.am
+A	engine/engine.py
+A	engine/factory.py
+A	engine/ibus-engine-skk.in
+A	engine/main.py
+A	engine/skk.py
+A	engine/skk.xml.in.in
+A	engine/test.py
+A	icons/Makefile.am
+A	icons/ibus-skk.png
+A	m4/.gitignore
+A	m4/Makefile.am
+A	python-config.py
