@@ -29,6 +29,9 @@ class Config:
         'egg_like_newline': True,
         'use_nicola': False,
         }
+    # sysdict_paths needs special treatment since IBusConfig does not
+    # allow empty arrays (Issue#31).
+    __keys = __defaults.keys() + ['sysdict_paths']
 
     # Options which can only be specified in ~/.config/ibus-skk.json.
     # This is a workaround for that currently IBus does not allows
@@ -53,14 +56,14 @@ class Config:
         self.fetch_all()
 
     def fetch_all(self):
-        for name in self.__defaults.keys():
+        for name in self.__keys:
             # print 'get_value engine/SKK/%s' % name
             value = self.__config.get_value('engine/SKK', name, None)
             if value is not None:
                 self.__modified[name] = value
 
     def commit_all(self):
-        for name in self.__defaults.keys():
+        for name in self.__keys:
             value = self.__modified.get(name)
             if value is not None:
                 # print 'set_value engine/SKK/%s' % name
