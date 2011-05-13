@@ -1,0 +1,7 @@
+The implementation is based on ibus-tmpl, ibus-anthy, and ibus-pinyin.
+Translation tables are from SKK.
+
+Huang Peng <shawn.p.huang@gmail.com> ibus-tmpl, ibus-anthy, ibus-pinyin
+Hideaki ABE <abe.sendai@gmail.com> ibus-anthy
+Takao Fujiwara <takao.fujiwara1@gmail.com> ibus-anthy
+Daiki Ueno <ueno@unixuser.org> ibus-skk

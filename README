@@ -1,0 +1,7 @@
+ibus-skk -- a Japanese input engine for IBus.
+
+How to install:
+
+$ sudo apt-get install skkdic
+$ ./autogen.sh --prefix=/usr
+$ sudo make install

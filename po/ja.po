@@ -1,0 +1,118 @@
+# Japanese translations for ibus-skk package
+# ibus-skk パッケージに対する英訳.
+# Copyright (C) 2009-2010 Daiki Ueno <ueno@unixuser.org>
+# This file is distributed under the same license as the ibus-skk package.
+# Daiki Ueno <ueno@unixuser.org>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ibus-skk 1.2.0.20091108\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-12-29 01:37+0900\n"
+"PO-Revision-Date:  2009-12-23 15:06+0900\n"
+"Last-Translator: Daiki Ueno <ueno@unixuser.org>\n"
+"Language-Team: Japanese\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: ../engine/engine.py:148
+msgid "Switch input mode"
+msgstr "入力モード切替"
+
+#: ../engine/engine.py:154
+msgid "Hiragana"
+msgstr "ひらがな"
+
+#: ../engine/engine.py:157
+msgid "Katakana"
+msgstr "カタカナ"
+
+#: ../engine/engine.py:160
+msgid "Latin"
+msgstr "英数"
+
+#: ../engine/engine.py:163
+msgid "Wide Latin"
+msgstr "全角英数"
+
+#: ../engine/engine.py:175
+msgid "Configure SKK"
+msgstr "SKKの設定"
+
+#: ../engine/factory.py:37 ../setup/ibus-skk-preferences.ui.h:8
+msgid "SKK"
+msgstr "SKK"
+
+#: ../setup/ibus-skk-preferences.ui.h:1
+msgid "<b>Behavior</b>"
+msgstr "<b>動作</b>"
+
+#: ../setup/ibus-skk-preferences.ui.h:2
+msgid "<b>Dictionaries</b>"
+msgstr "<b>辞書</b>"
+
+#: ../setup/ibus-skk-preferences.ui.h:3
+msgid "About"
+msgstr "情報"
+
+#: ../setup/ibus-skk-preferences.ui.h:4
+msgid "Candidate Window Pa_gination Start:"
+msgstr "候補ウィンドウの表示開始位置(_G):"
+
+#: ../setup/ibus-skk-preferences.ui.h:5
+msgid "Candidate _Window Page Size:"
+msgstr "候補ウィンドウの項目数(_W):"
+
+#: ../setup/ibus-skk-preferences.ui.h:6
+msgid "File"
+msgstr "ファイル"
+
+#: ../setup/ibus-skk-preferences.ui.h:7
+msgid "Port:"
+msgstr "ポート:"
+
+#: ../setup/ibus-skk-preferences.ui.h:9
+msgid "SKK Server"
+msgstr "SKK サーバ"
+
+#: ../setup/ibus-skk-preferences.ui.h:10
+msgid "SKK _Server:"
+msgstr "SKK サーバ(_S):"
+
+#: ../setup/ibus-skk-preferences.ui.h:11
+msgid "SKK input method for IBus"
+msgstr "IBus入力プラットフォーム用SKKエンジン"
+
+#: ../setup/ibus-skk-preferences.ui.h:12
+msgid "Setup - IBus-SKK"
+msgstr "IBus-SKKの設定"
+
+#: ../setup/ibus-skk-preferences.ui.h:13
+msgid "Show Annotation"
+msgstr "アノテーションを表示"
+
+#: ../setup/ibus-skk-preferences.ui.h:14
+msgid "Start conversion by some characters"
+msgstr "キーワードによる自動変換の開始"
+
+#: ../setup/ibus-skk-preferences.ui.h:15
+msgid "System Dictionary _File:"
+msgstr "システム辞書ファイル(_F):"
+
+#: ../setup/ibus-skk-preferences.ui.h:16
+msgid "System Dictionary _Type:"
+msgstr "システム辞書の形式(_T):"
+
+#: ../setup/ibus-skk-preferences.ui.h:17
+msgid "_Auto-start Conversion Characters:"
+msgstr "自動変換を開始する文字(_A):"
+
+#: ../setup/ibus-skk-preferences.ui.h:18
+msgid "_Period Style:"
+msgstr "句読点の形式(_P):"
+
+#: ../setup/ibus-skk-preferences.ui.h:19
+msgid "_User Dictionary File:"
+msgstr "ユーザ辞書ファイル(_U):"
