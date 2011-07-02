@@ -1,3 +1,45 @@
+commit e2a3113baca45bb7ec4393ab8dd27d9d1787aa0c
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-06-15 12:12:07 +0900
+
+    Update to 1.3.7.
+
+M	configure.ac
+
+commit cb29636e137b6c08a442f721bbb2d8d75e818a91
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-06-14 04:31:49 +0900
+
+    Fix "mm" -> "っm" conversion (Issue#33).
+
+M	engine/skk.py
+M	engine/test.py
+
+commit 6304c8c33049913f7e3a0b9d51816e5a30cfbea9
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-06-14 03:47:38 +0900
+
+    Add a note why bug reports should be written in English.
+
+M	README
+
+commit 056c2a4e410241a11b1ad650a487308e729c0190
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-05-31 11:01:22 +0900
+
+    Don't switch to initial input mode when reset (Issue#32).
+
+M	engine/engine.py
+
+commit 0b01eeb504c45c671315d684632a5d9cf2b2e236
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-05-17 18:03:17 +0900
+
+    Update FSF address.
+
+M	engine/ibus-engine-skk.in
+M	icons/Makefile.am
+
 commit 1fa8d87cc6603753b7d0b3c1786226668039f86b
 Author: Daiki Ueno <ueno@unixuser.org>
 Date:   2011-05-12 17:54:01 +0900

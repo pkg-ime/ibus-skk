@@ -1,11 +1,16 @@
 Source: ibus-skk
 Section: utils
 Priority: optional
-Maintainer: Daiki Ueno <ueno@unixuser.org>
-Build-Depends: debhelper (>= 7), autotools-dev, pkg-config, python-support, intltool
-Standards-Version: 3.9.1
-Homepage: http://github.com/ueno/ibus-skk
+Maintainer: IME Packaging Team <pkg-ime-devel@lists.alioth.debian.org>
+Uploaders: Daiki Ueno <ueno@unixuser.org>
 DM-Upload-Allowed: yes
+Build-Depends: debhelper (>= 7), autotools-dev, pkg-config, python-support, intltool
+Standards-Version: 3.9.2
+Homepage: http://github.com/ueno/ibus-skk
+XS-Python-Version: >= 2.5
+Vcs-Git: git://git.debian.org/git/pkg-ime/ibus-skk.git
+Vcs-Browser: http://git.debian.org/?p=pkg-ime/ibus-skk.git
+
 
 Package: ibus-skk
 Architecture: all
