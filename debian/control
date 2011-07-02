@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: IME Packaging Team <pkg-ime-devel@lists.alioth.debian.org>
 Uploaders: Daiki Ueno <ueno@unixuser.org>
 DM-Upload-Allowed: yes
-Build-Depends: debhelper (>= 7.0.50~), autotools-dev, pkg-config, python-support, intltool
+Build-Depends: debhelper (>= 7.0.50~), autotools-dev, pkg-config, python-support, intltool, dh-autoreconf
 Standards-Version: 3.9.2
 Homepage: http://github.com/ueno/ibus-skk
 XS-Python-Version: >= 2.5
