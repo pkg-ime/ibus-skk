@@ -1,3 +1,10 @@
+ibus-skk (1.3.7-2) unstable; urgency=low
+
+  [ Osamu Aoki ]
+  * Follow newer packageing style (closes: #632442)
+
+ -- Daiki Ueno <ueno@unixuser.org>  Sun, 03 Jul 2011 22:30:04 +0900
+
 ibus-skk (1.3.7-1) unstable; urgency=low
 
   * Add myself to Uploaders.

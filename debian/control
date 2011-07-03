@@ -2,7 +2,7 @@ Source: ibus-skk
 Section: utils
 Priority: optional
 Maintainer: IME Packaging Team <pkg-ime-devel@lists.alioth.debian.org>
-Uploaders: Daiki Ueno <ueno@unixuser.org>
+Uploaders: Daiki Ueno <ueno@unixuser.org>, Osamu Aoki <osamu@debian.org>
 DM-Upload-Allowed: yes
 Build-Depends: debhelper (>= 7.0.50~), autotools-dev, pkg-config, python-support, intltool, dh-autoreconf
 Standards-Version: 3.9.2
