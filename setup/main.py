@@ -24,8 +24,13 @@ class PreferencesDialog:
     def __init__(self):
         locale.setlocale(locale.LC_ALL, '')
         localedir = os.getenv('IBUS_LOCALEDIR')
-        # for non-standard localedir (Issue#27)
-        locale.bindtextdomain('ibus-skk', localedir)
+        # Python's locale module doesn't provide all methods on some
+        # operating systems like FreeBSD (Issue#34)
+        try:
+            # for non-standard localedir (Issue#27)
+            locale.bindtextdomain('ibus-skk', localedir)
+        except AttributeError:
+            pass
         gettext.bindtextdomain('ibus-skk', localedir)
         gettext.bind_textdomain_codeset('ibus-skk', 'UTF-8')
 
@@ -56,6 +61,8 @@ class PreferencesDialog:
             self.__builder.get_object('initial_input_mode')
         self.__egg_like_newline = self.__builder.get_object('egg_like_newline')
         self.__use_nicola = self.__builder.get_object('use_nicola')
+        self.__enable_virtual_keyboard = \
+            self.__builder.get_object('enable_virtual_keyboard')
 
         self.__usrdict.set_filename(self.__config.usrdict_path)
         sysdict_type = self.__config.get_value('sysdict_type')
@@ -121,6 +128,9 @@ class PreferencesDialog:
         self.__use_nicola.set_active(\
             self.__config.get_value('use_nicola'))
 
+        self.__enable_virtual_keyboard.set_active(\
+            self.__config.get_value('enable_virtual_keyboard'))
+
         self.__usrdict.connect('file-set', self.__usrdict_file_set_cb)
         self.__use_skkserv.connect('toggled', self.__use_skkserv_toggle_cb)
         self.__skkserv_host.connect('changed', self.__skkserv_host_changed_cb)
@@ -141,6 +151,7 @@ class PreferencesDialog:
         self.__initial_input_mode.connect('changed', self.__initial_input_mode_changed_cb)
         self.__egg_like_newline.connect('toggled', self.__egg_like_newline_changed_cb)
         self.__use_nicola.connect('toggled', self.__use_nicola_changed_cb)
+        self.__enable_virtual_keyboard.connect('toggled', self.__enable_virtual_keyboard_cb)
 
     def __set_sysdict_widgets_sensitivity(self, sysdict_type):
         if sysdict_type == 'file':
@@ -263,6 +274,9 @@ class PreferencesDialog:
 
     def __use_nicola_changed_cb(self, widget):
         self.__config.set_value('use_nicola', widget.get_active())
+
+    def __enable_virtual_keyboard_cb(self, widget):
+        self.__config.set_value('enable_virtual_keyboard', widget.get_active())
 
     def run(self):
         if self.__dialog.run() == gtk.RESPONSE_OK:

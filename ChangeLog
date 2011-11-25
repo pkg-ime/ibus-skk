@@ -1,3 +1,183 @@
+commit bc257d52b622398a4c076402a53c2dd81fc8068c
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-09-02 12:21:23 +0900
+
+    Update to 1.3.9.
+
+M	configure.ac
+
+commit e0affe73d75e6e9073533befbcffbaaab73da61b
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-09-02 12:20:57 +0900
+
+    Fix XML entity reference.
+
+M	configure.ac
+
+commit c0406fceaeae17f60621c03ae157c838710dffb2
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-08-29 13:59:58 +0900
+
+    Update to 1.3.8.
+
+M	configure.ac
+
+commit 6665f6532d324ff1cb0c1f7a1c3758fbcf899856
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-08-29 13:51:56 +0900
+
+    Update virtkbd module to check engine's typing mode.
+
+M	engine/engine.py
+M	engine/skk.py
+M	engine/virtkbd.py
+
+commit 3b83653961b56ac09d82ffb238c14fac410ca424
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-08-26 17:30:52 +0900
+
+    Don't connect to eekboard-server if enable_virtual_keyboard is false.
+
+M	engine/engine.py
+M	engine/skk.py
+M	engine/test.py
+M	engine/virtkbd.py
+
+commit 1af3082f76ec0a86d0c384e2f32f331b20d1146a
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-08-26 15:57:57 +0900
+
+    Fix the last commit.
+
+M	engine/engine.py
+M	engine/skk.py
+
+commit 6ac36f3dcbe0534a9e81f32faed945bc09b926a5
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-03-08 15:37:56 +0900
+
+    Support virtual keyboard.
+
+M	engine/Makefile.am
+M	engine/engine.py
+M	engine/skk.py
+A	engine/virtkbd.py
+M	setup/config.py
+M	setup/ibus-skk-preferences.ui.in
+M	setup/main.py
+
+commit 74fb959a80367f67fb67833272df08d66928c61c
+Merge: 2534a8c 0eee22b
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-08-03 18:33:26 +0900
+
+    Merge branch 'master' of github.com:ueno/ibus-skk
+
+commit 2534a8c785136d5b216a3f767de55bc41d823bcc
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-06-22 18:24:59 +0900
+
+    Revert "Fix icon symbol support check."
+    
+    This reverts commit 16e6d569b47825bebb2b579a30075cd6462c1547.
+
+M	m4/ibus.m4
+
+commit da7574da03e4d7c43e9752d69ae749007b4af3f3
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-06-22 18:17:49 +0900
+
+    Fix icon symbol support check.
+
+M	m4/ibus.m4
+
+commit e2706c69cb76f3d66ab5ae6b673bab162d68f2b0
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-06-18 14:13:15 +0900
+
+    Fix the last commit.
+
+M	engine/skk.py
+
+commit 0eee22b74dbd37869cc2ef167f2f10a912a252c8
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-06-22 18:24:59 +0900
+
+    Revert "Fix icon symbol support check."
+    
+    This reverts commit 16e6d569b47825bebb2b579a30075cd6462c1547.
+
+M	m4/ibus.m4
+
+commit 16e6d569b47825bebb2b579a30075cd6462c1547
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-06-22 18:17:49 +0900
+
+    Fix icon symbol support check.
+
+M	m4/ibus.m4
+
+commit 0c5d77d5af333741d2c2a1a9b2cbe50ae5e49576
+Merge: 7f6a6bf 0a3a25e
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-06-22 15:53:59 +0900
+
+    Merge branch 'master' of github.com:ueno/ibus-skk
+
+commit 7f6a6bfe155b210bb4a3073cc38ca25c161f5623
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-06-22 15:52:44 +0900
+
+    Define hotkeys and icon-symbol in description.
+
+M	configure.ac
+M	engine/engine.py
+M	engine/skk.xml.in.in
+D	m4/.gitignore
+A	m4/ibus.m4
+
+commit 0a3a25e40b604e648dcdb16e4615eeda8f01cffb
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-06-18 14:13:15 +0900
+
+    Fix the last commit.
+
+M	engine/skk.py
+
+commit 764edb18bdfbbc7147fc4d2855e25e75af58e1c1
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-06-17 13:12:03 +0900
+
+    Don't start auto conversion if there is no preceding input (Issue#36).
+
+M	engine/skk.py
+M	engine/test.py
+
+commit 347efc4a4314b917ff15ff6353b80239258a5039
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-06-17 12:38:08 +0900
+
+    Add credit for Kagotani-san.
+
+M	THANKS
+
+commit 994ae4a41e80403b361a55e759c61bfdf93c1894
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-06-17 12:36:16 +0900
+
+    Don't handle ctrl+g in non-converting state (Issue#35).
+
+M	engine/skk.py
+M	engine/test.py
+
+commit 6f0b126f87d894117bcec4aa971fe451b06ca188
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-06-16 10:51:45 +0900
+
+    Ignore errors when locale module doesn't provide bindtextdomain (Issue#34).
+
+M	setup/main.py
+
 commit e2a3113baca45bb7ec4393ab8dd27d9d1787aa0c
 Author: Daiki Ueno <ueno@unixuser.org>
 Date:   2011-06-15 12:12:07 +0900

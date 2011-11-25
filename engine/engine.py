@@ -27,6 +27,7 @@ from ibus import modifier
 import sys, os, os.path, time
 import skk
 import nicola
+import virtkbd
 try:
     from gtk import clipboard_get
 except ImportError:
@@ -133,9 +134,9 @@ class Engine(ibus.EngineBase):
     __input_mode_prop_names = {
         skk.INPUT_MODE_HIRAGANA : u"InputMode.Hiragana",
         skk.INPUT_MODE_KATAKANA : u"InputMode.Katakana",
+        skk.INPUT_MODE_HANKAKU_KATAKANA : u"InputMode.HankakuKatakana",
         skk.INPUT_MODE_LATIN : u"InputMode.Latin",
-        skk.INPUT_MODE_WIDE_LATIN : u"InputMode.WideLatin",
-        skk.INPUT_MODE_HANKAKU_KATAKANA : u"InputMode.HankakuKatakana"
+        skk.INPUT_MODE_WIDE_LATIN : u"InputMode.WideLatin"
         }
 
     __prop_name_input_modes = dict()
@@ -145,9 +146,9 @@ class Engine(ibus.EngineBase):
     __input_mode_labels = {
         skk.INPUT_MODE_HIRAGANA : u"あ",
         skk.INPUT_MODE_KATAKANA : u"ア",
+        skk.INPUT_MODE_HANKAKU_KATAKANA : u"_ｱ",
         skk.INPUT_MODE_LATIN : u"_A",
-        skk.INPUT_MODE_WIDE_LATIN : u"Ａ",
-        skk.INPUT_MODE_HANKAKU_KATAKANA : u"_ｱ"
+        skk.INPUT_MODE_WIDE_LATIN : u"Ａ"
         }
 
     def __init__(self, bus, object_path):
@@ -187,11 +188,20 @@ class Engine(ibus.EngineBase):
             _(u'Kuten([MM]KKTT) ').decode('UTF-8')
         self.__skk.custom_rom_kana_rule = \
             self.config.get_value('custom_rom_kana_rule')
+
+        if self.config.get_value('enable_virtual_keyboard'):
+            try:
+                self.__virtual_keyboard = virtkbd.VirtualKeyboardEekboard(self)
+            except:
+                self.__virtual_keyboard = virtkbd.VirtualKeyboardFallback(self)
+        else:
+            self.__virtual_keyboard = virtkbd.VirtualKeyboardFallback(self)
+
         self.__skk.reset()
         self.__skk.activate_input_mode(self.__initial_input_mode)
         self.__prop_dict = dict()
         self.__prop_list = self.__init_props()
-        self.__input_mode = skk.INPUT_MODE_NONE
+        self.__input_mode = None # use invalid input mode (None) to force update
         self.__update_input_mode()
         self.__suspended_mode = None
         if self.config.get_value('use_nicola'):
@@ -200,6 +210,7 @@ class Engine(ibus.EngineBase):
         else:
             self.__nicola = None
 
+    input_mode = property(lambda self: self.__input_mode)
 
     def __init_props(self):
         skk_props = ibus.PropList()
@@ -217,15 +228,15 @@ class Engine(ibus.EngineBase):
         props.append(ibus.Property(key=u"InputMode.Katakana",
                                    type=ibus.PROP_TYPE_RADIO,
                                    label=_(u"Katakana")))
+        props.append(ibus.Property(key=u"InputMode.HankakuKatakana",
+                                   type=ibus.PROP_TYPE_RADIO,
+                                   label=_(u"HankakuKatakana")))
         props.append(ibus.Property(key=u"InputMode.Latin",
                                    type=ibus.PROP_TYPE_RADIO,
                                    label=_(u"Latin")))
         props.append(ibus.Property(key=u"InputMode.WideLatin",
                                    type=ibus.PROP_TYPE_RADIO,
                                    label=_(u"Wide Latin")))
-        props.append(ibus.Property(key=u"InputMode.HankakuKatakana",
-                                   type=ibus.PROP_TYPE_RADIO,
-                                   label=_(u"HankakuKatakana")))
 
         props[self.__skk.input_mode].set_state(ibus.PROP_STATE_CHECKED)
 
@@ -234,6 +245,14 @@ class Engine(ibus.EngineBase):
 
         input_mode_prop.set_sub_props(props)
         skk_props.append(input_mode_prop)
+
+        visible = not isinstance(self.__virtual_keyboard,
+                                 virtkbd.VirtualKeyboardFallback)
+        keyboard_prop = ibus.Property(key=u"virtual-keyboard",
+                                      icon=u"input-keyboard",
+                                      tooltip=_(u"Launch on-screen keyboard"),
+                                      visible=visible)
+        skk_props.append(keyboard_prop)
 
         skk_props.append(ibus.Property(key=u"setup",
                                        tooltip=_(u"Configure SKK")))
@@ -249,7 +268,11 @@ class Engine(ibus.EngineBase):
         self.update_property(self.__prop_dict[prop_name])
         prop = self.__prop_dict[u"InputMode"]
         prop.label = self.__input_mode_labels[self.__input_mode]
+        if hasattr(self, 'set_icon_symbol'):
+            self.set_icon_symbol(prop.label)
         self.update_property(prop)
+        self.__virtual_keyboard.set_mode(input_mode=self.__input_mode,
+                                         typing_mode=None)
         self.__invalidate()
 
     def __get_clipboard(self, clipboard, text, data):
@@ -299,9 +322,9 @@ class Engine(ibus.EngineBase):
                 except IndexError:
                     pass
         elif (self.__skk.dict_edit_level() > 0 or \
-                self.__skk.conv_state == skk.CONV_STATE_START) and \
-                (state & modifier.CONTROL_MASK) and \
-                unichr(keyval).lower() in (u'y', u'v'):
+                  self.__skk.conv_state == skk.CONV_STATE_START) and \
+                  (state & modifier.CONTROL_MASK) and \
+                  unichr(keyval).lower() in (u'y', u'v'):
             if unichr(keyval).lower() == u'y':
                 clipboard = clipboard_get ("PRIMARY")
             else:
@@ -323,7 +346,9 @@ class Engine(ibus.EngineBase):
             keychr = u'rshift'
         else:
             keychr = unichr(keyval)
-            if 0x20 > ord(keychr) or ord(keychr) > 0x7E:
+            if self.__virtual_keyboard.keyboard_type == virtkbd.KEYBOARD_TYPE_JP:
+                keychr = u'kana+' + keychr
+            elif 0x20 > ord(keychr) or ord(keychr) > 0x7E:
                 # If the pre-edit buffer is visible, always handle key events:
                 # http://github.com/ueno/ibus-skk/issues/#issue/5
                 return len(self.__skk.preedit) > 0
@@ -435,9 +460,9 @@ class Engine(ibus.EngineBase):
     # INPUT_MODE_CURSOR_COLORS = {
     #     skk.INPUT_MODE_HIRAGANA: (139, 62, 47),
     #     skk.INPUT_MODE_KATAKANA: (34, 139, 34),
+    #     skk.INPUT_MODE_HANKAKU_KATAKANA: (138, 43, 226),
     #     skk.INPUT_MODE_LATIN: (139, 139, 131),
-    #     skk.INPUT_MODE_WIDE_LATIN: (255, 215, 0),
-    #     skk.INPUT_MODE_HANKAKU_KATAKANA: (138, 43, 226)
+    #     skk.INPUT_MODE_WIDE_LATIN: (255, 215, 0)
     #     }
 
     def __update(self):
@@ -526,6 +551,7 @@ class Engine(ibus.EngineBase):
             self.__skk.activate_input_mode(self.__suspended_mode)
             self.__suspended_mode = None
         self.__update_input_mode()
+        self.__virtual_keyboard.enable()
 
     def focus_out(self):
         self.__suspended_mode = self.__skk.input_mode
@@ -534,6 +560,7 @@ class Engine(ibus.EngineBase):
         self.__lookup_table.clean()
         self.__update()
         self.__skk.reset()
+        self.__virtual_keyboard.disable()
 
     def reset(self):
         self.__skk.reset()
@@ -541,10 +568,13 @@ class Engine(ibus.EngineBase):
 
     def property_activate(self, prop_name, state):
         # print "PropertyActivate(%s, %d)" % (prop_name, state)
-        if state == ibus.PROP_STATE_CHECKED:
-            input_mode = self.__prop_name_input_modes[prop_name]
-            self.__skk.activate_input_mode(input_mode)
-            self.__update_input_mode()
+        if prop_name.startswith('InputMode'):
+            if state == ibus.PROP_STATE_CHECKED:
+                input_mode = self.__prop_name_input_modes[prop_name]
+                self.__skk.activate_input_mode(input_mode)
+                self.__update_input_mode()
+        elif prop_name == 'virtual-keyboard':
+            self.__virtual_keyboard.toggle_visible()
         else:
             if prop_name == 'setup':
                 self.__start_setup()
