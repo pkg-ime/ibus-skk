@@ -24,7 +24,7 @@ m4_define([package_name], [ibus-skk])
 m4_define([ibus_released], [1])
 m4_define([ibus_major_version], [1])
 m4_define([ibus_minor_version], [3])
-m4_define([ibus_micro_version], [7])
+m4_define([ibus_micro_version], [9])
 m4_define(ibus_maybe_datestamp,
     m4_esyscmd([if test x]ibus_released[ != x1; then date +.%Y%m%d | tr -d '\n\r'; fi]))
 
@@ -79,6 +79,9 @@ GETTEXT_PACKAGE=ibus-skk
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Define to the read-only architecture-independent data directory.])
 AM_GLIB_GNU_GETTEXT
+
+IBUS_WITH_HOTKEYS
+IBUS_ICON_SYMBOL([&#x3042;])
 
 # OUTPUT files
 AC_CONFIG_FILES([ po/Makefile.in
