@@ -1,18 +1,15 @@
-Format-Specification: http://svn.debian.org/wsvn/dep/web/deps/dep5.mdwn?op=file&rev=135
-Name: ibus-skk
-Maintainer: Daiki Ueno <ueno@unixuser.org>
+Format: http://dep.debian.net/deps/dep5
+Upstreasm-Name: ibus-skk
 Source: http://github.com/ueno/ibus-skk/downloads/
 
 Files: *
-Copyright: 2007-2008 Huang Peng <shawn.p.huang@gmail.com>
-           2009-2010 Daiki Ueno <ueno@unixuser.org>
+Copyright: 2011 Daiki Ueno <ueno@unixuser.org>
+	   2011 Red Hat, Inc.
 License: GPL-2+
 
-Files: engine/ibus-engine-skk.in
-Copyright: 2007-2008 Huang Peng <shawn.p.huang@gmail.com>
-License: LGPL-2.0+
-
-Files: icons/Makefile.am
+Files: configure.ac
+       Makefile.am
+       icons/Makefile.am
        icons/Makefile.in
 Copyright: 2007-2008 Huang Peng <shawn.p.huang@gmail.com>
            2009-2010 Daiki Ueno <ueno@unixuser.org>
@@ -20,7 +17,7 @@ License: LGPL-2.0+
 
 Files: debian/*
 Copyright: 2008 LI Daobing <lidaobing@gmail.com>
-           2009 Daiki Ueno <ueno@unixuser.org>
+           2009-2011 Daiki Ueno <ueno@unixuser.org>
 License: GPL-2+
 
 License: GPL-2+

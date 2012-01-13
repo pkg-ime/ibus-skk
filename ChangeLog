@@ -1,3 +1,305 @@
+commit 295ed5ed25f5aced06a69a6f7b95465bbd1164bb
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2012-01-11 16:46:29 +0900
+
+    Cache lookup table visibility in engine side.
+    
+    Also factor out keyval resolution code.
+
+M	src/engine.vala
+
+commit 282509ad856bd1a5a311412fc84336c13e6bd4ee
+Merge: e6ec2bb 6851ae3
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2012-01-11 15:26:35 +0900
+
+    Merge branch 'master' of github.com:ueno/ibus-skk
+
+commit e6ec2bb99c6e71ea7a38cc4dd32a172b52e42e8e
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2012-01-11 14:49:33 +0900
+
+    Follow libskk API change.
+
+M	src/engine.vala
+
+commit 4f45284eab8d5c7e1f21e2ab65e9616209bd1056
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2012-01-11 14:48:48 +0900
+
+    Simplify README.
+
+M	README
+
+commit 6851ae3be22634a13046ef8fa47397816337d932
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2012-01-05 16:28:17 +0900
+
+    Use warning instead of stderr.printf extensively.
+
+M	src/engine.vala
+
+commit ebb86e3874ba6327754706d049ccd4428b21c948
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2012-01-05 14:39:12 +0900
+
+    Use update_lookup_table_fast.
+
+M	src/engine.vala
+
+commit 63d64da02b38786efd51f7c8c60f5f84fc326f6d
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2012-01-04 18:41:44 +0900
+
+    Warning if loading a typing rule fails (libskk Issue#6).
+
+M	src/engine.vala
+
+commit 7296af866b8491b448c60af2deaf82530b54a2af
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2012-01-04 17:57:30 +0900
+
+    Refine lookup table cursor movement.
+
+M	src/engine.vala
+
+commit b54c3258d653d4a93039ad479c8251f9ac2a2596
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-12-29 19:31:12 +0900
+
+    Don't register candidates signal handlers more than once.
+
+M	src/engine.vala
+
+commit acbad042569b87325df660e3a6544ef277b9a0cd
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-12-29 11:48:58 +0900
+
+    Revert <layout> to jp from us.
+
+M	skk.xml.in.in
+
+commit ee2a6de5fc97269148eb90d20da4324b5feba895
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-12-28 17:26:35 +0900
+
+    Cleanup Makefile.am.
+
+M	Makefile.am
+M	configure.ac
+M	icons/Makefile.am
+
+commit 3f2bed38ceebde0cddc63040f2d7660cef50ad74
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-12-28 17:26:09 +0900
+
+    Don't add removed ibus.m4 to EXTRA_DIST.
+
+M	m4/Makefile.am
+
+commit 5ee3d6a5b9953ab8321a269b1b2a5ec0681cf7e5
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-12-28 17:04:31 +0900
+
+    Make sure to restore surrounding text after focus change.
+
+M	src/engine.vala
+
+commit 5b6a94759ff64e108b2ba62f7b88e2b0aadbff33
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-12-28 12:56:58 +0900
+
+    Map space/x to page_down/page_up when lookup table is active.
+    
+    Also pass Left and Right to Skk.Context.process_key_event.
+
+M	src/engine.vala
+
+commit 27f68b41c5803e120afc7b569f227c856cdd0835
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-12-28 12:55:21 +0900
+
+    Assume CDB dict if pathname ends with ".cdb" (Issue#42).
+
+M	src/engine.vala
+
+commit 688bd0026040ddfec24d8e919eaec51b642a7790
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-12-27 18:24:42 +0900
+
+    Fix reconvert behavior.
+
+M	src/engine.vala
+
+commit 52e280840a2b3f45a4ade234456325b0aac55f4d
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-12-27 17:16:07 +0900
+
+    Fix commit 8ce64802.
+
+M	src/engine.vala
+
+commit 40adc3e1849167d2f93d4562ed7c39489122bf96
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-12-27 17:09:39 +0900
+
+    Remove <symbol> and <hotkeys> checks, as we support only ibus 1.4 or later.
+
+M	configure.ac
+D	m4/ibus.m4
+M	skk.xml.in.in
+
+commit 2500ac6df7aa722366ff0758b17b99be57b3d5a1
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-12-27 17:09:05 +0900
+
+    Use Skk.Context.poll_output instead of .get_output.
+
+M	src/engine.vala
+
+commit 8ce6480291374b1071b44da229510398f0ee39f7
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-12-27 17:01:40 +0900
+
+    Support reconvert based on surrounding text.
+
+M	src/engine.vala
+M	src/ibus-1.0.vapi
+
+commit fcb4b2352c1fc7c6c79327dc174862d96d51ddea
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-12-27 16:45:07 +0900
+
+    Fix attribute range overflow for preedit.
+
+M	src/engine.vala
+M	src/setup.vala
+
+commit 81f981c7c1706cddf615ac473127a8044fc98212
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-12-22 16:40:30 +0900
+
+    Restore lookup table after dict edit.
+
+M	src/engine.vala
+
+commit 2415a0ce892f42683e685bf3383468852f6317e8
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-12-22 10:28:10 +0900
+
+    Switch to use git.mk from pango.
+
+D	.gitignore
+M	Makefile.am
+A	git.mk
+M	icons/Makefile.am
+M	m4/Makefile.am
+M	src/Makefile.am
+
+commit c08a5526908d9b55f2635d15def2bcc604b3cbe9
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-12-22 10:20:49 +0900
+
+    Remove compile time Python dependency.
+    
+    Also split PKG_CHECK_MODULES for each library (Issue#41).
+
+M	Makefile.am
+M	configure.ac
+M	m4/ibus.m4
+D	scripts/Makefile.am
+D	scripts/ibus-skk-convert-jisyo.in
+M	src/Makefile.am
+
+commit 9b945711c759afb1b48c7d8bff248a3a235b6544
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-12-21 16:40:06 +0900
+
+    Fix Vala code license header to GPLv2+.
+
+M	README
+M	src/engine.vala
+M	src/plist.vala
+M	src/preferences.vala
+M	src/setup.vala
+
+commit 3e19f15769f83b172f59a5cce4012490fc620f0f
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-12-20 18:42:49 +0900
+
+    Don't remove *.[ch] with make clean.
+
+M	src/Makefile.am
+
+commit 5052d783f8e871b1b923026b3033f9ec61fcd11d
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-12-20 10:56:31 +0900
+
+    Merge branches 'libskk' and 'master'
+
+commit ad0b820ff14d7fd8f85e8f8fb8b4c83c9b4d03f8
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-11-17 16:50:44 +0900
+
+    Port to Vala from Python using libskk.
+
+A	.dir-locals.el
+M	Makefile.am
+M	README
+M	configure.ac
+D	engine/.gitignore
+D	engine/Makefile.am
+D	engine/engine.py
+D	engine/factory.py
+D	engine/ibus-engine-skk.in
+D	engine/kzik.py
+D	engine/main.py
+D	engine/nicola.py
+D	engine/skk.py
+D	engine/skk.xml.in.in
+D	engine/test.py
+D	engine/virtkbd.py
+D	ibus-skk.json.example
+M	ibus-skk.spec.in
+M	po/POTFILES.in
+M	po/POTFILES.skip
+M	po/ja.po
+D	setup/.gitignore
+D	setup/Makefile.am
+D	setup/config.py
+D	setup/ibus-setup-skk.in
+D	setup/ibus-skk-preferences.ui.in
+D	setup/main.py
+A	skk.xml.in.in
+A	src/Makefile.am
+A	src/config.vapi
+A	src/engine.vala
+A	src/ibus-1.0.deps
+A	src/ibus-1.0.vapi
+A	src/ibus-skk-preferences.ui.in
+A	src/ibus-skk.deps
+A	src/plist.vala
+A	src/preferences.vala
+A	src/setup.vala
+
+commit 543f599c406e6da545404f77eaea3043c7fb9fdd
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-09-20 15:42:47 +0900
+
+    Update m4/ibus.m4.
+
+M	configure.ac
+M	engine/skk.xml.in.in
+M	m4/ibus.m4
+
+commit 6cecc98887639eba877fa7ae9f18022521f26189
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2011-09-20 10:24:30 +0900
+
+    Fix initial_input_mode_liststore to have correct index values (Issue#37).
+
+M	setup/ibus-skk-preferences.ui.in
+
 commit bc257d52b622398a4c076402a53c2dd81fc8068c
 Author: Daiki Ueno <ueno@unixuser.org>
 Date:   2011-09-02 12:21:23 +0900
