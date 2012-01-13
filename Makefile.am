@@ -19,33 +19,59 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-SUBDIRS = \
-	engine \
-	setup \
-	icons \
-	m4 \
-	po \
-	scripts \
+SUBDIRS =					\
+	src					\
+	icons					\
+	m4					\
+	po					\
 	$(NULL)
 
 ACLOCAL_AMFLAGS = -I m4
 
-EXTRA_DIST = \
-	autogen.sh \
-	ibus-skk.spec.in \
-	python-config.py \
-	ibus-skk.json.example \
+component_DATA = skk.xml
+componentdir = $(datadir)/ibus/component
+
+skk.xml: skk.xml.in
+	$(AM_V_GEN) \
+	( \
+		libexecdir=${libexecdir}; \
+		pkgdatadir=${pkgdatadir}; \
+		s=`cat $<`; \
+		eval "echo \"$${s}\""; \
+	) > $@
+
+EXTRA_DIST =					\
+	autogen.sh				\
+	skk.xml.in.in				\
+	ibus-skk.spec.in			\
 	$(NULL)
 
-noinst_DIST = \
+GITIGNOREFILES =				\
+	INSTALL					\
+	aclocal.m4				\
+	compile					\
+	config.guess				\
+	config.h.in				\
+	config.sub				\
+	depcomp					\
+	install-sh				\
+	ltmain.sh				\
+	missing					\
+	mkinstalldirs				\
 	$(NULL)
 
+CLEANFILES =					\
+	skk.xml					\
+	$(NULL)
 
-DISTCLEANFILES = \
-	po/stamp-it \
+DISTCLEANFILES =				\
+	skk.xml.in				\
+	po/stamp-it				\
 	$(NULL)
 
 dist-hook:
 	if test -d .git ; then \
 		git log --name-status --date=iso > $(distdir)/ChangeLog ; \
 	fi
+
+-include $(top_srcdir)/git.mk

@@ -18,5 +18,13 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-EXTRA_DIST = \
-    $(NULL)
+GITIGNOREFILES =				\
+	intltool.m4				\
+	libtool.m4				\
+	ltoptions.m4				\
+	ltsugar.m4				\
+	ltversion.m4				\
+	lt~obsolete.m4				\
+	$(NULL)
+
+-include $(top_srcdir)/git.mk
