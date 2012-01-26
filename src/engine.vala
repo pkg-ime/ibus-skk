@@ -1,6 +1,6 @@
 /* 
- * Copyright (C) 2011 Daiki Ueno <ueno@unixuser.org>
- * Copyright (C) 2011 Red Hat, Inc.
+ * Copyright (C) 2011-2012 Daiki Ueno <ueno@unixuser.org>
+ * Copyright (C) 2011-2012 Red Hat, Inc.
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -425,16 +425,27 @@ class SkkEngine : IBus.Engine {
         { IBus.Henkan, "rshift" }
     };
 
+    // keys should always be reported as handled (a8ffece4 and caf9f944)
+    static const Entry<uint,uint>[] IGNORE_KEYVALS = {
+        { IBus.j, IBus.ModifierType.CONTROL_MASK }
+    };
+
     public override bool process_key_event (uint keyval,
                                             uint keycode,
                                             uint state)
     {
+        // filter out unnecessary modifier bits
+        // FIXME: should resolve virtual modifiers
+        uint _state = state & (IBus.ModifierType.CONTROL_MASK |
+                               IBus.ModifierType.MOD1_MASK |
+                               IBus.ModifierType.MOD5_MASK |
+                               IBus.ModifierType.RELEASE_MASK);
         if (context.candidates.page_visible &&
-            process_lookup_table_key_event (keyval, keycode, state)) {
+            process_lookup_table_key_event (keyval, keycode, _state)) {
             return true;
         }
 
-        Skk.ModifierType modifiers = (Skk.ModifierType) state;
+        Skk.ModifierType modifiers = (Skk.ModifierType) _state;
         string? name = null;
         unichar code = '\0';
         foreach (var entry in NAME_KEYVALS) {
@@ -464,6 +475,11 @@ class SkkEngine : IBus.Engine {
         if (output.length > 0) {
             var text = new IBus.Text.from_string (output);
             commit_text (text);
+        }
+        foreach (var entry in IGNORE_KEYVALS) {
+            if (entry.key == keyval && entry.value == modifiers) {
+                return true;
+            }
         }
         return retval;
     }

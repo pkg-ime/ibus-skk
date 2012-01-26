@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: IME Packaging Team <pkg-ime-devel@lists.alioth.debian.org>
 Uploaders: Daiki Ueno <ueno@unixuser.org>, Osamu Aoki <osamu@debian.org>
 DM-Upload-Allowed: yes
-Build-Depends: debhelper (>= 7.0.50~), autotools-dev, intltool, libskk-dev (>= 0.0.8), libibus-1.0-dev, libgtk-3-dev
+Build-Depends: debhelper (>= 7.0.50~), autotools-dev, intltool, libskk-dev (>= 0.0.9), libibus-1.0-dev, libgtk-3-dev
 Standards-Version: 3.9.2
 Homepage: http://github.com/ueno/ibus-skk
 Vcs-Git: git://git.debian.org/git/pkg-ime/ibus-skk.git

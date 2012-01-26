@@ -2,8 +2,8 @@
  * generated from engine.vala, do not modify */
 
 /* 
- * Copyright (C) 2011 Daiki Ueno <ueno@unixuser.org>
- * Copyright (C) 2011 Red Hat, Inc.
+ * Copyright (C) 2011-2012 Daiki Ueno <ueno@unixuser.org>
+ * Copyright (C) 2011-2012 Red Hat, Inc.
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -52,7 +52,6 @@ typedef struct _SkkEngineEntry SkkEngineEntry;
 #define _g_free0(var) (var = (g_free (var), NULL))
 #define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
 #define _g_variant_unref0(var) ((var == NULL) ? NULL : (var = (g_variant_unref (var), NULL)))
-#define _skk_key_event_unref0(var) ((var == NULL) ? NULL : (var = (skk_key_event_unref (var), NULL)))
 #define _g_option_context_free0(var) ((var == NULL) ? NULL : (var = (g_option_context_free (var), NULL)))
 
 struct _SkkEngine {
@@ -152,6 +151,7 @@ static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify 
 
 static const SkkEngineEntry SKK_ENGINE_CODE_KEYVALS[3] = {{IBUS_Tab, '\t'}, {IBUS_Return, '\n'}, {IBUS_BackSpace, '\b'}};
 static const SkkEngineEntry SKK_ENGINE_NAME_KEYVALS[10] = {{IBUS_Up, "Up"}, {IBUS_Down, "Down"}, {IBUS_Left, "Left"}, {IBUS_Right, "Right"}, {IBUS_Page_Up, "Page_Up"}, {IBUS_KP_Page_Up, "Page_Up"}, {IBUS_Page_Down, "Page_Down"}, {IBUS_KP_Page_Down, "Page_Down"}, {IBUS_Muhenkan, "lshift"}, {IBUS_Henkan, "rshift"}};
+static const SkkEngineEntry SKK_ENGINE_IGNORE_KEYVALS[1] = {{IBUS_j, IBUS_CONTROL_MASK}};
 static const GOptionEntry SKK_ENGINE_options[2] = {{"ibus", 'i', 0, G_OPTION_ARG_NONE, &skk_engine_ibus, "Component is executed by IBus", NULL}, {NULL}};
 
 static gboolean _skk_engine_retrieve_surrounding_text (SkkEngine* self, gchar** text, guint* cursor_pos) {
@@ -1331,61 +1331,65 @@ static gboolean skk_engine_process_lookup_table_key_event (SkkEngine* self, guin
 static gboolean skk_engine_real_process_key_event (IBusEngine* base, guint keyval, guint keycode, guint state) {
 	SkkEngine * self;
 	gboolean result = FALSE;
-	gboolean _tmp0_ = FALSE;
-	SkkContext* _tmp1_;
-	SkkCandidateList* _tmp2_;
+	guint _tmp0_;
+	guint _state;
+	gboolean _tmp1_ = FALSE;
+	SkkContext* _tmp2_;
 	SkkCandidateList* _tmp3_;
-	gboolean _tmp4_;
+	SkkCandidateList* _tmp4_;
 	gboolean _tmp5_;
-	gboolean _tmp10_;
-	guint _tmp11_;
+	gboolean _tmp6_;
+	gboolean _tmp11_;
+	guint _tmp12_;
 	SkkModifierType modifiers;
 	gchar* name;
 	gunichar code;
-	gboolean _tmp23_ = FALSE;
-	const gchar* _tmp24_;
-	gboolean _tmp26_;
-	const gchar* _tmp32_;
-	gunichar _tmp33_;
-	SkkModifierType _tmp34_;
-	SkkKeyEvent* _tmp35_;
+	gboolean _tmp24_ = FALSE;
+	const gchar* _tmp25_;
+	gboolean _tmp27_;
+	const gchar* _tmp33_;
+	gunichar _tmp34_;
+	SkkModifierType _tmp35_;
+	SkkKeyEvent* _tmp36_;
 	SkkKeyEvent* key;
-	SkkContext* _tmp36_;
-	SkkKeyEvent* _tmp37_;
-	gboolean _tmp38_ = FALSE;
+	SkkContext* _tmp37_;
+	SkkKeyEvent* _tmp38_;
+	gboolean _tmp39_ = FALSE;
 	gboolean retval;
-	SkkContext* _tmp39_;
-	gchar* _tmp40_ = NULL;
+	SkkContext* _tmp40_;
+	gchar* _tmp41_ = NULL;
 	gchar* output;
-	const gchar* _tmp41_;
-	gint _tmp42_;
+	const gchar* _tmp42_;
 	gint _tmp43_;
+	gint _tmp44_;
 	self = (SkkEngine*) base;
-	_tmp1_ = self->priv->context;
-	_tmp2_ = skk_context_get_candidates (_tmp1_);
-	_tmp3_ = _tmp2_;
-	_tmp4_ = skk_candidate_list_get_page_visible (_tmp3_);
-	_tmp5_ = _tmp4_;
-	if (_tmp5_) {
-		guint _tmp6_;
+	_tmp0_ = state;
+	_state = _tmp0_ & (((IBUS_CONTROL_MASK | IBUS_MOD1_MASK) | IBUS_MOD5_MASK) | IBUS_RELEASE_MASK);
+	_tmp2_ = self->priv->context;
+	_tmp3_ = skk_context_get_candidates (_tmp2_);
+	_tmp4_ = _tmp3_;
+	_tmp5_ = skk_candidate_list_get_page_visible (_tmp4_);
+	_tmp6_ = _tmp5_;
+	if (_tmp6_) {
 		guint _tmp7_;
 		guint _tmp8_;
-		gboolean _tmp9_ = FALSE;
-		_tmp6_ = keyval;
-		_tmp7_ = keycode;
-		_tmp8_ = state;
-		_tmp9_ = skk_engine_process_lookup_table_key_event (self, _tmp6_, _tmp7_, _tmp8_);
-		_tmp0_ = _tmp9_;
+		guint _tmp9_;
+		gboolean _tmp10_ = FALSE;
+		_tmp7_ = keyval;
+		_tmp8_ = keycode;
+		_tmp9_ = _state;
+		_tmp10_ = skk_engine_process_lookup_table_key_event (self, _tmp7_, _tmp8_, _tmp9_);
+		_tmp1_ = _tmp10_;
 	} else {
-		_tmp0_ = FALSE;
+		_tmp1_ = FALSE;
 	}
-	_tmp10_ = _tmp0_;
-	if (_tmp10_) {
+	_tmp11_ = _tmp1_;
+	if (_tmp11_) {
 		result = TRUE;
 		return result;
 	}
-	_tmp11_ = state;
-	modifiers = (SkkModifierType) _tmp11_;
+	_tmp12_ = _state;
+	modifiers = (SkkModifierType) _tmp12_;
 	name = NULL;
 	code = (gunichar) '\0';
 	{
@@ -1399,21 +1403,21 @@ static gboolean skk_engine_real_process_key_event (IBusEngine* base, guint keyva
 			SkkEngineEntry entry = {0};
 			entry = entry_collection[entry_it];
 			{
-				SkkEngineEntry _tmp12_;
-				gconstpointer _tmp13_;
-				guint _tmp14_;
-				_tmp12_ = entry;
-				_tmp13_ = _tmp12_.key;
-				_tmp14_ = keyval;
-				if (GPOINTER_TO_UINT (_tmp13_) == _tmp14_) {
-					SkkEngineEntry _tmp15_;
-					gconstpointer _tmp16_;
-					gchar* _tmp17_;
-					_tmp15_ = entry;
-					_tmp16_ = _tmp15_.value;
-					_tmp17_ = g_strdup ((const gchar*) _tmp16_);
+				SkkEngineEntry _tmp13_;
+				gconstpointer _tmp14_;
+				guint _tmp15_;
+				_tmp13_ = entry;
+				_tmp14_ = _tmp13_.key;
+				_tmp15_ = keyval;
+				if (GPOINTER_TO_UINT (_tmp14_) == _tmp15_) {
+					SkkEngineEntry _tmp16_;
+					gconstpointer _tmp17_;
+					gchar* _tmp18_;
+					_tmp16_ = entry;
+					_tmp17_ = _tmp16_.value;
+					_tmp18_ = g_strdup ((const gchar*) _tmp17_);
 					_g_free0 (name);
-					name = _tmp17_;
+					name = _tmp18_;
 					break;
 				}
 			}
@@ -1430,87 +1434,128 @@ static gboolean skk_engine_real_process_key_event (IBusEngine* base, guint keyva
 			SkkEngineEntry entry = {0};
 			entry = entry_collection[entry_it];
 			{
-				SkkEngineEntry _tmp18_;
-				gconstpointer _tmp19_;
-				guint _tmp20_;
-				_tmp18_ = entry;
-				_tmp19_ = _tmp18_.key;
-				_tmp20_ = keyval;
-				if (GPOINTER_TO_UINT (_tmp19_) == _tmp20_) {
-					SkkEngineEntry _tmp21_;
-					gconstpointer _tmp22_;
-					_tmp21_ = entry;
-					_tmp22_ = _tmp21_.value;
-					code = GPOINTER_TO_INT (_tmp22_);
+				SkkEngineEntry _tmp19_;
+				gconstpointer _tmp20_;
+				guint _tmp21_;
+				_tmp19_ = entry;
+				_tmp20_ = _tmp19_.key;
+				_tmp21_ = keyval;
+				if (GPOINTER_TO_UINT (_tmp20_) == _tmp21_) {
+					SkkEngineEntry _tmp22_;
+					gconstpointer _tmp23_;
+					_tmp22_ = entry;
+					_tmp23_ = _tmp22_.value;
+					code = GPOINTER_TO_INT (_tmp23_);
 					break;
 				}
 			}
 		}
 	}
-	_tmp24_ = name;
-	if (_tmp24_ == NULL) {
-		gunichar _tmp25_;
-		_tmp25_ = code;
-		_tmp23_ = _tmp25_ == ((gunichar) '\0');
+	_tmp25_ = name;
+	if (_tmp25_ == NULL) {
+		gunichar _tmp26_;
+		_tmp26_ = code;
+		_tmp24_ = _tmp26_ == ((gunichar) '\0');
 	} else {
-		_tmp23_ = FALSE;
+		_tmp24_ = FALSE;
 	}
-	_tmp26_ = _tmp23_;
-	if (_tmp26_) {
-		gboolean _tmp27_ = FALSE;
-		guint _tmp28_;
-		gboolean _tmp30_;
-		_tmp28_ = keyval;
-		if (((guint) 0x20) <= _tmp28_) {
-			guint _tmp29_;
-			_tmp29_ = keyval;
-			_tmp27_ = _tmp29_ < ((guint) 0x7F);
+	_tmp27_ = _tmp24_;
+	if (_tmp27_) {
+		gboolean _tmp28_ = FALSE;
+		guint _tmp29_;
+		gboolean _tmp31_;
+		_tmp29_ = keyval;
+		if (((guint) 0x20) <= _tmp29_) {
+			guint _tmp30_;
+			_tmp30_ = keyval;
+			_tmp28_ = _tmp30_ < ((guint) 0x7F);
 		} else {
-			_tmp27_ = FALSE;
+			_tmp28_ = FALSE;
 		}
-		_tmp30_ = _tmp27_;
-		if (_tmp30_) {
-			guint _tmp31_;
-			_tmp31_ = keyval;
-			code = (gunichar) _tmp31_;
+		_tmp31_ = _tmp28_;
+		if (_tmp31_) {
+			guint _tmp32_;
+			_tmp32_ = keyval;
+			code = (gunichar) _tmp32_;
 		} else {
 			result = FALSE;
 			_g_free0 (name);
 			return result;
 		}
 	}
-	_tmp32_ = name;
-	_tmp33_ = code;
-	_tmp34_ = modifiers;
-	_tmp35_ = skk_key_event_new (_tmp32_, _tmp33_, _tmp34_);
-	key = _tmp35_;
-	_tmp36_ = self->priv->context;
-	_tmp37_ = key;
-	_tmp38_ = skk_context_process_key_event (_tmp36_, _tmp37_);
-	retval = _tmp38_;
-	_tmp39_ = self->priv->context;
-	_tmp40_ = skk_context_poll_output (_tmp39_);
-	output = _tmp40_;
-	_tmp41_ = output;
-	_tmp42_ = strlen (_tmp41_);
-	_tmp43_ = _tmp42_;
-	if (_tmp43_ > 0) {
-		const gchar* _tmp44_;
-		IBusText* _tmp45_;
+	_tmp33_ = name;
+	_tmp34_ = code;
+	_tmp35_ = modifiers;
+	_tmp36_ = skk_key_event_new (_tmp33_, _tmp34_, _tmp35_);
+	key = _tmp36_;
+	_tmp37_ = self->priv->context;
+	_tmp38_ = key;
+	_tmp39_ = skk_context_process_key_event (_tmp37_, _tmp38_);
+	retval = _tmp39_;
+	_tmp40_ = self->priv->context;
+	_tmp41_ = skk_context_poll_output (_tmp40_);
+	output = _tmp41_;
+	_tmp42_ = output;
+	_tmp43_ = strlen (_tmp42_);
+	_tmp44_ = _tmp43_;
+	if (_tmp44_ > 0) {
+		const gchar* _tmp45_;
 		IBusText* _tmp46_;
-		IBusText* text;
 		IBusText* _tmp47_;
-		_tmp44_ = output;
-		_tmp45_ = ibus_text_new_from_string (_tmp44_);
-		_tmp46_ = g_object_ref_sink (_tmp45_);
-		text = _tmp46_;
-		_tmp47_ = text;
-		ibus_engine_commit_text ((IBusEngine*) self, _tmp47_);
+		IBusText* text;
+		IBusText* _tmp48_;
+		_tmp45_ = output;
+		_tmp46_ = ibus_text_new_from_string (_tmp45_);
+		_tmp47_ = g_object_ref_sink (_tmp46_);
+		text = _tmp47_;
+		_tmp48_ = text;
+		ibus_engine_commit_text ((IBusEngine*) self, _tmp48_);
 		_g_object_unref0 (text);
+	}
+	{
+		SkkEngineEntry* entry_collection = NULL;
+		gint entry_collection_length1 = 0;
+		gint _entry_collection_size_ = 0;
+		gint entry_it = 0;
+		entry_collection = SKK_ENGINE_IGNORE_KEYVALS;
+		entry_collection_length1 = G_N_ELEMENTS (SKK_ENGINE_IGNORE_KEYVALS);
+		for (entry_it = 0; entry_it < G_N_ELEMENTS (SKK_ENGINE_IGNORE_KEYVALS); entry_it = entry_it + 1) {
+			SkkEngineEntry entry = {0};
+			entry = entry_collection[entry_it];
+			{
+				gboolean _tmp49_ = FALSE;
+				SkkEngineEntry _tmp50_;
+				gconstpointer _tmp51_;
+				guint _tmp52_;
+				gboolean _tmp56_;
+				_tmp50_ = entry;
+				_tmp51_ = _tmp50_.key;
+				_tmp52_ = keyval;
+				if (GPOINTER_TO_UINT (_tmp51_) == _tmp52_) {
+					SkkEngineEntry _tmp53_;
+					gconstpointer _tmp54_;
+					SkkModifierType _tmp55_;
+					_tmp53_ = entry;
+					_tmp54_ = _tmp53_.value;
+					_tmp55_ = modifiers;
+					_tmp49_ = GPOINTER_TO_UINT (_tmp54_) == ((guint) _tmp55_);
+				} else {
+					_tmp49_ = FALSE;
+				}
+				_tmp56_ = _tmp49_;
+				if (_tmp56_) {
+					result = TRUE;
+					_g_free0 (output);
+					_g_object_unref0 (key);
+					_g_free0 (name);
+					return result;
+				}
+			}
+		}
 	}
 	result = retval;
 	_g_free0 (output);
-	_skk_key_event_unref0 (key);
+	_g_object_unref0 (key);
 	_g_free0 (name);
 	return result;
 }
@@ -1641,7 +1686,7 @@ static void skk_engine_real_property_activate (IBusEngine* base, const gchar* pr
 			_tmp3_ = filename;
 			_tmp4_ = e;
 			_tmp5_ = _tmp4_->message;
-			g_warning ("engine.vala:522: can't spawn %s: %s", _tmp3_, _tmp5_);
+			g_warning ("engine.vala:538: can't spawn %s: %s", _tmp3_, _tmp5_);
 			_g_error_free0 (e);
 		}
 		__finally2:
