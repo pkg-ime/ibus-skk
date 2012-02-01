@@ -1,3 +1,56 @@
+commit a84ab44681ac869f54160535ef611986ab59b29a
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2012-01-25 17:32:51 +0900
+
+    Bump version to 1.4.0.
+
+M	configure.ac
+
+commit bf82571fbfb96e00402400cf0dd1829f30f1a6cd
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2012-01-16 18:18:38 +0900
+
+    Filter out unnecessary modifier bits.
+
+M	src/engine.vala
+
+commit cb3094200a426c590c668da3dcf780755ede881f
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2012-01-16 10:19:35 +0900
+
+    Always consume C-j.
+
+M	src/engine.vala
+
+commit 6d188d551711c1964492a2d68c8ab9b02eb9de07
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2012-01-16 10:07:03 +0900
+
+    Remove unnecessary files from git.
+
+D	TODO
+M	ibus-skk.spec.in
+D	python-config.py
+
+commit e6b19ee8e70742d763c23204ff0986e3ad682564
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2012-01-12 14:27:27 +0900
+
+    Update copyright year.
+
+M	src/engine.vala
+M	src/plist.vala
+M	src/preferences.vala
+M	src/setup.vala
+
+commit d870e757fe6ebd75c892990aec2e32ff23cf3448
+Author: Daiki Ueno <ueno@unixuser.org>
+Date:   2012-01-12 14:26:06 +0900
+
+    Avoid TreeSet memleak.
+
+M	src/plist.vala
+
 commit 295ed5ed25f5aced06a69a6f7b95465bbd1164bb
 Author: Daiki Ueno <ueno@unixuser.org>
 Date:   2012-01-11 16:46:29 +0900

@@ -2,8 +2,8 @@
  * generated from plist.vala, do not modify */
 
 /* 
- * Copyright (C) 2011 Daiki Ueno <ueno@unixuser.org>
- * Copyright (C) 2011 Red Hat, Inc.
+ * Copyright (C) 2011-2012 Daiki Ueno <ueno@unixuser.org>
+ * Copyright (C) 2011-2012 Red Hat, Inc.
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -437,29 +437,35 @@ gchar* plist_escape (const gchar* str) {
 }
 
 
+static gpointer _g_object_ref0 (gpointer self) {
+	return self ? g_object_ref (self) : NULL;
+}
+
+
 gchar* plist_to_string (PList* self) {
 	gchar* result = NULL;
 	GeeArrayList* _tmp0_;
 	GeeArrayList* props;
-	GeeTreeSet* _tmp1_;
-	GeeTreeSet* keys;
-	GeeTreeSet* _tmp2_;
+	GeeArrayList* _tmp1_;
+	GeeArrayList* keys;
+	GeeArrayList* _tmp2_;
 	GeeMap* _tmp3_;
 	GeeSet* _tmp4_;
 	GeeSet* _tmp5_;
 	GeeSet* _tmp6_;
-	GeeArrayList* _tmp25_;
-	GeeArrayList* _tmp26_;
-	gint _tmp27_ = 0;
-	gpointer* _tmp28_ = NULL;
-	gchar** _tmp29_;
-	gint _tmp29__length1;
-	gchar* _tmp30_ = NULL;
-	gchar* _tmp31_;
+	GeeArrayList* _tmp7_;
+	GeeArrayList* _tmp31_;
+	GeeArrayList* _tmp32_;
+	gint _tmp33_ = 0;
+	gpointer* _tmp34_ = NULL;
+	gchar** _tmp35_;
+	gint _tmp35__length1;
+	gchar* _tmp36_ = NULL;
+	gchar* _tmp37_;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = gee_array_list_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, NULL);
 	props = _tmp0_;
-	_tmp1_ = gee_tree_set_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, NULL);
+	_tmp1_ = gee_array_list_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, NULL);
 	keys = _tmp1_;
 	_tmp2_ = keys;
 	_tmp3_ = self->priv->map;
@@ -468,72 +474,89 @@ gchar* plist_to_string (PList* self) {
 	_tmp6_ = _tmp5_;
 	gee_abstract_collection_add_all ((GeeAbstractCollection*) _tmp2_, (GeeCollection*) _tmp6_);
 	_g_object_unref0 (_tmp6_);
+	_tmp7_ = keys;
+	gee_list_sort ((GeeList*) _tmp7_, NULL);
 	{
-		GeeTreeSet* _tmp7_;
-		GeeIterator* _tmp8_ = NULL;
-		GeeIterator* _key_it;
-		_tmp7_ = keys;
-		_tmp8_ = gee_abstract_collection_iterator ((GeeAbstractCollection*) _tmp7_);
-		_key_it = _tmp8_;
+		GeeArrayList* _tmp8_;
+		GeeArrayList* _tmp9_;
+		GeeArrayList* _key_list;
+		GeeArrayList* _tmp10_;
+		gint _tmp11_;
+		gint _tmp12_;
+		gint _key_size;
+		gint _key_index;
+		_tmp8_ = keys;
+		_tmp9_ = _g_object_ref0 (_tmp8_);
+		_key_list = _tmp9_;
+		_tmp10_ = _key_list;
+		_tmp11_ = gee_collection_get_size ((GeeCollection*) _tmp10_);
+		_tmp12_ = _tmp11_;
+		_key_size = _tmp12_;
+		_key_index = -1;
 		while (TRUE) {
-			GeeIterator* _tmp9_;
-			gboolean _tmp10_ = FALSE;
-			GeeIterator* _tmp11_;
-			gpointer _tmp12_ = NULL;
-			gchar* key;
-			GeeMap* _tmp13_;
-			const gchar* _tmp14_;
-			gpointer _tmp15_ = NULL;
-			gchar* value;
+			gint _tmp13_;
+			gint _tmp14_;
+			gint _tmp15_;
 			GeeArrayList* _tmp16_;
-			const gchar* _tmp17_;
-			gchar* _tmp18_ = NULL;
-			gchar* _tmp19_;
+			gint _tmp17_;
+			gpointer _tmp18_ = NULL;
+			gchar* key;
+			GeeMap* _tmp19_;
 			const gchar* _tmp20_;
-			gchar* _tmp21_ = NULL;
-			gchar* _tmp22_;
-			gchar* _tmp23_ = NULL;
-			gchar* _tmp24_;
-			_tmp9_ = _key_it;
-			_tmp10_ = gee_iterator_next (_tmp9_);
-			if (!_tmp10_) {
+			gpointer _tmp21_ = NULL;
+			gchar* value;
+			GeeArrayList* _tmp22_;
+			const gchar* _tmp23_;
+			gchar* _tmp24_ = NULL;
+			gchar* _tmp25_;
+			const gchar* _tmp26_;
+			gchar* _tmp27_ = NULL;
+			gchar* _tmp28_;
+			gchar* _tmp29_ = NULL;
+			gchar* _tmp30_;
+			_tmp13_ = _key_index;
+			_key_index = _tmp13_ + 1;
+			_tmp14_ = _key_index;
+			_tmp15_ = _key_size;
+			if (!(_tmp14_ < _tmp15_)) {
 				break;
 			}
-			_tmp11_ = _key_it;
-			_tmp12_ = gee_iterator_get (_tmp11_);
-			key = (gchar*) _tmp12_;
-			_tmp13_ = self->priv->map;
-			_tmp14_ = key;
-			_tmp15_ = gee_map_get (_tmp13_, _tmp14_);
-			value = (gchar*) _tmp15_;
-			_tmp16_ = props;
-			_tmp17_ = key;
-			_tmp18_ = plist_escape (_tmp17_);
-			_tmp19_ = _tmp18_;
-			_tmp20_ = value;
-			_tmp21_ = plist_escape (_tmp20_);
-			_tmp22_ = _tmp21_;
-			_tmp23_ = g_strdup_printf ("%s=%s", _tmp19_, _tmp22_);
-			_tmp24_ = _tmp23_;
-			gee_abstract_collection_add ((GeeAbstractCollection*) _tmp16_, _tmp24_);
-			_g_free0 (_tmp24_);
-			_g_free0 (_tmp22_);
-			_g_free0 (_tmp19_);
+			_tmp16_ = _key_list;
+			_tmp17_ = _key_index;
+			_tmp18_ = gee_abstract_list_get ((GeeAbstractList*) _tmp16_, _tmp17_);
+			key = (gchar*) _tmp18_;
+			_tmp19_ = self->priv->map;
+			_tmp20_ = key;
+			_tmp21_ = gee_map_get (_tmp19_, _tmp20_);
+			value = (gchar*) _tmp21_;
+			_tmp22_ = props;
+			_tmp23_ = key;
+			_tmp24_ = plist_escape (_tmp23_);
+			_tmp25_ = _tmp24_;
+			_tmp26_ = value;
+			_tmp27_ = plist_escape (_tmp26_);
+			_tmp28_ = _tmp27_;
+			_tmp29_ = g_strdup_printf ("%s=%s", _tmp25_, _tmp28_);
+			_tmp30_ = _tmp29_;
+			gee_abstract_collection_add ((GeeAbstractCollection*) _tmp22_, _tmp30_);
+			_g_free0 (_tmp30_);
+			_g_free0 (_tmp28_);
+			_g_free0 (_tmp25_);
 			_g_free0 (value);
 			_g_free0 (key);
 		}
-		_g_object_unref0 (_key_it);
+		_g_object_unref0 (_key_list);
 	}
-	_tmp25_ = props;
-	gee_abstract_collection_add ((GeeAbstractCollection*) _tmp25_, NULL);
-	_tmp26_ = props;
-	_tmp28_ = gee_abstract_collection_to_array ((GeeAbstractCollection*) _tmp26_, &_tmp27_);
-	_tmp29_ = _tmp28_;
-	_tmp29__length1 = _tmp27_;
-	_tmp30_ = g_strjoinv (",", _tmp29_);
-	_tmp31_ = _tmp30_;
-	_tmp29_ = (_vala_array_free (_tmp29_, _tmp29__length1, (GDestroyNotify) g_free), NULL);
-	result = _tmp31_;
+	_tmp31_ = props;
+	gee_abstract_collection_add ((GeeAbstractCollection*) _tmp31_, NULL);
+	_tmp32_ = props;
+	_tmp34_ = gee_abstract_collection_to_array ((GeeAbstractCollection*) _tmp32_, &_tmp33_);
+	_tmp35_ = _tmp34_;
+	_tmp35__length1 = _tmp33_;
+	_tmp36_ = g_strjoinv (",", _tmp35_);
+	_tmp37_ = _tmp36_;
+	_tmp35_ = (_vala_array_free (_tmp35_, _tmp35__length1, (GDestroyNotify) g_free), NULL);
+	result = _tmp37_;
 	_g_object_unref0 (keys);
 	_g_object_unref0 (props);
 	return result;
